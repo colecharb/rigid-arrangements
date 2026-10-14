@@ -1,3 +1,4 @@
 import RigidArrangements.Basic
 import RigidArrangements.Rigidity
 import RigidArrangements.Isometry
+import RigidArrangements.Flex
