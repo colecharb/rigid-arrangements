@@ -8,3 +8,4 @@ import RigidArrangements.Lattice
 import RigidArrangements.Core
 import RigidArrangements.LatticeCert
 import RigidArrangements.Polyiamond
+import RigidArrangements.CoreBound
