@@ -10,3 +10,4 @@ import RigidArrangements.LatticeCert
 import RigidArrangements.Polyiamond
 import RigidArrangements.CoreBound
 import RigidArrangements.Small
+import RigidArrangements.OffLattice
