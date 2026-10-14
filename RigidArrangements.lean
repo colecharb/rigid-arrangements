@@ -7,3 +7,4 @@ import RigidArrangements.InfRigid
 import RigidArrangements.Lattice
 import RigidArrangements.Core
 import RigidArrangements.LatticeCert
+import RigidArrangements.Polyiamond
