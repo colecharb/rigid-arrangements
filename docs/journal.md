@@ -95,3 +95,67 @@ Lean; none of this is a theorem in the repository yet):
 **Next.** Prove the structural facts in Lean: rigidity is unchanged by isomorphism,
 flexibility certificates, adding a circle that touches two others, and infinitesimal
 rigidity as a certificate. Then certify the small counts.
+
+---
+
+## 2026-10-14: Basic structure theory of rigid arrangements
+
+Four new Lean files, all proved with no `sorry`. Each was checked by an independent
+reviewer.
+
+**Isomorphism behaves as expected** (`Isometry.lean`).
+
+- Suppose two finite sets of points have the same pairwise distances. Then some isometry
+  of the plane (a rotation or reflection followed by a translation) carries one onto the
+  other. Mathlib did not have this, so we proved it.
+- Consequence: "isomorphic" really means "the same picture after relabeling and moving
+  it rigidly".
+- Isomorphic arrangements are both rigid or both not, and they have isomorphic contact
+  graphs.
+- So it makes sense to count rigid arrangements up to isomorphism.
+
+**Ways to show an arrangement is NOT rigid** (`Flex.lean`). There are two kinds of
+explicit wiggle.
+
+- *Rotation:* if a group of circles is attached to the rest only through contacts with
+  a single circle c, swing the group around c.
+- *Shear:* if all contacts between a group and the rest point in the same direction,
+  slide the group sideways.
+
+Consequences, all proved:
+
+- A rigid arrangement is connected.
+- Removing any single circle leaves it connected (no "cut circle").
+- With three or more circles, every circle touches at least two others. This recovers
+  the user's original clause as a theorem rather than an assumption.
+- Two circles are rigid exactly when they touch.
+- Three circles are rigid exactly when all three touch each other, so the equilateral
+  triangle is the only rigid arrangement of three circles. This is the user's example,
+  now proved from the standard definition.
+- Four circles touching in a ring (like a square) are never rigid.
+
+**Building rigid arrangements one circle at a time** (`Henneberg.lean`).
+
+- Add a new circle touching two circles of a rigid arrangement, and the result is rigid.
+  In rigidity theory this is a "Henneberg step".
+- Conversely, suppose a circle touches exactly two others, and those two are less than 4
+  apart (not on opposite sides of it). Removing it keeps the arrangement rigid.
+- Example: the rhombus (two triangles sharing an edge) is rigid.
+
+These two facts reduce the classification to arrangements in which no circle can be
+removed this way ("cores").
+
+**The linearized test** (`InfRigid.lean`).
+
+- An arrangement is *infinitesimally rigid* if no first-order motion keeps every contact
+  length, except moving the whole arrangement.
+- Proved: infinitesimally rigid implies rigid. The proof is an elementary estimate that
+  needs no implicit function theorem. This is the tool for certifying rigidity by
+  computation.
+- Also proved: a circle squeezed between two circles exactly opposite each other, with
+  no other contacts, makes the arrangement fail the linearized test. Such an arrangement
+  can still be rigid, which is why the definition uses the nonlinear notion.
+
+**Next.** Certify the lattice counts for small n by computation in Lean. Then classify all
+rigid arrangements with at most 6 circles, including off-lattice ones, using a geometric
+argument about extreme circles. Finally, formalize the 11-circle off-lattice example.
