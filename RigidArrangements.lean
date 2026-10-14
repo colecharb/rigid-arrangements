@@ -4,3 +4,5 @@ import RigidArrangements.Isometry
 import RigidArrangements.Flex
 import RigidArrangements.Henneberg
 import RigidArrangements.InfRigid
+import RigidArrangements.Lattice
+import RigidArrangements.Core
