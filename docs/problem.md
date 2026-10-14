@@ -1,21 +1,46 @@
 # Problem statement
 
-> **Status:** waiting for the full description.
+> **Status:** informal statement received. Making it rigorous is the current task.
 
-## Summary so far
+## The user's statement (verbatim)
 
-- We study arrangements of **unit circles in the plane** that touch **tangentially**.
-- Some of these arrangements are called **rigid**. The precise definition is still to come.
-- Rigid arrangements of `n` circles look *almost* like a one-to-one match with
-  **hexominoes**, but probably are not exactly.
+> We define a rigid arrangement as a set of unit circles in the plane that each
+> touch tangentially to two other circles and no two circles overlap. We also want
+> the arrangement to be such that, if the circles were all attracted to one another
+> (like magnets), there would be no "wiggle room" while keeping everything touching
+> tangentially as it is. For example, two circles cannot be rigid since they can only
+> touch tangentially in one location, and would be able to "roll" around one another
+> while staying tangent.
+
+> The only rigid arrangement for three circles is where their centers lie on the
+> vertices of an equilateral triangle.
+
+Further context from earlier:
+
+- Rigid arrangements are "almost 1:1 with hexominoes, but I don't think they quite are."
 - **Goal:** enumerate rigid arrangements of `n` circles **up to isomorphism**.
 
-## Open questions to settle from the full description
+## Known requirements
 
-1. What exactly makes an arrangement *rigid*? (For example: no continuous motion
-   keeps every tangency, or something stronger or weaker.)
-2. What does *isomorphism* mean here? Congruence of the plane (rotations,
-   reflections, translations), isomorphism of the contact graph, or something else?
-3. Can circles overlap, or are they only allowed to touch?
-4. Does the arrangement have to be connected?
-5. How is it related to hexominoes, and where does that match break down?
+1. Circles are unit circles in the plane, and no two overlap.
+2. Each circle touches tangentially (at least?) two others.
+3. **Rigidity:** if every existing tangency is kept, the arrangement has no "wiggle
+   room" (no continuous deformation).
+4. **Check:** two circles are not rigid, and the only rigid arrangement of 3 circles
+   is the equilateral triangle.
+
+## Open questions (to be settled by the research phase or by the user)
+
+1. Does "touch two other circles" mean *at least* two? Reading it as *exactly* two
+   allows only cycles, so the triangle would be the only rigid arrangement.
+2. Which rigidity notion fits: no continuous motion, an isolated point up to
+   congruence, or infinitesimal rigidity? These can differ in degenerate cases.
+3. In standard rigidity theory, two circles "rolling" around each other is a rigid
+   motion of the pair, not a deformation. So what excludes two circles: the "touches
+   two others" clause, or something else?
+4. What does *isomorphism* mean: congruence (with or without reflections) after
+   relabeling, or isomorphism of the contact graph?
+5. Does the arrangement have to be connected? (Rigidity probably forces it.)
+6. "Hexominoes" normally means 6-square polyominoes. Circles placed on the
+   triangular lattice correspond to **polyhexes**. Which one is meant, and where does
+   the correspondence break?
