@@ -159,3 +159,93 @@ removed this way ("cores").
 **Next.** Certify the lattice counts for small n by computation in Lean. Then classify all
 rigid arrangements with at most 6 circles, including off-lattice ones, using a geometric
 argument about extreme circles. Finally, formalize the 11-circle off-lattice example.
+
+---
+
+## 2026-10-14: Complete classification up to six circles; certified lower bounds
+
+Everything below is proved in Lean with no `sorry`. The only axioms used are Lean's three
+standard ones. In particular there is no `native_decide`: every computation is checked by
+Lean's kernel.
+
+**Complete classification for n ≤ 6** (`Classification.lean`). Up to isomorphism, the rigid
+arrangements are:
+
+| circles | count | the arrangements |
+|---|---|---|
+| 3 | 1 | the triangle |
+| 4 | 1 | the rhombus (two triangles sharing an edge) |
+| 5 | 1 | the trapezoid (three triangles in a row) |
+| 6 | 3 | the parallelogram (four triangles in a row), the chevron (four triangles fanned around one circle), the big triangle |
+
+The table covers *every* arrangement of unit circles, not just those on a lattice. As a
+corollary, every rigid arrangement of at most 6 circles lies on the triangular lattice.
+
+The proof has two halves.
+
+1. *No small cores* (`CoreBound.lean`). Recall that a circle is *removable* if it touches
+   exactly two others and those two are not on opposite sides of it. Claim: every rigid
+   arrangement of 4 to 6 circles has a removable circle.
+   - Choose six directions 60° apart. In each direction, look at the circle that sticks
+     out furthest.
+   - That circle's neighbors all lie on one side of it, at least 60° apart as seen from
+     it. So it touches at most 3 others.
+   - If it touches exactly 2, it is removable.
+   - If no circle is removable, the six extreme circles are all different and each touches
+     exactly three others. That needs at least 6 circles.
+   - With exactly 6 circles, the contact graph has every circle touching exactly three
+     others. There are only two such graphs on 6 vertices: the complete bipartite graph
+     K₃,₃ and the triangular prism. Neither can be drawn with unit circles.
+2. *Growing back* (`Small.lean`). Remove a removable circle. What is left is rigid, and by
+   induction it is one of the known shapes. The removed circle sat at one of the two points
+   at distance 2 from both of its neighbors. A finite check by computer then lists the
+   possible results.
+
+**Lower bounds for 7 to 12 circles** (`LatticeCert.lean`).
+
+- For each n we wrote down a catalogue of lattice arrangements and checked by machine two
+  things:
+  - each one can be built one circle at a time, every new circle touching two earlier
+    ones, which proves it rigid;
+  - no two are isomorphic. They are told apart by their tables of pairwise distances.
+- Result: at least **4, 9, 16, 35, 69, 155** rigid arrangements of 7, 8, 9, 10, 11, 12
+  circles.
+- These match the exploratory counts of all *lattice* arrangements. Whether they are
+  exact needs the classification of cores of 7 or more circles.
+
+**An off-lattice arrangement** (`OffLattice.lean`).
+
+- The 11-circle arrangement O11 is two chevrons that share one end circle and whose other
+  ends touch.
+- It is proved rigid using a general "hinge plus bar" lemma: two rigid bodies sharing one
+  circle and joined by one more contact are rigid.
+- It lies on no triangular lattice. The proof: two lattice points at distance 2√3 from a
+  common lattice point are never exactly 2 apart.
+- So there are **at least 70** rigid arrangements of 11 circles.
+- O11 is also a *core*: no circle can be removed. So cores really do appear from n = 11
+  on. This is why the method above stops being purely mechanical.
+
+**The polyiamond analogy, made precise** (`Polyiamond.lean`).
+
+- Proved: put a circle at every corner of a polyiamond (any edge-connected set of lattice
+  triangles), and the arrangement is rigid.
+- Proved: the hexagon hexiamond and the 5-triangle fan have the same 7 corners.
+- Proved: the 12 hexiamonds give exactly 10 different arrangements, up to isomorphism.
+  One is the hexagon's 7 circles, and the other nine have 8 circles each. The list of 12
+  hexiamonds is the classical one; we did not reprove that it is complete.
+- This is where "almost 1:1" first fails.
+- Square hexominoes have no rigid analogue. Proved: no arrangement of 3 or more circles on
+  a square grid is rigid.
+
+**Two examples of where the polyiamond picture fails** (`LatticeCert.lean`).
+
+- *R13* (13 circles) is rigid, yet one of its circles lies in no triangle.
+- *sing18* (18 circles) is rigid but fails the linearized test. Its circle at the middle
+  of three in a straight line is held only "to second order".
+
+**Next.**
+
+- Classify the cores of 7 and 8 circles. The research suggests the only one is the
+  7-circle "flower" (a hexagon around a center). That would turn the lower bounds 4 and 9
+  into exact counts for n = 7 and n = 8.
+- Push the hull argument further, toward n = 9 and 10.
