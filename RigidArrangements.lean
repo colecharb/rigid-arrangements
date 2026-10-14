@@ -11,3 +11,4 @@ import RigidArrangements.Polyiamond
 import RigidArrangements.CoreBound
 import RigidArrangements.Small
 import RigidArrangements.OffLattice
+import RigidArrangements.Classification
