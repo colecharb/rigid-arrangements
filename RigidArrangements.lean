@@ -1,1 +1,2 @@
 import RigidArrangements.Basic
+import RigidArrangements.Rigidity
