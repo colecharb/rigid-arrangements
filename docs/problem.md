@@ -73,10 +73,22 @@ The user asked for definitions from an existing field rather than custom ones. W
 
 ## Still open
 
-- **What "hexominoes" meant.** The evidence points to *polyiamonds*, shapes made of
-  triangles, specifically the 12 hexiamonds. See the journal entry of 2026-10-14 for the
-  detailed comparison. Square hexominoes can never be rigid. Awaiting the user's
-  confirmation.
+- ~~What "hexominoes" meant.~~ **Settled (2026-10-14).** The user meant a loose analogy:
+  something polyform-like, confined to a lattice or built from triangles, not a claim
+  about a particular count. The precise analogue is **polyiamonds** (shapes glued from
+  equilateral triangles). Put a circle at every corner and the result is rigid.
+  - On the triangular lattice, up to 12 circles, the rigid arrangements are exactly the
+    corner sets of *saturated* polyiamonds: those containing every lattice triangle that
+    their corners span. This was computed in Lean, but it is not yet a theorem.
+  - The analogy breaks in three ways.
+    1. Different polyiamonds can give the same circles. The hexagon and the 5-triangle
+       fan have the same 7 corners. So from n = 8 on there are fewer arrangements than
+       polyiamonds with n − 2 triangles (9 against 12 hexiamonds).
+    2. Some rigid lattice arrangements are not built from triangles. The first one has
+       n = 13.
+    3. Some rigid arrangements lie on no lattice at all. The first known one has n = 11.
+
+  Square hexominoes have no rigid analogue: anything on a square grid shears.
 - **Trust in large computations.** Is `native_decide`, which trusts the Lean compiler, acceptable
   for large certified enumerations? Until the user decides, only kernel-checked `decide`
   is used.
