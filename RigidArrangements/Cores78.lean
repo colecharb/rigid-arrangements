@@ -63,8 +63,8 @@ pentiamonds and `12` hexiamonds (OEIS A000577): the counts agree with the number
 polyiamonds with `n - 2` triangles up to `n = 7` and differ at `n = 8`.
 
 The kernel checks (`decide +kernel`) are dominated by the extension checks `coverStep`: a few
-seconds from six to seven circles and about ten seconds from seven to eight circles. The flower check,
-the build certificates and the keys take well under a second each.
+seconds from six to seven circles and about ten seconds from seven to eight circles. The flower
+check, the build certificates and the keys take well under a second each.
 
 ## Main results
 

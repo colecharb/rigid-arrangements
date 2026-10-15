@@ -1,9 +1,11 @@
 # Rigid cores with 7 and 8 circles
 
-> **Status (2026-10-15).** Hand proof, not yet formalized in Lean. Merged from three
-> independent drafts after refereeing (see *Provenance*). Rigidity is used only through
-> `Arrangement.IsRigid.touchesTwo`. No flex and no edge count is used. Every arrangement
-> other than the flower is shown to be geometrically impossible.
+> **Status (2026-10-15).** Formalized in Lean: `Arrangement.card_eq_seven_and_iso_flower_of_card_le_eight`
+> (`RigidArrangements/Cores78.lean`), built on `CornerBasics.lean`, `LemmaE.lean` and
+> `SixCorners.lean`. Consequences proved there: `card_rigidClasses_seven` (= 4),
+> `card_rigidClasses_eight` (= 9) and `IsRigid.isLattice_of_card_le_eight`. The text below is the
+> refereed hand proof the formalization follows; in (H4) the Lean proof takes a shorter route
+> (the point X is the midpoint of e_k and the non-corner on side k+3, so it is not a corner).
 
 ## Statement
 

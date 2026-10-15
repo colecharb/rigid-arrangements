@@ -183,7 +183,7 @@ svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.
 
   <section class="examples" aria-labelledby="ex-h">
     <h2 id="ex-h">Off the lattice</h2>
-    <p class="lede">Every arrangement above sits on the triangular lattice, and for up to six circles that is a
+    <p class="lede">Every arrangement above sits on the triangular lattice, and for up to eight circles that is a
       theorem. From eleven circles on it is no longer true.</p>
     <div id="examples"></div>
   </section>
@@ -191,7 +191,8 @@ svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.
   <p class="note">The drawings are generated from lattice coordinates: a site (<i>a</i>, <i>b</i>) has center
     <i>a</i>·(2, 0) + <i>b</i>·(1, √3), so two circles touch exactly when their sites differ by one of the six unit steps.
     These are the coordinates used by the Lean definitions <code>triangleSites</code>, <code>rhombusSites</code>, and so on,
-    in <code>RigidArrangements/Small.lean</code>. To add a size, append an entry to <code>DATA</code> in this file.</p>
+    in <code>RigidArrangements/Small.lean</code>, and by the certified catalogues <code>latticeCatalogue7</code> and
+    <code>latticeCatalogue8</code> in <code>RigidArrangements/LatticeCert.lean</code>. To add a size, append an entry to <code>DATA</code> in this file.</p>
 </div>
 
 <script>
@@ -215,9 +216,28 @@ const DATA = [
       { name: "chevron", lean: "chevron", sites: [[0,0],[1,0],[0,1],[1,1],[2,0],[2,-1]] },
       { name: "big triangle", lean: "bigTriangle", sites: [[0,0],[1,0],[0,1],[1,1],[2,0],[0,2]] },
     ] },
+  { n: 7, status: "proved", theorem: "card_rigidClasses_seven",
+    shapes: [
+      { name: "flower", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[2,-1],[2,0]] },
+      { name: "7b", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,0]] },
+      { name: "7c", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1]] },
+      { name: "7d", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[1,2],[0,3]] },
+    ] },
+  { n: 8, status: "proved", theorem: "card_rigidClasses_eight",
+    shapes: [
+      { name: "8a", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[2,0],[2,-1],[2,1]] },
+      { name: "8b", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1],[2,0]] },
+      { name: "8c", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,0],[2,1]] },
+      { name: "8d", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[2,0]] },
+      { name: "8e", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[2,-1],[2,-2],[1,-2]] },
+      { name: "8f", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[1,2],[0,3],[2,0]] },
+      { name: "8g", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[2,-1]] },
+      { name: "8h", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1],[2,-2]] },
+      { name: "8i", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[0,3]] },
+    ] },
 ];
 // Sizes whose exact count is not yet a theorem, shown in the sequence strip only.
-const LOWER_BOUNDS = [ { n: 7, k: 4 }, { n: 8, k: 9 }, { n: 9, k: 16 }, { n: 10, k: 35 } ];
+const LOWER_BOUNDS = [ { n: 9, k: 16 }, { n: 10, k: 35 }, { n: 11, k: 70 }, { n: 12, k: 155 } ];
 
 const SQ3 = Math.sqrt(3);
 const UNIT = 26; // pixels per unit length, shared by every drawing so sizes compare
@@ -233,14 +253,14 @@ function drawPoints(mathPts, opts = {}) {
   const w = maxX - minX, h = maxY - minY;
   const adj = (i, j) => Math.abs(Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]) - 2) < 1e-9;
   let cells = "", bars = "", disks = "", dots = "";
-  let edges = 0;
+  let edges = 0, tris = 0;
   for (let i = 0; i < pts.length; i++)
     for (let j = i + 1; j < pts.length; j++) {
       if (!adj(i, j)) continue;
       edges++;
       bars += `<line class="bar" x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`;
       for (let k = j + 1; k < pts.length; k++)
-        if (adj(i, k) && adj(j, k))
+        if (adj(i, k) && adj(j, k) && ++tris)
           cells += `<polygon class="cell" points="${[i, j, k].map(t => pts[t].join(",")).join(" ")}"/>`;
     }
   pts.forEach((p, i) => {
@@ -251,7 +271,7 @@ function drawPoints(mathPts, opts = {}) {
   const u = opts.unit || UNIT;
   const svg = `<svg viewBox="${minX} ${minY} ${w} ${h}" width="${Math.round(w * u)}" height="${Math.round(h * u)}" role="img">` +
     `${disks}${cells}${bars}${extra}${dots}</svg>`;
-  return { svg, edges };
+  return { svg, edges, tris };
 }
 const draw = (sites) => drawPoints(sites.map(([a, b]) => [2 * a + b, SQ3 * b]));
 
@@ -270,10 +290,10 @@ seq.innerHTML = headRow + countRow;
 const bands = document.getElementById("bands");
 for (const d of DATA) {
   const figs = d.shapes.map(s => {
-    const { svg, edges } = draw(s.sites);
+    const { svg, edges, tris } = draw(s.sites);
     const lean = s.lean ? ` · <code>${s.lean}</code>` : "";
     return `<figure>${svg}<figcaption><b>${s.name}</b>` +
-      `<span class="meta">${plural(edges, "contact", "contacts")}${lean}</span></figcaption></figure>`;
+      `<span class="meta">${plural(edges, "contact", "contacts")} · ${plural(tris, "triangle", "triangles")}${lean}</span></figcaption></figure>`;
   }).join("");
   const label = d.status === "proved" ? "proved" : "pending";
   const extra = d.note ? `<div class="thm">${d.note}</div>` : "";

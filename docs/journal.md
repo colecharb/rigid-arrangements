@@ -284,3 +284,33 @@ core appears.
 **Next.** Formalize it in Lean (three new files: corners, the six-corner frame, and the
 7/8-circle classification), then derive the exact counts 4 and 9 with the existing
 extension machinery.
+
+---
+
+## 2026-10-15: Exact counts for 7 and 8 circles
+
+The hand proof of the previous entry is now a Lean theorem (`Cores78.lean`, on top of
+`CornerBasics.lean`, `LemmaE.lean` and `SixCorners.lean`, about 2,500 lines, no `sorry`,
+kernel-checked only):
+
+- **The flower is the only small core.** If every circle touches at least two others and no
+  circle can be peeled off, and there are at most 8 circles, then there are exactly 7 and they
+  form the flower (`card_eq_seven_and_iso_flower_of_card_le_eight`). This uses nothing about
+  rigidity except "every circle touches two others".
+- **Exact counts.** Growing the 6-circle shapes one circle at a time, and adding the flower as
+  the one new core, the computer check finds exactly **4** rigid arrangements of 7 circles and
+  **9** of 8 (`card_rigidClasses_seven`, `card_rigidClasses_eight`). Every rigid arrangement of
+  at most 8 circles lies on the triangular lattice (`IsRigid.isLattice_of_card_le_eight`).
+
+The sequence of exact counts is now, for n = 1, …, 8:
+
+  **1, 1, 1, 1, 1, 3, 4, 9**
+
+with certified lower bounds 16, 35, ≥ 70, 155 for n = 9, 10, 11, 12. At n = 8 the count 9
+differs from the 12 hexiamonds: this is where "almost 1:1" first fails, now as a theorem about
+all arrangements.
+
+The figure `docs/figures/rigid-arrangements.html` shows all of them.
+
+**Next.** A plan for a general formula (or good bounds) for the number of rigid arrangements of
+n circles.
