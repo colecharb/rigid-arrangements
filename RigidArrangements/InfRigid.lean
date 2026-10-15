@@ -29,7 +29,8 @@ Turning a vector `z` by a right angle is multiplication by `I`.
 ## Main results
 
 * `isInfRigid_iff`: `p` is infinitesimally rigid exactly when it has a contact and every
-  infinitesimal flex is trivial. This is the textbook definition.
+  infinitesimal flex is trivial. This is the textbook definition, plus the requirement that
+  there is a contact.
 * `isLocallyRigid_of_isInfRigid`: **infinitesimal rigidity implies local rigidity**, for
   finitely many circles.
 * `Arrangement.isRigid_of_isInfRigid`: the same statement for arrangements.
@@ -53,11 +54,13 @@ Together, `‖u‖ ≤ 2 K ‖u‖²`: either `u = 0`, or `‖u‖ ≥ 1 / (2 K)
 ## Infinitesimal rigidity is strictly stronger
 
 The converse of `isLocallyRigid_of_isInfRigid` fails. If two circles of a rigid cluster are
-exactly `4` apart, a circle touching both of them is forced to sit at their midpoint, so it
-cannot move at all. But it can move sideways to first order (`not_isInfRigid_of_taut`). So
-`IsInfRigid` is only a certificate: it proves rigidity when it holds, and says nothing when it
-fails. Also, by our definition a single circle, which has no contact, is not infinitesimally
-rigid, although it is rigid.
+exactly `4` apart, a circle touching both of them and nothing else is forced to sit at their
+midpoint, so it cannot move at all. But it can move sideways to first order
+(`not_isInfRigid_of_taut`). So `IsInfRigid` is only a certificate: it proves rigidity when it
+holds, and says nothing when it fails. Also, by our definition a single circle, which has no
+contact, is not infinitesimally rigid, although it is rigid. These remarks are not formalized
+in this file; a formal example of a rigid arrangement that is not infinitesimally rigid is
+`Arrangement.sing18` in `RigidArrangements.LatticeCert`.
 -/
 
 open Complex
@@ -191,7 +194,7 @@ theorem isInfRigid_iff :
 
 /-! ### The rigidity map -/
 
-open Classical in
+open scoped Classical in
 /-- The *rigidity map* of `p`. It sends a velocity field `u` to the first-order change
 `⟪p i - p j, u i - u j⟫` of each contact `i j` (and to `0` for pairs that do not touch). Its
 kernel is the space of infinitesimal flexes (`rigidityMap_eq_zero_iff`). -/
@@ -372,24 +375,24 @@ theorem isLocallyRigid_of_isInfRigid [Finite ι] (h : IsInfRigid p) : IsLocallyR
 
 /-! ### Taut circles -/
 
-/-- **A taut circle flexes to first order.** Suppose circle `w` touches circles `u` and `v`,
-and no others, and the centers of `u` and `v` are exactly `4` apart. Then `w` sits at the
-midpoint of `u` and `v`, and moving `w` alone perpendicular to the line `u v` keeps both of
-its contacts to first order. This flex is not trivial, since it moves `w` but neither `u` nor
-`v`. So the placement is never infinitesimally rigid, even when it is rigid. -/
-theorem not_isInfRigid_of_taut {w u v : ι} (hw : ∀ k, Tangent p w k → k = u ∨ k = v)
-    (hu : Tangent p w u) (hv : Tangent p w v) (h4 : dist (p u) (p v) = 4) :
+/-- **A taut circle flexes to first order.** Suppose circle `w` touches circles `a` and `b`,
+and no others, and the centers of `a` and `b` are exactly `4` apart. Then `w` sits at the
+midpoint of `a` and `b`, and moving `w` alone perpendicular to the line `a b` keeps both of
+its contacts to first order. This flex is not trivial, since it moves `w` but neither `a` nor
+`b`. So the placement is never infinitesimally rigid, even when it is rigid. -/
+theorem not_isInfRigid_of_taut {w a b : ι} (hw : ∀ k, Tangent p w k → k = a ∨ k = b)
+    (ha : Tangent p w a) (hb : Tangent p w b) (h4 : dist (p a) (p b) = 4) :
     ¬ IsInfRigid p := by
   classical
   intro hrig
-  have hm : p u - p w = p w - p v := sub_eq_sub_of_taut hu hv h4
-  set x := p w - p u with hx
-  have hwu : u ≠ w := fun h => sub_ne_zero_of_tangent hu (by rw [h, sub_self])
-  have hwv : v ≠ w := fun h => sub_ne_zero_of_tangent hv (by rw [h, sub_self])
-  -- move `w` alone, perpendicular to the line `u v`
+  have hm : p a - p w = p w - p b := sub_eq_sub_of_taut ha hb h4
+  set x := p w - p a with hx
+  have haw : a ≠ w := fun h => sub_ne_zero_of_tangent ha (by rw [h, sub_self])
+  have hbw : b ≠ w := fun h => sub_ne_zero_of_tangent hb (by rw [h, sub_self])
+  -- move `w` alone, perpendicular to the line `a b`
   let f : ι → Plane := fun k => if k = w then I * x else 0
-  have hfu : f u = 0 := ite_eq_right hwu
-  have hfv : f v = 0 := ite_eq_right hwv
+  have hfa : f a = 0 := ite_eq_right haw
+  have hfb : f b = 0 := ite_eq_right hbw
   have hfw : f w = I * x := ite_eq_left rfl
   -- `p w - p k = ± x` for the two neighbours `k` of `w`
   have hnb : ∀ k, Tangent p w k → p w - p k = x ∨ p w - p k = -x := by
@@ -415,13 +418,13 @@ theorem not_isInfRigid_of_taut {w u v : ι} (hw : ∀ k, Tangent p w k → k = u
       · rw [inner_neg_left, inner_I_mul_self, neg_zero]
     · rw [show f i = 0 from ite_eq_right hi, show f j = 0 from ite_eq_right hj, sub_zero,
         inner_zero_right]
-  have huv : p u - p v ≠ 0 := by
+  have hab : p a - p b ≠ 0 := by
     intro h0
     rw [Complex.dist_eq, h0, norm_zero] at h4
     norm_num at h4
-  have hf0 := ((isInfRigid_iff.mp hrig).2 f hflex).eq_zero huv hfu hfv
+  have hf0 := ((isInfRigid_iff.mp hrig).2 f hflex).eq_zero hab hfa hfb
   have hx0 : I * x = 0 := by rw [← hfw, hf0, Pi.zero_apply]
-  exact sub_ne_zero_of_tangent hu ((mul_eq_zero.mp hx0).resolve_left I_ne_zero)
+  exact sub_ne_zero_of_tangent ha ((mul_eq_zero.mp hx0).resolve_left I_ne_zero)
 
 end InfRigid
 

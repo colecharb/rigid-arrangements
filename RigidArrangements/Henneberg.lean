@@ -34,10 +34,12 @@ step does too under a mild extra hypothesis.
   the extra constraint "at most `4` apart", which the smaller arrangement does not see.
 
 The theorems are stated for a general relabeling: the old circles are indexed by `κ` and
-placed inside `ι` by `f : κ → ι`, which misses only the new circle `i₀`. The two main special
-cases are `Option ι` (new circle `none`, `IsLocallyRigid.option`, `IsLocallyRigid.of_option`)
-and `Fin (n + 1)` with `Fin.succAbove` (deleting circle `i` and renumbering the rest in
-order).
+placed inside `ι` by `f : κ → ι`. The adding direction only asks that every circle other than
+the new circle `i₀` is some `f j` (`{i₀}ᶜ ⊆ Set.range f`); `f` need not be injective or miss
+`i₀`. The removing direction asks that `f` is injective with range exactly `{i₀}ᶜ`. The two
+main special cases are `Option ι` (new circle `none`, `IsLocallyRigid.option`,
+`IsLocallyRigid.of_option`) and `Fin (n + 1)` with `Fin.succAbove` (deleting circle `i` and
+renumbering the rest in order).
 
 ## Main results
 
@@ -53,7 +55,10 @@ order).
   `Arrangement.IsRigid.of_erase`, `Arrangement.IsRigid.of_comap_succAbove`: the adding step
   for arrangements.
 * `Arrangement.IsRigid.comap`, `Arrangement.IsRigid.erase`,
-  `Arrangement.IsRigid.comap_succAbove`: the removing step for arrangements.
+  `Arrangement.IsRigid.comap_succAbove`: the removing step for arrangements. Despite the
+  short names, these need the removed circle to touch exactly two circles, less than `4`
+  apart; restricting a rigid arrangement to a subset of its circles does not keep rigidity
+  in general.
 * `Arrangement.rhombus_isRigid`: two equilateral triangles sharing an edge form a rigid
   arrangement of four circles, obtained from the triangle by one adding step.
 -/
@@ -99,11 +104,11 @@ theorem eq_or_eq_reflect {a b x y : ℂ} (hab : a ≠ b) (ha : dist y a = dist x
   · right
     rw [hy]
     congr 2
-    exact Complex.ext (by simp [hre]) (by simp; linarith)
+    exact Complex.ext (by simp [hre]) (by rw [Complex.conj_im]; linarith)
 
 /-- Norm identity for the apex of an isosceles triangle: if `v` is purely imaginary and `s`,
 `l` are real, then `‖z * (s + v * l)‖² = ‖z‖² * (s² + l² ‖v‖²)`. -/
-theorem norm_sq_apex {z v : ℂ} (hv : v.re = 0) (s l : ℝ) :
+private theorem norm_sq_apex {z v : ℂ} (hv : v.re = 0) (s l : ℝ) :
     ‖z * ((s : ℂ) + v * (l : ℂ))‖ ^ 2 = ‖z‖ ^ 2 * (s ^ 2 + l ^ 2 * ‖v‖ ^ 2) := by
   rw [norm_mul, mul_pow, Complex.sq_norm, Complex.sq_norm, Complex.sq_norm]
   congr 1
@@ -117,17 +122,18 @@ section Framework
 
 variable {ι κ : Type*}
 
-/-- **Henneberg step: adding a circle keeps rigidity.** The circles `f j` (for `j : κ`) are
-all circles except `i₀`. If they form a locally rigid placement, and circle `i₀` touches two
-of them, `f u` and `f w`, whose centers are distinct, then the whole placement is locally
-rigid. No hypothesis on the distance between the centers of `f u` and `f w` is needed. -/
+/-- **Henneberg step: adding a circle keeps rigidity.** Every circle other than `i₀` is one
+of the circles `f j` (for `j : κ`). If the circles `f j` form a locally rigid placement, and
+circle `i₀` touches two of them, `f u` and `f w`, whose centers are distinct, then the whole
+placement is locally rigid. No hypothesis on the distance between the centers of `f u` and
+`f w` is needed. -/
 theorem IsLocallyRigid.of_comp_of_tangent [Finite ι] {p : ι → Plane} {f : κ → ι} {i₀ : ι}
-    (hf : {i₀}ᶜ ⊆ Set.range f) (h : IsLocallyRigid (p ∘ f)) {u w : κ}
+    (hrange : {i₀}ᶜ ⊆ Set.range f) (h : IsLocallyRigid (p ∘ f)) {u w : κ}
     (hu : Tangent p i₀ (f u)) (hw : Tangent p i₀ (f w)) (huw : p (f u) ≠ p (f w)) :
     IsLocallyRigid p := by
   have := Fintype.ofFinite ι
   have hcases : ∀ k, k = i₀ ∨ ∃ j, f j = k := fun k =>
-    (eq_or_ne k i₀).imp_right fun hk => hf hk
+    (eq_or_ne k i₀).imp_right fun hk => hrange hk
   set a := p (f u) with ha_def
   set b := p (f w) with hb_def
   have hu' : dist (p i₀) a = 2 := hu
@@ -496,9 +502,9 @@ theorem erase_addCircle : (A.addCircle c hc).erase = A :=
 
 end addCircle
 
-/-- **Adding a circle keeps rigidity** (general labels). The circles `f j` are all circles of
-`A` except `i₀`. If they form a rigid arrangement and circle `i₀` touches two of them, then
-`A` is rigid. -/
+/-- **Adding a circle keeps rigidity** (general labels). Every circle of `A` other than `i₀`
+is one of the circles `f j`. If the circles `f j` form a rigid arrangement and circle `i₀`
+touches two of them, then `A` is rigid. -/
 theorem IsRigid.of_comap [Finite ι] {A : Arrangement ι} {f : κ → ι}
     {hf : Function.Injective f} (h : (A.comap f hf).IsRigid) {i₀ : ι}
     (hrange : {i₀}ᶜ ⊆ Set.range f) {u w : κ} (hu : Tangent A.center i₀ (f u))
@@ -506,9 +512,9 @@ theorem IsRigid.of_comap [Finite ι] {A : Arrangement ι} {f : κ → ι}
   IsLocallyRigid.of_comp_of_tangent hrange h hu hw (A.center_injective.ne (hf.ne huw))
 
 /-- **Removing a circle with two contacts keeps rigidity** (general labels). The circles `f j`
-are all circles of `A` except `i₀`. If `A` is rigid and circle `i₀` touches exactly two
-circles, whose centers are less than `4` apart, then the other circles form a rigid
-arrangement. -/
+(with `f` injective) are exactly the circles of `A` other than `i₀`. If `A` is rigid and
+circle `i₀` touches exactly two circles, whose centers are less than `4` apart, then the other
+circles form a rigid arrangement. -/
 theorem IsRigid.comap {A : Arrangement ι} (h : A.IsRigid) {f : κ → ι}
     (hf : Function.Injective f) {i₀ : ι} (hrange : Set.range f = {i₀}ᶜ) {u w : κ}
     (hu : Tangent A.center i₀ (f u)) (hw : Tangent A.center i₀ (f w))

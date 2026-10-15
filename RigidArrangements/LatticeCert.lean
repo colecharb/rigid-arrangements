@@ -45,7 +45,10 @@ kernel checks that each catalogue is certified, which gives the lower bounds
 | at least | 1 | 1 | 1 | 3 | 4 | 9 | 16 | 35 | 69 | 155 |
 
 These are only lower bounds. Nothing here says that the catalogue lists *all* rigid lattice
-arrangements, and from `n = 11` on there are also rigid arrangements off the lattice.
+arrangements, nor that every rigid arrangement lies on the lattice. In fact
+`RigidArrangements.OffLattice` constructs a rigid arrangement of `11` circles off the lattice
+(`O11`, the first one the exploratory enumerations found); whether off-lattice rigid
+arrangements of `7` to `10` circles exist is not settled in Lean.
 
 The numbers are not those of polyiamonds. The numbers of polyiamonds with `1, …, 8`
 triangles are `1, 1, 1, 3, 4, 12, 24, 66` (OEIS A000577), and they agree with the catalogue
@@ -140,7 +143,7 @@ theorem isLocallyRigid_of_checkBuild {l : List (ℤ × ℤ)} (h : checkBuild l =
   funext i
   simp only [Function.comp_apply, List.get_eq_getElem, List.getElem_reverse]
   congr 2
-  simp [e, Fin.rev]
+  simp only [Equiv.trans_apply, finCongr_apply, Fin.revPerm_apply, Fin.rev, Fin.val_cast, e]
   omega
 
 namespace Arrangement
@@ -306,38 +309,44 @@ catalogue gives Lean the type of the entry up front, which makes elaborating the
 below several times faster. -/
 private abbrev pts (l : List (ℤ × ℤ)) : List (ℤ × ℤ) := l
 
-/-- The catalogue of rigid lattice arrangements of `3` circles (1 entry), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `3` circles
+(1 entry): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue3 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0)]]
 
-/-- The catalogue of rigid lattice arrangements of `4` circles (1 entry), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `4` circles
+(1 entry): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue4 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1)]]
 
-/-- The catalogue of rigid lattice arrangements of `5` circles (1 entry), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `5` circles
+(1 entry): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue5 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2)]]
 
-/-- The catalogue of rigid lattice arrangements of `6` circles (3 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `6` circles
+(3 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue6 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (2, -1)],
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (2, 0)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2)]]
 
-/-- The catalogue of rigid lattice arrangements of `7` circles (4 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `7` circles
+(4 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue7 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (2, -1), (2, 0)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, 0)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, -1)],
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (0, 3)]]
 
-/-- The catalogue of rigid lattice arrangements of `8` circles (9 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `8` circles
+(9 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue8 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (2, 0), (2, -1), (2, 1)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, -1), (2, 0)],
@@ -349,8 +358,9 @@ def latticeCatalogue8 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, -1), (2, -2)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (0, 3)]]
 
-/-- The catalogue of rigid lattice arrangements of `9` circles (16 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `9` circles
+(16 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue9 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, -1), (2, 0), (2, 1)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (2, -1), (2, 0)],
@@ -369,8 +379,9 @@ def latticeCatalogue9 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (0, 3), (2, -1)],
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (0, 3), (1, 3), (0, 4)]]
 
-/-- The catalogue of rigid lattice arrangements of `10` circles (35 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `10` circles
+(35 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue10 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (2, -1), (2, 0), (2, 1)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (2, -1), (2, 0), (2, 1), (3, -1)],
@@ -408,8 +419,9 @@ def latticeCatalogue10 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (0, 3), (2, -1), (2, -2)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (0, 3), (1, 3), (0, 4)]]
 
-/-- The catalogue of rigid lattice arrangements of `11` circles (69 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `11` circles
+(69 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue11 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (2, -1), (2, 0), (2, 1), (3, -1)],
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (2, -1), (2, 0), (3, -1), (3, 0)],
@@ -496,8 +508,9 @@ def latticeCatalogue11 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (0, 3), (1, 3), (0, 4), (2, -1)],
   pts [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (0, 3), (1, 3), (0, 4), (1, 4), (0, 5)]]
 
-/-- The catalogue of rigid lattice arrangements of `12` circles (155 entries), each in
-build order, sorted by profile key. -/
+/-- A catalogue of pairwise non-isomorphic rigid lattice arrangements of `12` circles
+(155 entries): all those found by the exploratory enumerations, but completeness is not
+proved. Each entry is in build order, and the entries are sorted by profile key. -/
 def latticeCatalogue12 : List (List (ℤ × ℤ)) := [
   pts [(0, 0), (0, 1), (1, 0), (1, -1), (1, 1), (0, 2), (1, 2), (2, -1), (2, 0), (2, 1), (3, -1),
     (3, 0)],

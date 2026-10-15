@@ -81,8 +81,12 @@ at the origin.
 
 By the exploratory enumerations, the rigid arrangements *on the lattice* with at most twelve
 circles are exactly the corner sets of saturated polyiamonds. `O11` is no polyiamond corner set
-at all: it is not even on the lattice. So the lattice (polyform) count of rigid arrangements
-is only a lower bound from eleven circles on.
+at all: it is not even on the lattice. So at `n = 11` the lattice (polyform) count of rigid
+arrangements is a strict lower bound. This file says nothing about other `n`: every rigid
+arrangement of at most six circles is on the lattice (`RigidArrangements.Classification`),
+for `7 ≤ n ≤ 10` the question is open in Lean (a hand argument in `docs/journal.md`, not
+checked by machine, covers `n ≤ 9`), and a strict gap for `n ≥ 12` (plausible by adding
+circles to `O11`) is not formalized.
 -/
 
 open Filter Topology ComplexConjugate
@@ -143,8 +147,9 @@ the same center as the hinge. Then the whole placement is locally rigid.
 The bodies may share more circles than the hinge, and no non-collinearity is needed: if the
 hinge and the two ends of the bar are collinear, turning about the hinge still stretches or
 compresses the bar (to second order), so local rigidity survives. (Infinitesimal rigidity may
-not: if the bar is the only contact between the bodies, the first-order rotation of one body
-about the hinge is then an infinitesimal flex.) -/
+not: in the collinear case, if the bodies share only the hinge and the bar is the only contact
+between them, the first-order rotation of one body about the hinge is an infinitesimal
+flex.) -/
 theorem IsLocallyRigid.of_hinge [Finite ι] {p : ι → Plane} {f₁ : κ₁ → ι} {f₂ : κ₂ → ι}
     (hcover : ∀ i, (∃ j, f₁ j = i) ∨ ∃ j, f₂ j = i)
     (h₁ : IsLocallyRigid (p ∘ f₁)) (h₂ : IsLocallyRigid (p ∘ f₂))
@@ -396,11 +401,11 @@ theorem o11Left_re_nonpos (k : Fin 5) : (o11Left k.castSucc).re ≤ 0 := by
 /-- Every circle of the right chevron other than the hinge lies in the half-plane `Re z ≥ 2`. -/
 theorem two_le_o11Right_re (k : Fin 5) : 2 ≤ (o11Right k.castSucc).re := by
   have := o11Left_re_nonpos k
-  simp only [o11Right, o11Mirror, Complex.sub_re, Complex.conj_re]
-  norm_num
+  simp only [o11Right, o11Mirror, Complex.sub_re, Complex.conj_re, Complex.re_ofNat]
   linarith
 
-/-- Away from the far end `X`, the left chevron lies in the open half-plane `Re z < 0`. -/
+/-- Away from the far end `X` and the hinge, the left chevron lies in the open half-plane
+`Re z < 0`. -/
 theorem o11Left_re_neg {k : Fin 5} (hk : k ≠ 0) : (o11Left k.castSucc).re < 0 := by
   have h1 : 1 ≤ Real.sqrt 3 := Real.le_sqrt_of_sq_le (by norm_num)
   have h2 : 3 < Real.sqrt 11 := Real.lt_sqrt_of_sq_lt (by norm_num)
@@ -417,11 +422,11 @@ theorem o11Left_re_neg {k : Fin 5} (hk : k ≠ 0) : (o11Left k.castSucc).re < 0 
   rw [o11Left_re]
   nlinarith
 
-/-- Away from the far end `Y`, the right chevron lies in the open half-plane `Re z > 2`. -/
+/-- Away from the far end `Y` and the hinge, the right chevron lies in the open half-plane
+`Re z > 2`. -/
 theorem two_lt_o11Right_re {k : Fin 5} (hk : k ≠ 0) : 2 < (o11Right k.castSucc).re := by
   have := o11Left_re_neg hk
-  simp only [o11Right, o11Mirror, Complex.sub_re, Complex.conj_re]
-  norm_num
+  simp only [o11Right, o11Mirror, Complex.sub_re, Complex.conj_re, Complex.re_ofNat]
   linarith
 
 /-- The distance between two points is at least the difference of their real parts. -/
@@ -535,7 +540,9 @@ instance : DecidableRel o11Contact := fun i j => by
   unfold o11Contact
   infer_instance
 
-/-- `O11` has `19 = 2 · 11 - 3` contacts: nine in each chevron, and the bar. -/
+/-- The combinatorial contact relation `o11Contact` holds for `19 = 2 · 11 - 3` pairs: nine in
+each chevron, and the bar. By `Arrangement.o11_tangent_iff` these are exactly the contacts of
+`O11`. -/
 theorem card_o11Contact :
     (Finset.univ.filter fun e : Fin 11 × Fin 11 => e.1 < e.2 ∧ o11Contact e.1 e.2).card = 19 := by
   decide
@@ -742,9 +749,9 @@ theorem o11_not_iso_ofLattice (l : List (ℤ × ℤ)) (hl : l.Nodup) : ¬ o11.Is
 
 /-- **The contacts of `O11`.** Two circles touch exactly when they belong to the same chevron
 and sit at adjacent lattice sites of it, or they are the far ends `X` and `Y`. Every other pair
-across the two chevrons is more than `2` apart, because the chevrons lie in the half-planes
-`Re z ≤ 0` and `Re z ≥ 2`, touching these lines only at `X = 0` and `Y = 2` (and at the shared
-hinge). -/
+across the two chevrons is more than `2` apart, because, apart from the shared hinge
+`H = 1 + i √11`, the chevrons lie in the half-planes `Re z ≤ 0` and `Re z ≥ 2` and meet these
+lines only at `X = 0` and `Y = 2`. -/
 theorem o11_tangent_iff (i j : Fin 11) : Tangent o11.center i j ↔ o11Contact i j := by
   have hL : ∀ a b, Tangent o11.center (o11LeftIdx a) (o11LeftIdx b) ↔
       eNorm (o11Sites a - o11Sites b) = 1 := fun a b => by

@@ -12,21 +12,23 @@ project and derives from them the basic structure of rigid arrangements.
 All flexes here move one part `S` of the circles by rigid motions of the plane and keep the
 other circles fixed.
 
-* `IsLocallyRigid.eventually_dist_move`: the general principle, for any placement in a metric
-  space. If moving `S` never breaks a contact between `S` and the rest, local rigidity forces
-  every distance between `S` and the rest to stay the same for small motions.
+* `IsLocallyRigid.eventually_dist_move`: the general principle, for any placement in a
+  pseudometric space. If moving `S` never breaks a contact between `S` and the rest, local
+  rigidity forces every distance between `S` and the rest to stay the same for small motions.
 * `eq_zero_or_eq_zero_of_eventually_norm_exp_mul_add`: the one fact about the plane behind the
   flexes. A point moving on a circle changes its distance to every point other than the center.
 * `Arrangement.not_isRigid_of_rotate` (**rotation flex**): if every contact between `S` and the
   rest goes to one circle `c`, rotate `S` about `c`.
 * `Arrangement.not_isRigid_of_shear` (**shear flex**): if every contact between `S` and the rest
   is a translate of one vector `d`, translate `S` along a circle of radius `2`. Every circle of
-  `S` that touches the rest then rolls around its partner, all in step.
+  `S` that touches the rest then rolls around its partner, all in step. This is a genuine
+  flex as soon as some `i ∈ S` and `k ∉ S` have `center i - center k ≠ d`.
 * `Arrangement.not_isRigid_of_shear_of_three_le`: with at least three circles, the shear flex
   only needs `S` and the rest to be nonempty.
-* `Arrangement.not_isRigid_of_isolated`: if no contact leaves `S`, slide `S` away.
+* `Arrangement.not_isRigid_of_isolated`: if no contact leaves `S`, and both `S` and the rest
+  are nonempty, slide `S` away.
 
-None of this needs finitely many circles.
+Apart from the `three_le` variant, none of this needs finitely many circles.
 
 ## Structure of rigid arrangements
 
@@ -41,8 +43,9 @@ None of this needs finitely many circles.
   rigid exactly when they touch pairwise, so the triangle is the only rigid arrangement of
   three circles.
 * `Arrangement.not_isRigid_of_iso_cycleGraph_four`: four circles whose contact graph is a
-  4-cycle are never rigid. Their centers form a rhombus, which the shear flex deforms. In
-  particular, four circles centered at the corners of a square of side `2` are not rigid.
+  4-cycle are never rigid. Their centers form a rhombus, which the shear flex deforms. For
+  example, four circles centered at the corners of a square of side `2` have a 4-cycle as
+  contact graph, so they are not rigid (this instance is not stated separately in Lean).
 -/
 
 open Filter Topology
@@ -86,8 +89,8 @@ theorem IsLocallyRigid.eventually_dist_move {p : ι → P} (h : IsLocallyRigid p
     · simp only [Tangent, q, ha, hb, ↓reduceIte]
       rw [dist_comm]; exact hcross θ b a hb ha (tangent_comm.mp hab)
     · simp only [Tangent, q, ha, hb, ↓reduceIte]; exact hab
-  filter_upwards [h.eventually_congruent hqc hq0 (Eventually.of_forall hk)] with θ hθ i hi k hk
-  simpa [q, hi, hk] using (congruent_iff_dist_eq.mp hθ) i k
+  filter_upwards [h.eventually_congruent hqc hq0 (Eventually.of_forall hk)] with θ hθ i hi k hkS
+  simpa [q, hi, hkS] using (congruent_iff_dist_eq.mp hθ) i k
 
 end Framework
 
@@ -147,20 +150,8 @@ variable {ι : Type*} (A : Arrangement ι)
 
 /-- With at least three circles, there is always a third circle besides `a` and `b`. -/
 private theorem exists_ne_ne [Finite ι] (hn : 3 ≤ Nat.card ι) (a b : ι) :
-    ∃ k, k ≠ a ∧ k ≠ b := by
-  classical
-  by_contra hall
-  push Not at hall
-  have := Fintype.ofFinite ι
-  have : Nat.card ι ≤ 2 := by
-    rw [Nat.card_eq_fintype_card, ← Finset.card_univ]
-    calc Finset.univ.card ≤ ({a, b} : Finset ι).card :=
-          Finset.card_le_card fun x _ => by
-            by_cases hx : x = a
-            · simp [hx]
-            · simp [hall x hx]
-      _ ≤ 2 := Finset.card_le_two
-  omega
+    ∃ k, k ≠ a ∧ k ≠ b :=
+  ENat.exists_ne_ne_of_three_le (by rw [ENat.card_eq_coe_natCard]; exact_mod_cast hn) a b
 
 /-- **Rotation flex.** If every contact between the circles of `S` and the circles outside `S`
 goes to one circle `c ∉ S`, then rotating `S` about the center of `c` keeps all contacts. If
@@ -197,9 +188,10 @@ theorem not_isRigid_of_rotate (S : Set ι) (c : ι) (hc : c ∉ S)
 /-- **Shear flex.** Suppose every contact between a circle `i ∈ S` and a circle `j ∉ S` is the
 same vector: `center i - center j = d` for one fixed `d`. For a unit complex number `ζ` close
 to `1`, translating `S` by `(ζ - 1) d` turns each such contact vector `d` into `ζ d`, of the
-same length, so all contacts are kept. If some `i ∈ S` and `k ∉ S` have
-`center i - center k ≠ d`, their distance changes, so the arrangement is not rigid. When no
-contact leaves `S` at all, any `d` works and the condition on `i, k` is automatic (see
+same length, so all contacts are kept. Suppose some `i ∈ S` and `k ∉ S` have
+`center i - center k ≠ d`. If `d ≠ 0`, their distance changes, so the arrangement is not
+rigid. If `d = 0`, no contact leaves `S` at all (tangent centers are distinct), and the proof
+uses the shear along `d' = 2 (center i - center k)` instead (see also
 `not_isRigid_of_isolated`). -/
 theorem not_isRigid_of_shear (S : Set ι) (d : ℂ)
     (hcross : ∀ i j, i ∈ S → j ∉ S → A.contactGraph.Adj i j → A.center i - A.center j = d)
@@ -272,7 +264,7 @@ theorem IsRigid.preconnected {A : Arrangement ι} (h : A.IsRigid) :
     (SimpleGraph.Reachable.refl u) huv h
 
 /-- The contact graph of a nonempty rigid arrangement is connected. This includes one circle
-and two tangent circles, the only rigid arrangements of fewer than three circles. -/
+and two tangent circles, the only nonempty rigid arrangements of fewer than three circles. -/
 theorem IsRigid.connected [Nonempty ι] {A : Arrangement ι} (h : A.IsRigid) :
     A.contactGraph.Connected :=
   ⟨h.preconnected⟩

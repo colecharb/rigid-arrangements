@@ -29,12 +29,15 @@ the shared edge (a Henneberg step). But different polyiamonds can have the same 
 
 So the twelve hexiamonds give only ten arrangements, nine of them with `8` circles
 (`hexiamondCorners_classes`), and these nine are pairwise non-isomorphic rigid arrangements of
-eight circles (`exists_injective_rigidClasses_eight`). This matches the exploratory census
-(nine rigid arrangements of eight circles, against twelve hexiamonds). Two further breakdowns
-were found by computer exploration and are recorded in `docs/problem.md` and
-`docs/journal.md`, but are not proved here: a rigid lattice arrangement of `13` circles that is
-not the corner set of any polyiamond, and a rigid arrangement of `11` circles that lies on no
-triangular lattice.
+eight circles (`exists_injective_rigidClasses_eight`). This matches the exploratory census,
+which found nine rigid *lattice* arrangements of eight circles, against twelve hexiamonds.
+(That no rigid arrangement of eight circles lies off the lattice rests on a hand argument
+recorded in `docs/journal.md`, not checked by machine.) Two further breakdowns were found by
+computer exploration and are recorded in `docs/problem.md` and `docs/journal.md`; they are
+not proved in this file. A rigid lattice arrangement of `13` circles with a circle in no
+triangle, hence not the corner set of any polyiamond, is `Arrangement.r13` in
+`RigidArrangements.LatticeCert`. A rigid arrangement of `11` circles that lies on no
+triangular lattice is `Arrangement.o11` in `RigidArrangements.OffLattice`.
 
 ## Main definitions
 
@@ -121,6 +124,7 @@ def centroid3 : TriCell → ℤ × ℤ
   | up p => (3 * p.1 + 1, 3 * p.2 + 1)
   | down p => (3 * p.1 + 2, 3 * p.2 + 2)
 
+/-- The corners of a cell add up to three times its centroid. -/
 theorem sum_corners (c : TriCell) : ∑ v ∈ c.corners, v = c.centroid3 := by
   cases c with
   | up p =>
@@ -218,16 +222,19 @@ theorem latSym_left_injective : Function.Injective latSym := by
     decide +kernel
   exact fun k l h => key k l (congrFun h _) (congrFun h _)
 
+/-- The rotation `latRot` is injective. -/
 theorem latRot_injective : Function.Injective latRot := by
   intro v w h
   simp only [latRot, Prod.mk.injEq] at h
   exact Prod.ext (by omega) (by omega)
 
+/-- The reflection `latRefl` is injective. -/
 theorem latRefl_injective : Function.Injective latRefl := by
   intro v w h
   simp only [latRefl, Prod.mk.injEq] at h
   exact Prod.ext h.2 h.1
 
+/-- Each lattice symmetry `latSym k` is injective. -/
 theorem latSym_injective (k : Fin 12) : Function.Injective (latSym k) := by
   intro v w h
   have h' := (latRot_injective.iterate (k.val % 6)) h
@@ -235,10 +242,12 @@ theorem latSym_injective (k : Fin 12) : Function.Injective (latSym k) := by
   · exact h'
   · exact latRefl_injective h'
 
+/-- The rotation `latRot` is additive. -/
 theorem latRot_sub (v w : ℤ × ℤ) : latRot (v - w) = latRot v - latRot w := by
   simp only [latRot, Prod.fst_sub, Prod.snd_sub, Prod.mk_sub_mk]
   exact Prod.ext (by ring) (by ring)
 
+/-- The reflection `latRefl` is additive. -/
 theorem latRefl_sub (v w : ℤ × ℤ) : latRefl (v - w) = latRefl v - latRefl w :=
   rfl
 
@@ -256,10 +265,12 @@ theorem latSym_sub (k : Fin 12) (v w : ℤ × ℤ) :
   · exact hit _ v w
   · rw [latRefl_sub, hit]
 
+/-- The rotation `latRot` preserves the Eisenstein norm. -/
 theorem eNorm_latRot (v : ℤ × ℤ) : eNorm (latRot v) = eNorm v := by
   simp only [eNorm, latRot]
   ring
 
+/-- The reflection `latRefl` preserves the Eisenstein norm. -/
 theorem eNorm_latRefl (v : ℤ × ℤ) : eNorm (latRefl v) = eNorm v := by
   simp only [eNorm, latRefl]
   ring
@@ -334,25 +345,29 @@ instance : DecidableRel CellsCongr := fun P Q =>
       Q.image TriCell.centroid3) <|
     exists_congr fun k => (exists_image_add_smul_iff (latSym_injective k) 3 _ _).symm
 
+/-- The symmetry `latSym 0` is the identity. -/
 theorem latSym_zero (v : ℤ × ℤ) : latSym 0 v = v :=
   rfl
 
+/-- Every set of lattice points is congruent to itself. -/
 theorem SitesCongr.refl (S : Finset (ℤ × ℤ)) : SitesCongr S S :=
   ⟨0, 0, by simp [latSym_zero]⟩
 
+/-- Every set of cells is congruent to itself. -/
 theorem CellsCongr.refl (P : Finset TriCell) : CellsCongr P P :=
   ⟨0, 0, by simp [latSym_zero]⟩
 
 /-! ### A congruence invariant -/
 
 /-- The sum of `F (eNorm (v - w))` over all ordered pairs `(v, w)` of points of `S`. For
-`F = id` this is a quarter of the sum of all squared distances between the circles of
-`Arrangement.ofSites S`. It is unchanged by lattice symmetries (`SitesCongr.pairNormSum_eq`)
-and by isomorphisms of arrangements (`Arrangement.Iso.pairNormSum_eq`), so it can tell
-non-congruent sets apart. -/
+`F = id` this is a quarter of the sum, over all ordered pairs of circles of
+`Arrangement.ofSites S`, of the squared distance between their centers. It is unchanged by
+lattice symmetries (`SitesCongr.pairNormSum_eq`) and by isomorphisms of arrangements
+(`Arrangement.Iso.pairNormSum_eq`), so it can tell non-congruent sets apart. -/
 def pairNormSum (F : ℤ → ℤ) (S : Finset (ℤ × ℤ)) : ℤ :=
   ∑ v ∈ S, ∑ w ∈ S, F (eNorm (v - w))
 
+/-- `pairNormSum` is unchanged by a lattice symmetry followed by a translation. -/
 theorem pairNormSum_image_latSym (F : ℤ → ℤ) (k : Fin 12) (t : ℤ × ℤ) (S : Finset (ℤ × ℤ)) :
     pairNormSum F (S.image fun v => latSym k v + t) = pairNormSum F S := by
   have hinj : Set.InjOn (fun v => latSym k v + t) S := fun x _ y _ h =>
@@ -360,11 +375,13 @@ theorem pairNormSum_image_latSym (F : ℤ → ℤ) (k : Fin 12) (t : ℤ × ℤ)
   simp only [pairNormSum, Finset.sum_image hinj, add_sub_add_right_eq_sub, ← latSym_sub,
     eNorm_latSym]
 
+/-- Congruent sets of lattice points have the same `pairNormSum`. -/
 theorem SitesCongr.pairNormSum_eq {S T : Finset (ℤ × ℤ)} (h : SitesCongr S T) (F : ℤ → ℤ) :
     pairNormSum F S = pairNormSum F T := by
   obtain ⟨k, t, rfl⟩ := h
   exact (pairNormSum_image_latSym F k t S).symm
 
+/-- Congruent sets of cells have centroid sets with the same `pairNormSum`. -/
 theorem CellsCongr.pairNormSum_eq {P Q : Finset TriCell} (h : CellsCongr P Q) (F : ℤ → ℤ) :
     pairNormSum F (P.image TriCell.centroid3) = pairNormSum F (Q.image TriCell.centroid3) := by
   obtain ⟨k, t, h⟩ := h
@@ -380,6 +397,7 @@ noncomputable def ofSites (S : Finset (ℤ × ℤ)) : Arrangement S where
   center v := latticePoint v
   nonoverlap _ _ hvw := two_le_dist_latticePoint fun h => hvw (Subtype.ext h)
 
+/-- The circle of `ofSites S` labeled `v` is centered at `latticePoint v`. -/
 @[simp]
 theorem ofSites_center (S : Finset (ℤ × ℤ)) (v : S) : (ofSites S).center v = latticePoint v :=
   rfl
@@ -428,6 +446,7 @@ theorem iso_ofSitesFin (S : Finset (ℤ × ℤ)) {n : ℕ} (hn : S.card = n) :
     (ofSitesFin S hn).Iso (ofSites S) :=
   ⟨(S.equivFinOfCardEq hn).symm, Congruent.refl _⟩
 
+/-- Relabeling a rigid `ofSites S` by `Fin n` keeps it rigid. -/
 theorem IsRigid.ofSitesFin {S : Finset (ℤ × ℤ)} (h : (ofSites S).IsRigid) {n : ℕ}
     (hn : S.card = n) : (Arrangement.ofSitesFin S hn).IsRigid :=
   Iso.isRigid (Iso.symm (iso_ofSitesFin S hn)) h
@@ -595,15 +614,19 @@ def hexiamond : Fin 12 → List TriCell :=
 def hexiamondCorners (i : Fin 12) : Finset (ℤ × ℤ) :=
   cornerSet (hexiamond i).toFinset
 
+/-- `fanPentiamond` is a growth list. -/
 theorem isGrowthList_fanPentiamond : IsGrowthList fanPentiamond := by
   decide +kernel
 
+/-- Each `hexiamond i` is a growth list. -/
 theorem isGrowthList_hexiamond : ∀ i, IsGrowthList (hexiamond i) := by
   decide +kernel
 
+/-- The fan pentiamond has five distinct cells. -/
 theorem card_fanPentiamond : fanPentiamond.toFinset.card = 5 := by
   decide +kernel
 
+/-- Each `hexiamond i` has six distinct cells. -/
 theorem card_hexiamond : ∀ i, (hexiamond i).toFinset.card = 6 := by
   decide +kernel
 
@@ -611,6 +634,7 @@ theorem card_hexiamond : ∀ i, (hexiamond i).toFinset.card = 6 := by
 theorem isPolyiamond_hexiamond (i : Fin 12) : IsPolyiamond (hexiamond i).toFinset :=
   (isGrowthList_hexiamond i).isPolyiamond
 
+/-- The fan pentiamond is a polyiamond. -/
 theorem isPolyiamond_fanPentiamond : IsPolyiamond fanPentiamond.toFinset :=
   isGrowthList_fanPentiamond.isPolyiamond
 
@@ -648,8 +672,9 @@ private theorem pairNormSum_centroid_hexiamond :
   decide +kernel
 
 /-- The invariant separates all pairs except `1, 4`, `3, 5` and `8, 9`; for those the kernel
-checks the twelve symmetries directly. (The pairs `1, 4` and `3, 5` even have the same sums of
-squared distances between centroids.) -/
+checks the twelve symmetries directly. (For the pairs `1, 4` and `3, 5` even the multisets of
+distances between centroids agree, so no invariant computed from that multiset tells them
+apart.) -/
 private theorem eq_or_not_cellsCongr_of_centroidInv_eq :
     ∀ i j, centroidInv i = centroidInv j →
       i = j ∨ ¬ CellsCongr (hexiamond i).toFinset (hexiamond j).toFinset := by
@@ -781,8 +806,9 @@ private theorem eightIdx_injective : ∀ i j, (eightIdx i = eightIdx j ∨
 
 /-- **At least nine rigid arrangements of eight circles come from hexiamonds.** The corner sets
 of the hexiamonds give nine pairwise non-isomorphic rigid arrangements of `8` circles. The
-exploratory census found exactly nine rigid arrangements of eight circles, so these are probably
-all of them; that upper bound is not proved here. -/
+exploratory census found exactly nine rigid *lattice* arrangements of eight circles, so these
+are probably all of them; that upper bound is not proved here, and neither is the absence of
+off-lattice rigid arrangements of eight circles. -/
 theorem exists_injective_rigidClasses_eight :
     ∃ f : Fin 9 → RigidClasses 8, Function.Injective f := by
   refine ⟨fun i => Quotient.mk _ ⟨Arrangement.ofSitesFin _ (card_hexiamondCorners_eightIdx i),

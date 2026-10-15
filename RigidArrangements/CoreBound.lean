@@ -9,9 +9,9 @@ import RigidArrangements.Isometry
 A circle of an arrangement is *removable* (`Arrangement.Removable`) if it touches exactly two
 circles and these two are less than `4` apart; a *core* (`Arrangement.IsCore`) has no
 removable circle. This file proves that **every rigid arrangement of `3` to `6` circles has a
-removable circle** (`noCoresBetween_three_six`, and the form asked for in the project,
-`noCoresBetween_four_six`). Removing a removable circle keeps rigidity
-(`Arrangement.IsRigid.erase`), so every rigid arrangement of at most six circles is built
+removable circle** (`noCoresBetween_three_six`, and `noCoresBetween_four_six`, the form of the
+hypothesis used in `RigidArrangements.Small`). Removing a removable circle keeps rigidity
+(`Arrangement.IsRigid.erase`), so every rigid arrangement of three to six circles is built
 from the triangle by adding circles one at a time, each touching two earlier ones.
 
 ## The hull lemma
@@ -33,14 +33,15 @@ circle is removable. Rigidity itself is not used.
   (`Arrangement.IsExtreme.touchesExactlyThree`).
 * **Narrow range of directions.** A circle cannot be extreme in two directions `θ` and
   `θ + δ` with `60° ≤ δ ≤ 180°` (`Arrangement.IsExtreme.not_isExtreme_add`): its neighbours
-  would lie in both half-planes, an arc of less than `120°`, and three neighbours `60°` apart
-  do not fit there.
+  would lie in both half-open half-planes, a half-open arc of at most `120°`, and three
+  neighbours `60°` apart do not fit there.
 * **Six directions.** The extreme circles in the directions `0°, 60°, …, 300°` are therefore
   pairwise different. This is the **hull lemma** (`Arrangement.exists_injective_isExtreme`,
   `Arrangement.exists_injective_touchesExactlyThree`, `Arrangement.six_le_card_degree_three`):
   in an arrangement where every circle touches two others and none is removable, at least
   six circles touch exactly three others. In particular such an arrangement has at least six
-  circles (`Arrangement.six_le_card_of_isCore`), so there is no core of three to five circles.
+  circles (`Arrangement.six_le_card_of_isCore`), so no core of three to five circles has
+  every circle touching two others. Hence there is no rigid core of three to five circles.
 
 Angles are measured with `Complex.arg`: for a neighbour `j` of a circle `i` that is extreme in
 direction `θ`, the vector from `j` to `i`, rotated by `-θ`, has its argument in `(-90°, 90°]`.
@@ -67,20 +68,22 @@ exactly three others: the contact graph is cubic.
   triangle `b₁b₂b₃`: the arrangement is not rigid.
 
 So no rigid core has six circles (`Arrangement.IsRigid.not_isCore_of_card_eq_six`), and with
-the hull lemma, **a rigid core has at least seven circles**
-(`Arrangement.IsRigid.seven_le_card_of_isCore`). The bound is sharp: the flower (a hexagon of
-six circles around a seventh) is a rigid core.
+the hull lemma, **a rigid core of at least three circles has at least seven circles**
+(`Arrangement.IsRigid.seven_le_card_of_isCore`). (One circle, and two touching circles, are
+rigid cores too.) The bound is sharp: the flower (a hexagon of six circles around a seventh)
+is a rigid core; this is not formalized here.
 
 ## Main results
 
 * `Arrangement.IsExtreme`, `Arrangement.exists_isExtreme`: extreme circles exist.
 * `Arrangement.IsExtreme.touchesExactlyThree`, `Arrangement.IsExtreme.not_isExtreme_add`:
-  in a core, an extreme circle touches exactly three others and is extreme only in a range of
-  directions narrower than `60°`.
+  in a core in which every circle touches two others, an extreme circle touches exactly three
+  others and is extreme only in a range of directions narrower than `60°`.
 * `Arrangement.exists_injective_touchesExactlyThree`, `Arrangement.six_le_card_degree_three`:
   the hull lemma.
 * `Arrangement.not_three_common_neighbors`, `sub_eq_sub_of_rhombus`: two plane facts.
-* `Arrangement.IsRigid.seven_le_card_of_isCore`: a rigid core has at least seven circles.
+* `Arrangement.IsRigid.seven_le_card_of_isCore`: a rigid core of at least three circles has
+  at least seven circles.
 * `noCoresBetween_four_six`: every rigid arrangement of `4`, `5` or `6` circles has a removable
   circle (also `noCoresBetween_three_six`).
 -/
@@ -146,8 +149,10 @@ private theorem norm_sub_lt_four_of_abs_arg_sub_lt {z w : ℂ} (hz : ‖z‖ = 2
   have := norm_sub_sq_of_norm_eq_two hz hw
   nlinarith [norm_nonneg (z - w)]
 
-/-- Rotating a vector of length `2` and argument `t` by `-δ` gives the vector of argument
-`t - δ`. -/
+/-- If rotating a vector `z` of length `2` by `-δ` gives a lexicographically positive vector,
+then the angle `arg z - δ` points into the lexicographically positive half-plane: its cosine
+is positive, or zero with positive sine. (The rotated vector is `2` times the unit vector of
+angle `arg z - δ`.) -/
 private theorem lexPos_mul_exp {z : ℂ} (hz : ‖z‖ = 2) (δ : ℝ)
     (h : LexPos (z * exp (↑(-δ) * I))) :
     0 < Real.cos (arg z - δ) ∨ (Real.cos (arg z - δ) = 0 ∧ 0 < Real.sin (arg z - δ)) := by
@@ -349,8 +354,8 @@ theorem IsExtreme.touchesExactlyThree {θ : ℝ} {i : ι} (hT : A.TouchesTwo) (h
 /-- **An extreme circle of a core is extreme only in a narrow range of directions.** If every
 circle touches two others and no circle is removable, a circle that is extreme in direction
 `θ` is not extreme in any direction `θ + δ` with `60° ≤ δ ≤ 180°`. Its (at least three)
-neighbours, pairwise at least `60°` apart, would have to fit in the open half-planes behind
-both directions, which leave an arc of less than `120°`. -/
+neighbours, pairwise at least `60°` apart, would have to fit in the half-open half-planes
+behind both directions, which leave a half-open arc of at most `120°`. -/
 theorem IsExtreme.not_isExtreme_add {θ δ : ℝ} {i : ι} (hT : A.TouchesTwo) (hc : A.IsCore)
     (he : A.IsExtreme θ i) (hδ₁ : Real.pi / 3 ≤ δ) (hδ₂ : δ ≤ Real.pi) :
     ¬ A.IsExtreme (θ + δ) i := by
@@ -662,7 +667,7 @@ private theorem false_of_triangle [Finite ι] (h : A.IsRigid) (hn : Nat.card ι 
       (fun k => by rw [hb₂]; tauto) (fun k => by rw [hb₃]; tauto) hb₁ hb₂₁ hb₁₂ hb₁₃
   exact false_of_prism h hn h3 hb₁ hb₂ hb₃ hb₁₂ hb₁₃ hb₂₁ hb₂₃ hb₃₁ hb₃₂ e12 e13 e23
 
-/-- **No core has six circles.** -/
+/-- **No rigid core has six circles.** -/
 theorem IsRigid.not_isCore_of_card_eq_six [Finite ι] (h : A.IsRigid) (hn : Nat.card ι = 6) :
     ¬ A.IsCore := by
   intro hc

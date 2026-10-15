@@ -9,9 +9,12 @@ A circle `w` of an arrangement is *removable* if it touches exactly two other ci
 Henneberg step (see `RigidArrangements.Henneberg`). A *core* is an arrangement with no
 removable circle.
 
-Every rigid arrangement is therefore built from a core (or the triangle) by adding circles
-one at a time, each touching two earlier ones. Classifying rigid arrangements of up to `N`
-circles reduces to classifying the rigid cores of up to `N` circles.
+Every finite rigid arrangement is therefore built from a rigid core by adding circles one at a
+time, each touching two earlier ones: keep removing removable circles until none is left. (For
+example, the triangle is built from two touching circles, which form a core.) Classifying
+rigid arrangements of up to `N` circles reduces to classifying the rigid cores of up to `N`
+circles. These remarks are informal; the removal step is `Arrangement.IsRigid.erase` and its
+variants in `RigidArrangements.Henneberg`.
 
 `NoCoresBetween a b` says that no rigid arrangement with between `a` and `b` circles is a
 core.

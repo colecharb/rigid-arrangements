@@ -33,6 +33,8 @@ def eNorm (v : ℤ × ℤ) : ℤ :=
 noncomputable def latticePoint (v : ℤ × ℤ) : Plane :=
   ⟨2 * v.1 + v.2, Real.sqrt 3 * v.2⟩
 
+/-- The squared distance between lattice points is `4` times the `eNorm` of their
+difference. -/
 theorem dist_latticePoint_sq (v w : ℤ × ℤ) :
     dist (latticePoint v) (latticePoint w) ^ 2 = 4 * (eNorm (v - w) : ℝ) := by
   have h3 : Real.sqrt 3 ^ 2 = 3 := Real.sq_sqrt (by norm_num)
@@ -41,9 +43,11 @@ theorem dist_latticePoint_sq (v w : ℤ × ℤ) :
   push_cast
   linear_combination ((v.2 : ℝ) - w.2) ^ 2 * h3
 
+/-- The Eisenstein norm is nonnegative. -/
 theorem eNorm_nonneg (v : ℤ × ℤ) : 0 ≤ eNorm v := by
   unfold eNorm; nlinarith [sq_nonneg (v.1 + v.2), sq_nonneg v.1, sq_nonneg v.2]
 
+/-- The Eisenstein norm vanishes only at `0`. -/
 theorem eNorm_eq_zero_iff (v : ℤ × ℤ) : eNorm v = 0 ↔ v = 0 := by
   refine ⟨fun h => ?_, fun h => by simp [h, eNorm]⟩
   unfold eNorm at h
@@ -72,6 +76,7 @@ theorem two_le_dist_latticePoint {v w : ℤ × ℤ} (h : v ≠ w) :
   have : (1 : ℝ) ≤ eNorm (v - w) := by exact_mod_cast hpos
   nlinarith
 
+/-- Distinct lattice coordinates give distinct points of the plane. -/
 theorem latticePoint_injective : Function.Injective latticePoint := by
   intro v w h
   by_contra hne
@@ -87,6 +92,8 @@ noncomputable def ofLattice (l : List (ℤ × ℤ)) (hl : l.Nodup) : Arrangement
   center i := latticePoint (l.get i)
   nonoverlap _ _ hij := two_le_dist_latticePoint fun h => hij (hl.get_inj_iff.mp h)
 
+/-- Two circles of `ofLattice l hl` touch iff their lattice points differ by a vector of
+`eNorm` one. -/
 theorem tangent_ofLattice_iff {l : List (ℤ × ℤ)} (hl : l.Nodup) (i j : Fin l.length) :
     Tangent (ofLattice l hl).center i j ↔ eNorm (l.get i - l.get j) = 1 :=
   tangent_latticePoint_iff _ _

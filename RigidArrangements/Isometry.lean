@@ -11,8 +11,8 @@ this is the right notion, in three ways.
   (more generally, in a finite-dimensional real inner product space) have the same pairwise
   distances, then an isometry of the whole plane (a rotation or a reflection, followed by
   a translation) carries one onto the other. This is the classical fact that a
-  distance-preserving map on finitely many points extends to the whole space; it is not in
-  Mathlib. The proof: fix a base point, so that distances determine all inner products of
+  distance-preserving map on finitely many points extends to the whole space; we did not
+  find it in Mathlib. The proof: fix a base point, so that distances determine all inner products of
   the difference vectors; the linear map sending one family of difference vectors to the
   other is then well defined and preserves lengths on their span, and Mathlib's
   `LinearIsometry.extend` extends it to an isometry of the whole space.
@@ -32,7 +32,8 @@ this is the right notion, in three ways.
 * `exists_affineIsometryEquiv_of_congruent`: congruent finite families in a
   finite-dimensional real inner product space (e.g. `Plane`) differ by an affine isometry.
 * `isLocallyRigid_comp_equiv_iff`: local rigidity is unchanged by relabeling.
-* `isLocallyRigid_iff_of_congruent`: congruent finite placements are both rigid or both not.
+* `isLocallyRigid_iff_of_congruent`: congruent finite placements in a finite-dimensional real
+  inner product space (e.g. `Plane`) are both rigid or both not.
 * `Arrangement.Iso.of_isometry`: a relabeling plus an isometry of the plane gives an
   isomorphism (no finiteness needed).
 * `Arrangement.iso_iff_exists_isometry`: isomorphism is relabeling plus an affine isometry.
@@ -130,7 +131,7 @@ theorem tangent_iff_of_congruent {p : ι → P} {q : ι → Q} (h : Congruent p 
     Tangent p i j ↔ Tangent q i j := by
   rw [Tangent, Tangent, h.dist_eq]
 
-/-- Local rigidity is unchanged by relabeling the points. -/
+/-- Relabeling the points of a locally rigid placement gives a locally rigid placement. -/
 theorem IsLocallyRigid.comp_equiv {p : ι → P} (h : IsLocallyRigid p) (e : κ ≃ ι) :
     IsLocallyRigid (p ∘ e) := by
   have hc : Continuous fun q : κ → P => (q ∘ e.symm : ι → P) :=
@@ -147,7 +148,8 @@ theorem IsLocallyRigid.comp_equiv {p : ι → P} (h : IsLocallyRigid p) (e : κ 
   rw [← Congruent.index_equiv e] at this
   simpa [Function.comp_assoc] using this
 
-/-- Local rigidity is unchanged by relabeling the points. -/
+/-- Local rigidity is unchanged by relabeling the points: `p ∘ e` is locally rigid exactly
+when `p` is. -/
 theorem isLocallyRigid_comp_equiv_iff {p : ι → P} (e : κ ≃ ι) :
     IsLocallyRigid (p ∘ e) ↔ IsLocallyRigid p :=
   ⟨fun h => by simpa [Function.comp_assoc] using h.comp_equiv e.symm, fun h => h.comp_equiv e⟩
@@ -200,8 +202,8 @@ theorem Iso.isRigid_iff [Finite ι] (h : A.Iso B) : A.IsRigid ↔ B.IsRigid := b
 theorem Iso.isRigid [Finite ι] (h : A.Iso B) (hA : A.IsRigid) : B.IsRigid :=
   h.isRigid_iff.mp hA
 
-/-- If a relabeling `e` makes all distances of `A` and `B` agree, then `e` maps tangent pairs
-of `A` exactly to tangent pairs of `B`. -/
+/-- If a relabeling `e` makes all distances of `A` and `B` agree (the data of an `Iso`, not
+an `Iso` hypothesis), then `e` maps tangent pairs of `A` exactly to tangent pairs of `B`. -/
 theorem tangent_iff_of_iso {e : ι ≃ κ} (he : Congruent A.center (B.center ∘ e)) (i j : ι) :
     Tangent B.center (e i) (e j) ↔ Tangent A.center i j :=
   (tangent_iff_of_congruent he i j).symm

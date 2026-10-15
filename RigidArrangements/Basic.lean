@@ -42,6 +42,7 @@ variable {ι κ P Q : Type*} [PseudoMetricSpace P] [PseudoMetricSpace Q]
 def Tangent (p : ι → P) (i j : ι) : Prop :=
   dist (p i) (p j) = 2
 
+/-- Tangency is symmetric. -/
 theorem tangent_comm {p : ι → P} {i j : ι} : Tangent p i j ↔ Tangent p j i := by
   simp only [Tangent, dist_comm]
 
@@ -51,8 +52,9 @@ def KeepsContacts (p q : ι → P) : Prop :=
 
 /-- **Local rigidity** (Asimow–Roth). Every placement `q` close enough to `p` that keeps all
 tangencies of `p` has exactly the same pairwise distances as `p`, i.e. `q` is congruent to
-`p`. Equivalently (Asimow–Roth), no continuous motion that keeps the tangencies changes the
-shape: there is no "wiggle room". -/
+`p`. For finitely many points in Euclidean space this is equivalent (Asimow–Roth, not proved
+here) to: no continuous motion that keeps the tangencies changes the shape, so there is no
+"wiggle room". -/
 def IsLocallyRigid (p : ι → P) : Prop :=
   ∀ᶠ q in 𝓝 p, KeepsContacts p q → Congruent q p
 
@@ -88,6 +90,8 @@ theorem IsLocallyRigid.comp_isometryEquiv {p : ι → P} (h : IsLocallyRigid p) 
   intro i j
   simpa [IsometryEquiv.dist_eq] using this i j
 
+/-- A placement is locally rigid exactly when its image under an isometry of the ambient
+space is. -/
 theorem isLocallyRigid_comp_isometryEquiv_iff {p : ι → P} (e : P ≃ᵢ Q) :
     IsLocallyRigid (e ∘ p) ↔ IsLocallyRigid p :=
   ⟨fun h => by simpa [Function.comp_def] using h.comp_isometryEquiv e.symm,

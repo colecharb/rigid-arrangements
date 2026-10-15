@@ -11,8 +11,11 @@ This file classifies the rigid arrangements of at most six circles, up to isomor
 three circles the classification is unconditional. From four circles on it assumes that no
 rigid arrangement of four to six circles is a *core* (`NoCoresBetween 4 6`, see
 `RigidArrangements.Core`): every such arrangement has a *removable* circle, one that touches
-exactly two others, less than `4` apart. That hypothesis is proved separately; here it is an
-explicit hypothesis of each theorem that needs it.
+exactly two others, less than `4` apart. That hypothesis is proved as
+`noCoresBetween_four_six` in `RigidArrangements.CoreBound`; here it is an explicit hypothesis
+of each theorem that needs it. `RigidArrangements.Classification` combines the two into
+unconditional statements (`card_rigidClasses_three_to_six`, `isRigid_four_iff`,
+`isRigid_five_iff`, `isRigid_six_iff`, `IsRigid.isLattice_of_card_le_six`).
 
 | circles | rigid arrangements up to isomorphism                       |
 |---------|------------------------------------------------------------|
@@ -23,13 +26,15 @@ explicit hypothesis of each theorem that needs it.
 | 5       | the trapezoid: three triangles in a row (half a hexagon)   |
 | 6       | the parallelogram: four triangles in a row                 |
 |         | the chevron: a fan of four triangles around one circle     |
-|         | the big triangle: side `2`, three circles on each side     |
+|         | the big triangle: side `4` (two lattice steps), three      |
+|         | circles on each side                                       |
 
-So there are `1, 1, 1, 1, 1, 3` of them for `n = 1, …, 6`, and all of them lie on the
-triangular lattice. For `3 ≤ n ≤ 6` they are the corner sets of the polyiamonds with `n - 2`
-triangles, and the counts `1, 1, 1, 3` agree with the numbers of polyiamonds (OEIS A000577).
-According to the exploratory enumerations this agreement stops at `n = 8` (twelve hexiamonds,
-but nine rigid arrangements of eight circles), beyond the range of this file.
+So there are `1, 1, 1, 1, 1, 3` of them for `n = 1, …, 6` (for `n ≥ 4` under the hypothesis
+above), and all of them lie on the triangular lattice. For `3 ≤ n ≤ 6` they are the corner
+sets of the polyiamonds with `n - 2` triangles, and the counts `1, 1, 1, 3` agree with the
+numbers of polyiamonds (OEIS A000577). According to the exploratory enumerations this
+agreement stops at `n = 8` (twelve hexiamonds, but nine rigid lattice arrangements of eight
+circles), beyond the range of this file.
 
 ## The method
 
@@ -87,6 +92,9 @@ To *count*, two more facts are needed, both checked by the kernel.
   are `Arrangement.triangle` and `Arrangement.rhombus`).
 * `Arrangement.isRigid_iff_iso_rhombus`, `Arrangement.isRigid_iff_iso_trapezoid`,
   `Arrangement.isRigid_iff_six`: the explicit classification for four, five and six circles.
+* `Arrangement.not_iso_parallelogram_chevron`, `Arrangement.not_iso_parallelogram_bigTriangle`,
+  `Arrangement.not_iso_chevron_bigTriangle`: the three shapes with six circles are pairwise
+  non-isomorphic.
 * `card_rigidClasses_zero`, `card_rigidClasses_one`, `card_rigidClasses_two`,
   `card_rigidClasses_three` (unconditional), `card_rigidClasses_four`,
   `card_rigidClasses_five`, `card_rigidClasses_six`, and **`card_rigidClasses_le_six`**: the
@@ -94,7 +102,7 @@ To *count*, two more facts are needed, both checked by the kernel.
 * `Arrangement.IsRigid.isLattice_of_le_six`: rigid arrangements of at most six circles lie on
   the triangular lattice.
 
-The kernel checks take well under a second each.
+Each kernel check takes at most a few seconds.
 -/
 
 namespace RigidArrangements
@@ -173,7 +181,8 @@ private theorem exists_two_latticeUnits {d : ℤ × ℤ} (h0 : d ≠ 0) (h4 : eN
         k₁ ≠ k₂ ∧ eNorm (k₁ - (p, q)) = 1 ∧ eNorm (k₂ - (p, q)) = 1 := by
     decide +kernel
   obtain ⟨h1, h2, h3, h4'⟩ := bounds_of_eNorm_lt_four h4
-  exact key d.1 (by simp; omega) d.2 (by simp; omega) h0 h4
+  exact key d.1 (by simp only [List.mem_cons, List.not_mem_nil, or_false]; omega)
+    d.2 (by simp only [List.mem_cons, List.not_mem_nil, or_false]; omega) h0 h4
 
 /-- **Apexes over a short lattice edge are lattice points.** If the lattice points `a ≠ b` are
 less than `4` apart, every point of the plane at distance `2` from both of them is a lattice
@@ -603,8 +612,8 @@ def parallelogramSites : List (ℤ × ℤ) := [(0, 0), (1, 0), (0, 1), (1, 1), (
 /-- The chevron: a fan of four triangles around the circle at `(1, 0)`. -/
 def chevronSites : List (ℤ × ℤ) := [(0, 0), (1, 0), (0, 1), (1, 1), (2, 0), (2, -1)]
 
-/-- The big triangle: an equilateral triangle of side `2` made of four triangles, with three
-circles on each side. -/
+/-- The big triangle: an equilateral triangle of side `4` (two lattice steps) made of four
+triangles, with three circles on each side. -/
 def bigTriangleSites : List (ℤ × ℤ) := [(0, 0), (1, 0), (0, 1), (1, 1), (2, 0), (0, 2)]
 
 /-- The trapezoid: five circles, three triangles in a row. -/
@@ -650,8 +659,8 @@ theorem triangle_iso_ofLattice : triangle.Iso (ofLattice triangleSites (by decid
 theorem rhombus_iso_ofLattice : rhombus.Iso (ofLattice rhombusSites (by decide)) :=
   iso_ofLattice_of_center_eq (Equiv.refl _) fun i => by
     change latticePoint (rhombusSites.get i) = rhombusPoint i
-    fin_cases i <;> apply Complex.ext <;> simp [latticePoint, rhombusPoint, rhombusSites]
-    norm_num
+    fin_cases i <;> apply Complex.ext <;>
+      simp only [latticePoint, rhombusPoint, rhombusSites, List.get_eq_getElem] <;> norm_num
 
 end Arrangement
 
