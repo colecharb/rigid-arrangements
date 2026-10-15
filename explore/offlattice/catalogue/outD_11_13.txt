@@ -1,0 +1,3 @@
+D2 n=11: combos=67186 offlattice-nonoverlapping hits=0 lattice hits=175
+D2 n=12: combos=192488 offlattice-nonoverlapping hits=0 lattice hits=472
+D2 n=13: combos=713994 offlattice-nonoverlapping hits=0 lattice hits=1244
