@@ -249,3 +249,38 @@ The proof has two halves.
   7-circle "flower" (a hexagon around a center). That would turn the lower bounds 4 and 9
   into exact counts for n = 7 and n = 8.
 - Push the hull argument further, toward n = 9 and 10.
+
+---
+
+## 2026-10-15: A paper proof that the flower is the only core of 7 or 8 circles
+
+A *core* is an arrangement in which no circle can be peeled off, i.e. no circle touches
+exactly two others that are less than 4 apart. Every rigid arrangement is a core with circles
+added one at a time, so classifying rigid arrangements reduces to classifying cores.
+
+**Claim** (`docs/cores.md`, *hand proof, not yet in Lean*): if every circle touches at least
+two others and no circle can be peeled off, then 7 or 8 circles force exactly 7 circles in
+the **flower**, a hexagon of six circles around a seventh. Consequently there are exactly
+4 rigid arrangements of 7 circles and 9 of 8, all on the triangular lattice.
+
+How the proof goes, in words:
+
+- Look at the circles that stick out furthest in some direction ("corners"). Each touches
+  exactly three others (this was already proved in Lean for the six-circle case).
+- If there are at least seven corners, a "sweeping" argument shows that the one remaining
+  circle would have to touch all the others, which is impossible: a corner touches only
+  three circles, and no circle touches more than six.
+- If there are exactly six corners, they form a convex hexagon whose turning angle is
+  exactly 60° at every corner, and each corner's three neighbours sit at 0°, 60° and 120°
+  from its outgoing side. With at most two circles besides the corners, every side must
+  have length 2, and the six corners all touch one common circle in the middle: the flower.
+
+Three independent drafts (a graph case analysis, a convex-hull argument, and the
+corner argument above) were written and each was checked by two adversarial referees; all
+three survived with only repairable gaps, and the corner argument was chosen as the one to
+formalize. A remark: the method stops at exactly ten circles, where the 10-circle lattice
+core appears.
+
+**Next.** Formalize it in Lean (three new files: corners, the six-corner frame, and the
+7/8-circle classification), then derive the exact counts 4 and 9 with the existing
+extension machinery.
