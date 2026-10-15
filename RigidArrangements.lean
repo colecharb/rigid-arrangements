@@ -15,3 +15,4 @@ import RigidArrangements.Classification
 import RigidArrangements.CornerBasics
 import RigidArrangements.LemmaE
 import RigidArrangements.SixCorners
+import RigidArrangements.Cores78
