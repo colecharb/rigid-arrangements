@@ -12,3 +12,5 @@ import RigidArrangements.CoreBound
 import RigidArrangements.Small
 import RigidArrangements.OffLattice
 import RigidArrangements.Classification
+import RigidArrangements.CornerBasics
+import RigidArrangements.LemmaE
