@@ -14,3 +14,4 @@ import RigidArrangements.OffLattice
 import RigidArrangements.Classification
 import RigidArrangements.CornerBasics
 import RigidArrangements.LemmaE
+import RigidArrangements.SixCorners
