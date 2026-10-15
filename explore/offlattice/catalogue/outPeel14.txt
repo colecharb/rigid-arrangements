@@ -1,0 +1,20 @@
+core11.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1]: n=11 contacts=19 irreducible(count&rank)=true
+core13.0[A s=(5,9) B1=5#0 B2=9#14 hinge=(0,7) bar=(2,8) p=4 q=4 Delta=15 eps=-1]: n=13 contacts=23 irreducible(count&rank)=true
+core14.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(0,2)- + apex(0,11)+]: n=14 contacts=26 irreducible(count&rank)=false
+core14.1[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(1,4)+ + apex(1,11)-]: n=14 contacts=26 irreducible(count&rank)=false
+core14.2[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,2)- + apex(2,5)- + apex(2,11)+]: n=14 contacts=26 irreducible(count&rank)=false
+core14.3[C s=(6,5,6) B1=6#0 B2=5#0 B3=6#0 h12=(4,2) h13=(5,4) h23=(0,5) e=(3,4,3) Delta=32 eps=-1]: n=14 contacts=25 irreducible(count&rank)=true
+n=11: total 1
+   1 peel to core11.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1]
+n=12: total 5
+   5 peel to core11.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1]
+n=13: total 29
+   1 peel to core13.0[A s=(5,9) B1=5#0 B2=9#14 hinge=(0,7) bar=(2,8) p=4 q=4 Delta=15 eps=-1]
+   28 peel to core11.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1]
+n=14: total 134
+   1 peel to core14.2[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,2)- + apex(2,5)- + apex(2,11)+]
+   1 peel to core14.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(0,2)- + apex(0,11)+]
+   10 peel to core13.0[A s=(5,9) B1=5#0 B2=9#14 hinge=(0,7) bar=(2,8) p=4 q=4 Delta=15 eps=-1]
+   120 peel to core11.0[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1]
+   1 peel to core14.3[C s=(6,5,6) B1=6#0 B2=5#0 B3=6#0 h12=(4,2) h13=(5,4) h23=(0,5) e=(3,4,3) Delta=32 eps=-1]
+   1 peel to core14.1[A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(1,4)+ + apex(1,11)-]

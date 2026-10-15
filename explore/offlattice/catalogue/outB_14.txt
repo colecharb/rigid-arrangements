@@ -1,0 +1,1 @@
+B n=14: combos=1035212 offlattice-nonoverlapping hits=0 lattice hits=615 tangential=1523444 degenerate-families=67306

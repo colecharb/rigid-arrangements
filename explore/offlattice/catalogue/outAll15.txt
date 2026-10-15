@@ -1,0 +1,313 @@
+n=11: A assemblies=1 cores=1; C assemblies=0 cores=0; E assemblies=0 cores=0
+n=12: A assemblies=4 cores=0; C assemblies=1 cores=0; E assemblies=0 cores=0
+n=13: A assemblies=23 cores=1; C assemblies=5 cores=0; E assemblies=0 cores=0
+n=14: A assemblies=89 cores=3; C assemblies=32 cores=1; E assemblies=0 cores=0
+n=15: A assemblies=323 cores=4; C assemblies=130 cores=1; E assemblies=0 cores=0
+n=11: composite hinge+bar assemblies=0 cores=0
+closure n=11: extensions=0, new from seeds=1, total off-lattice=1, cores=1
+  assemblies not in closure: 0
+  tower levels: #[0, 0, 1, 0, 0, 0, 0, 0, 0, 0]; inf. rigid (float rank): 1; with taut circle: 0
+  anatomy 1 × bodies=[6, 6] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  CORE: inf-rigid deletions=#[]; exact rank 19/19
+  n=11 contacts=19 (2n-3=19) degs=#[3, 3, 3, 5, 4, 3, 3, 3, 3, 5, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 11]
+  A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (0.500000, -0.866025)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (1.500000, -0.866025)
+    6: (3.228714, 0.973494)
+    7: (3.290760, -0.024579)
+    8: (2.333333, 1.418796)
+    9: (2.395380, 0.420723)
+    10: (2.457427, -0.577350)
+
+n=12: composite hinge+bar assemblies=0 cores=0
+closure n=12: extensions=5, new from seeds=0, total off-lattice=5, cores=0
+  assemblies not in closure: 0
+  tower levels: #[0, 0, 5, 0, 0, 0, 0, 0, 0, 0]; inf. rigid (float rank): 5; with taut circle: 0
+  anatomy 4 × bodies=[7, 6] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 1 × bodies=[6, 6, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+n=13: composite hinge+bar assemblies=8 cores=0
+closure n=13: extensions=28, new from seeds=1, total off-lattice=29, cores=1
+  assemblies not in closure: 0
+  tower levels: #[0, 0, 29, 0, 0, 0, 0, 0, 0, 0]; inf. rigid (float rank): 29; with taut circle: 0
+  anatomy 13 × bodies=[8, 6] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 9 × bodies=[7, 7] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 4 × bodies=[7, 6, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 1 × bodies=[6, 6, 4] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 1 × bodies=[9, 5] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 1 × bodies=[7, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 1])
+  CORE: inf-rigid deletions=#[]; exact rank 23/23
+  n=13 contacts=23 (2n-3=23) degs=#[4, 4, 3, 3, 3, 3, 4, 3, 3, 5, 5, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 15]
+  A s=(5,9) B1=5#0 B2=9#14 hinge=(0,7) bar=(2,8) p=4 q=4 Delta=15 eps=-1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (-1.731763, 0.031588)
+    6: (-1.713525, 1.031422)
+    7: (-1.695288, 2.031255)
+    8: (-0.875000, -0.484123)
+    9: (-0.856763, 0.515711)
+    10: (-0.838525, 1.515544)
+    11: (-0.820288, 2.515378)
+    12: (0.036475, 1.999667)
+
+n=14: composite hinge+bar assemblies=68 cores=3
+closure n=14: extensions=133, new from seeds=1, total off-lattice=134, cores=4
+  assemblies not in closure: 0
+  tower levels: #[0, 0, 134, 0, 0, 0, 0, 0, 0, 0]; inf. rigid (float rank): 134; with taut circle: 0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1] with 3-bodies: combos=1680 nonoverlapping hits=0 in closure=0 not=0
+  anatomy 48 × bodies=[8, 7] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 35 × bodies=[9, 6] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 12 × bodies=[8, 6, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 9 × bodies=[7, 7, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 7 × bodies=[7, 6, 4] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 6 × bodies=[10, 5] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 4 × bodies=[8, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 1])
+  anatomy 3 × bodies=[6, 6, 5] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 2 × bodies=[7, 7] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[1, 2, 0])
+  anatomy 1 × bodies=[9, 5, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 1 × bodies=[6, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 0])
+  anatomy 1 × bodies=[8, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 2])
+  anatomy 1 × bodies=[7, 6, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[2, 1])
+  anatomy 1 × bodies=[7, 6, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[0, 2])
+  anatomy 1 × bodies=[7, 6, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 1], barFrames=[2, 0])
+  anatomy 1 × bodies=[7, 6, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 0])
+  anatomy 1 × bodies=[7, 7] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 1])
+  CORE: inf-rigid deletions=#[11, 12, 13]; exact rank 25/25
+  n=14 contacts=26 (2n-3=25) degs=#[6, 4, 4, 5, 4, 3, 3, 3, 3, 5, 3, 3, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 11]
+  A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(0,2)- + apex(0,11)+
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (0.500000, -0.866025)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (1.500000, -0.866025)
+    6: (3.228714, 0.973494)
+    7: (3.290760, -0.024579)
+    8: (2.333333, 1.418796)
+    9: (2.395380, 0.420723)
+    10: (2.457427, -0.577350)
+    11: (-0.500000, 0.866025)
+    12: (-0.500000, -0.866025)
+    13: (-1.000000, 0.000000)
+
+  CORE: inf-rigid deletions=#[11, 12, 13]; exact rank 25/25
+  n=14 contacts=26 (2n-3=25) degs=#[4, 6, 3, 5, 5, 3, 3, 3, 3, 5, 3, 3, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 11]
+  A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+ + apex(1,4)+ + apex(1,11)-
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (0.500000, -0.866025)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (1.500000, -0.866025)
+    6: (3.228714, 0.973494)
+    7: (3.290760, -0.024579)
+    8: (2.333333, 1.418796)
+    9: (2.395380, 0.420723)
+    10: (2.457427, -0.577350)
+    11: (-0.500000, 0.866025)
+    12: (1.000000, 1.732051)
+    13: (0.000000, 1.732051)
+
+  CORE: inf-rigid deletions=#[11, 12, 13]; exact rank 25/25
+  n=14 contacts=26 (2n-3=25) degs=#[4, 3, 6, 5, 4, 4, 3, 3, 3, 5, 3, 3, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 11]
+  A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,2)- + apex(2,5)- + apex(2,11)+
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (0.500000, -0.866025)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (1.500000, -0.866025)
+    6: (3.228714, 0.973494)
+    7: (3.290760, -0.024579)
+    8: (2.333333, 1.418796)
+    9: (2.395380, 0.420723)
+    10: (2.457427, -0.577350)
+    11: (-0.500000, -0.866025)
+    12: (1.000000, -1.732051)
+    13: (0.000000, -1.732051)
+
+  CORE: inf-rigid deletions=#[]; exact rank 25/25
+  n=14 contacts=25 (2n-3=25) degs=#[3, 3, 3, 5, 4, 4, 4, 4, 3, 3, 3, 3, 3, 5] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 32]
+  C s=(6,5,6) B1=6#0 B2=5#0 B3=6#0 h12=(4,2) h13=(5,4) h23=(0,5) e=(3,4,3) Delta=32 eps=-1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (0.500000, -0.866025)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (1.500000, -0.866025)
+    6: (3.132993, -0.288675)
+    7: (2.316497, 0.288675)
+    8: (3.224745, 0.707107)
+    9: (2.408248, 1.284457)
+    10: (2.816497, -1.991564)
+    11: (1.833333, -1.808834)
+    12: (3.466326, -1.231484)
+    13: (2.483163, -1.048755)
+
+n=15: composite hinge+bar assemblies=364 cores=1
+closure n=15: extensions=550, new from seeds=4, total off-lattice=554, cores=5
+  assemblies not in closure: 0
+  tower levels: #[0, 3, 549, 2, 0, 0, 0, 0, 0, 0]; inf. rigid (float rank): 554; with taut circle: 0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1] with 4-bodies: combos=6904 nonoverlapping hits=0 in closure=0 not=0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,1)+] with 3-bodies: combos=2016 nonoverlapping hits=0 in closure=0 not=0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(0,2)-] with 3-bodies: combos=1932 nonoverlapping hits=0 in closure=0 not=0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(1,4)+] with 3-bodies: combos=2304 nonoverlapping hits=0 in closure=0 not=0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(2,5)-] with 3-bodies: combos=2100 nonoverlapping hits=0 in closure=0 not=0
+  composite-B on [A s=(6,6) B1=6#0 B2=6#0 hinge=(4,5) bar=(5,4) p=3 q=3 Delta=11 eps=-1 + apex(5,10)-] with 3-bodies: combos=2304 nonoverlapping hits=0 in closure=0 not=0
+  anatomy 124 × bodies=[9, 7] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 93 × bodies=[10, 6] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 81 × bodies=[8, 8] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 44 × bodies=[8, 7, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 30 × bodies=[9, 6, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 23 × bodies=[11, 5] free=0 bars=1 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2])
+  anatomy 20 × bodies=[8, 6, 4] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 13 × bodies=[7, 6, 5] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 12 × bodies=[9, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 1])
+  anatomy 11 × bodies=[7, 7, 4] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 11 × bodies=[8, 7] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[1, 2, 0])
+  anatomy 9 × bodies=[8, 7] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 1])
+  anatomy 5 × bodies=[10, 5, 3] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 5 × bodies=[6, 6, 6] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 4 × bodies=[7, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 1])
+  anatomy 4 × bodies=[8, 6, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[2, 1])
+  anatomy 4 × bodies=[8, 6, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[0, 2])
+  anatomy 4 × bodies=[9, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 2])
+  anatomy 4 × bodies=[8, 6, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 0])
+  anatomy 4 × bodies=[8, 6, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 1], barFrames=[2, 0])
+  anatomy 3 × bodies=[8, 7] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 1, 2])
+  anatomy 3 × bodies=[6, 6, 5] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 0])
+  anatomy 3 × bodies=[7, 7, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 1])
+  anatomy 3 × bodies=[7, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 0])
+  anatomy 2 × bodies=[8, 7] free=1 bars=3 hinges=1 frames=5 (bodyFrames=[0, 1], barFrames=[2, 3, 4])
+  anatomy 2 × bodies=[7, 7, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[1, 2])
+  anatomy 2 × bodies=[7, 7, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 0])
+  anatomy 2 × bodies=[7, 7, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[2, 1])
+  anatomy 2 × bodies=[7, 6, 4] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 1], barFrames=[2, 0])
+  anatomy 1 × bodies=[6, 6, 4, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 1, 2], barFrames=[0])
+  anatomy 1 × bodies=[8, 8] free=0 bars=1 hinges=1 frames=2 (bodyFrames=[0, 1], barFrames=[1])
+  anatomy 1 × bodies=[7, 6, 3, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 0, 1], barFrames=[2])
+  anatomy 1 × bodies=[7, 6, 3, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 2, 1], barFrames=[0])
+  anatomy 1 × bodies=[7, 6, 3, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 2, 0], barFrames=[2])
+  anatomy 1 × bodies=[9, 5, 4] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 1 × bodies=[6, 6, 4, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 2, 0], barFrames=[1])
+  anatomy 1 × bodies=[11, 5] free=0 bars=1 hinges=1 frames=2 (bodyFrames=[0, 1], barFrames=[0])
+  anatomy 1 × bodies=[7, 6, 3] free=1 bars=4 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[2, 0, 1, 1])
+  anatomy 1 × bodies=[9, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 1, 0])
+  anatomy 1 × bodies=[8, 5, 5] free=0 bars=0 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[])
+  anatomy 1 × bodies=[7, 7] free=2 bars=5 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[1, 2, 1, 0, 0])
+  anatomy 1 × bodies=[10, 5] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 1, 2])
+  anatomy 1 × bodies=[7, 6, 4] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 0], barFrames=[2, 1])
+  anatomy 1 × bodies=[7, 6, 3, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 2, 2], barFrames=[0])
+  anatomy 1 × bodies=[9, 5, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 2])
+  anatomy 1 × bodies=[10, 5] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 1, 0])
+  anatomy 1 × bodies=[7, 7, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[1, 0])
+  anatomy 1 × bodies=[8, 6] free=2 bars=5 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 0, 0, 2, 1])
+  anatomy 1 × bodies=[7, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 0])
+  anatomy 1 × bodies=[8, 6, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 2], barFrames=[2, 0])
+  anatomy 1 × bodies=[7, 7, 3] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[0, 2])
+  anatomy 1 × bodies=[7, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[0, 2])
+  anatomy 1 × bodies=[7, 7, 3] free=0 bars=2 hinges=2 frames=3 (bodyFrames=[0, 1, 1], barFrames=[2, 0])
+  anatomy 1 × bodies=[7, 6, 4] free=1 bars=2 hinges=3 frames=3 (bodyFrames=[0, 1, 2], barFrames=[0, 1])
+  anatomy 1 × bodies=[9, 6] free=1 bars=3 hinges=1 frames=3 (bodyFrames=[0, 1], barFrames=[2, 1, 2])
+  anatomy 1 × bodies=[7, 6, 3, 3] free=0 bars=1 hinges=4 frames=3 (bodyFrames=[0, 1, 2, 0], barFrames=[1])
+  CORE: inf-rigid deletions=#[13, 14]; exact rank 27/27
+  n=15 contacts=28 (2n-3=27) degs=#[4, 4, 3, 3, 3, 4, 6, 4, 3, 5, 5, 3, 3, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 15]
+  A s=(5,9) B1=5#0 B2=9#14 hinge=(0,7) bar=(2,8) p=4 q=4 Delta=15 eps=-1 + apex(5,6)+ + apex(6,7)+
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (-1.731763, 0.031588)
+    6: (-1.713525, 1.031422)
+    7: (-1.695288, 2.031255)
+    8: (-0.875000, -0.484123)
+    9: (-0.856763, 0.515711)
+    10: (-0.838525, 1.515544)
+    11: (-0.820288, 2.515378)
+    12: (0.036475, 1.999667)
+    13: (-2.588525, 0.547299)
+    14: (-2.570288, 1.547132)
+
+  CORE: inf-rigid deletions=#[]; exact rank 27/27
+  n=15 contacts=27 (2n-3=27) degs=#[4, 4, 3, 3, 3, 3, 4, 3, 4, 5, 5, 3, 3, 4, 3] lvl=1 rad=#[OL.TN.q 3]
+  A s=(5,11) B1=5#0 B2=11#67m hinge=(0,9) bar=(2,10) p=4 q=7 Delta=12 eps=-1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (1.000000, 0.000000)
+    4: (1.500000, 0.866025)
+    5: (-2.000000, 1.732051)
+    6: (-1.857143, 0.742307)
+    7: (-1.714286, -0.247436)
+    8: (-1.214286, 2.350640)
+    9: (-1.071429, 1.360897)
+    10: (-0.928571, 0.371154)
+    11: (-0.785714, -0.618590)
+    12: (-0.428571, 2.969230)
+    13: (-0.285714, 1.979487)
+    14: (0.500000, 2.598076)
+
+  CORE: inf-rigid deletions=#[]; exact rank 27/27
+  n=15 contacts=27 (2n-3=27) degs=#[3, 4, 3, 3, 5, 4, 3, 4, 3, 4, 3, 3, 5, 4, 3] lvl=1 rad=#[OL.TN.q 3]
+  A s=(8,8) B1=8#6 B2=8#6 hinge=(7,6) bar=(6,7) p=7 q=7 Delta=27 eps=1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (0.500000, -0.866025)
+    4: (1.000000, 0.000000)
+    5: (1.500000, 0.866025)
+    6: (2.000000, 1.732051)
+    7: (1.500000, -0.866025)
+    8: (4.000000, 0.000000)
+    9: (3.214286, -0.618590)
+    10: (2.428571, -1.237179)
+    11: (3.857143, 0.989743)
+    12: (3.071429, 0.371154)
+    13: (2.285714, -0.247436)
+    14: (2.928571, 1.360897)
+
+  CORE: inf-rigid deletions=#[]; exact rank 27/27
+  n=15 contacts=27 (2n-3=27) degs=#[3, 4, 3, 3, 5, 4, 3, 4, 3, 4, 3, 3, 5, 4, 3] lvl=1 rad=#[OL.TN.q 3]
+  A s=(8,8) B1=8#6 B2=8#6m hinge=(7,7) bar=(6,6) p=7 q=7 Delta=27 eps=1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (0.500000, -0.866025)
+    4: (1.000000, 0.000000)
+    5: (1.500000, 0.866025)
+    6: (2.000000, 1.732051)
+    7: (1.500000, -0.866025)
+    8: (3.183673, -1.272527)
+    9: (3.418367, -0.300458)
+    10: (3.653061, 0.671612)
+    11: (2.224490, -1.555311)
+    12: (2.459184, -0.583242)
+    13: (2.693878, 0.388828)
+    14: (2.928571, 1.360897)
+
+  CORE: inf-rigid deletions=#[]; exact rank 27/27
+  n=15 contacts=27 (2n-3=27) degs=#[3, 4, 3, 3, 5, 4, 4, 4, 4, 4, 3, 3, 4, 3, 3] lvl=2 rad=#[OL.TN.q 3, OL.TN.q 63]
+  C s=(8,5,5) B1=8#6 B2=5#0 B3=5#0 h12=(6,2) h13=(7,0) h23=(0,2) e=(7,4,4) Delta=63 eps=-1
+    0: (0.000000, 0.000000)
+    1: (0.500000, 0.866025)
+    2: (1.000000, 1.732051)
+    3: (0.500000, -0.866025)
+    4: (1.000000, 0.000000)
+    5: (1.500000, 0.866025)
+    6: (2.000000, 1.732051)
+    7: (1.500000, -0.866025)
+    8: (3.222971, 0.149539)
+    9: (2.611485, 0.940795)
+    10: (3.602476, 1.074729)
+    11: (2.990990, 1.865985)
+    12: (2.361485, -0.358243)
+    13: (2.370495, -1.358202)
+    14: (3.231981, -0.850420)
+

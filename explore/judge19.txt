@@ -1,0 +1,17 @@
+n=3 free=1 fixed=2 distinctProfileKeys=1 keyCollisions=0 sameFullProfile=0 maxContacts=3 numWithMax=1
+n=4 free=1 fixed=3 distinctProfileKeys=1 keyCollisions=0 sameFullProfile=0 maxContacts=5 numWithMax=1
+n=5 free=1 fixed=6 distinctProfileKeys=1 keyCollisions=0 sameFullProfile=0 maxContacts=7 numWithMax=1
+n=6 free=3 fixed=14 distinctProfileKeys=3 keyCollisions=0 sameFullProfile=0 maxContacts=9 numWithMax=3
+n=7 free=4 fixed=31 distinctProfileKeys=4 keyCollisions=0 sameFullProfile=0 maxContacts=12 numWithMax=1
+n=8 free=9 fixed=69 distinctProfileKeys=9 keyCollisions=0 sameFullProfile=0 maxContacts=14 numWithMax=1
+n=9 free=16 fixed=151 distinctProfileKeys=16 keyCollisions=0 sameFullProfile=0 maxContacts=16 numWithMax=4
+n=10 free=35 fixed=335 distinctProfileKeys=35 keyCollisions=0 sameFullProfile=0 maxContacts=19 numWithMax=1
+n=11 free=69 fixed=747 distinctProfileKeys=69 keyCollisions=0 sameFullProfile=0 maxContacts=21 numWithMax=2
+n=12 free=155 fixed=1671 distinctProfileKeys=155 keyCollisions=0 sameFullProfile=0 maxContacts=24 numWithMax=1
+n=13 free=328 fixed=3749 distinctProfileKeys=328 keyCollisions=0 sameFullProfile=0 maxContacts=26 numWithMax=4
+n=14 free=740 fixed=8487 distinctProfileKeys=740 keyCollisions=0 sameFullProfile=0 maxContacts=29 numWithMax=1
+n=15 free=1655 fixed=19432 distinctProfileKeys=1655 keyCollisions=0 sameFullProfile=0 maxContacts=31 numWithMax=4
+n=16 free=3816 fixed=44882 distinctProfileKeys=3816 keyCollisions=0 sameFullProfile=0 maxContacts=34 numWithMax=1
+n=17 free=8761 fixed=104220 distinctProfileKeys=8761 keyCollisions=0 sameFullProfile=0 maxContacts=36 numWithMax=9
+n=18 free=20411 fixed=242810 distinctProfileKeys=20411 keyCollisions=0 sameFullProfile=0 maxContacts=39 numWithMax=3
+n=19 free=47461 fixed=567395 distinctProfileKeys=47461 keyCollisions=0 sameFullProfile=0 maxContacts=42 numWithMax=1
