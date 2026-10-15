@@ -314,3 +314,43 @@ The figure `docs/figures/rigid-arrangements.html` shows all of them.
 
 **Next.** A plan for a general formula (or good bounds) for the number of rigid arrangements of
 n circles.
+
+---
+
+## 2026-10-15: A plan toward a general formula
+
+`docs/formula-plan.md` is a research plan for the number a(n) of rigid arrangements of n
+circles. It came from four investigations (literature, data, structure, exactly countable
+families), three competing plans, and a judge who rechecked the numbers. Nothing in it is a new
+theorem; the numbers marked *computed* come from exploratory Lean programs, kept in `explore/`.
+
+What the exploration found:
+
+- **Data.** An exploratory census of rigid *lattice* arrangements reached n = 25:
+  1, 1, 1, 3, 4, 9, 16, 35, 69, 155, 328, 740, 1655, 3816, 8761, 20411, 47461, 111219, 260968,
+  615428, 1454493, 3449768, 8198486 for n = 3, …, 25. (Independent programs agree up to
+  n = 15; beyond that the counts rest on one code lineage.)
+- **Growth.** The counts grow by a factor of roughly 2.5 per added circle, much slower than
+  polyiamonds (about 3.04 per added triangle). The best guess is a(n) ≈ C · μⁿ / n with
+  μ ≈ 2.5 ± 0.1 for the lattice count.
+- **The polyiamond picture fades.** Rigid lattice arrangements that are not "triangle-closed
+  polyiamond corner sets" appear at 13 circles and make up 24% by 25 circles, and their share is
+  still rising. A polyiamond whose corner set is not triangle-closed first appears at 26 circles.
+  Off-lattice arrangements (like O11) also appear to grow quickly; floating-point searches suggest
+  they become a large share by about 17 circles.
+- **Exact formulas exist only for thin families**, for example arrangements confined to three
+  rows of the lattice (a rational generating function, growth about 1.43ⁿ), or "combs" (growth
+  φⁿ, the golden ratio).
+
+What kind of answer to expect: a closed formula is very unlikely, for the same reasons that none
+is known for polyiamonds or polyhexes. The realistic targets, in order of priority:
+
+1. **A theorem that the lattice growth constant μ exists**, with rigorous bounds, by a gluing
+   argument (two rigid arrangements can be glued at one circle) and Fekete's lemma.
+2. **More data**, to n = 28, with predictions for n = 26, 27 written down *before* computing them.
+3. **Structure theorems:** every rigid arrangement peels down to a unique core; a merging calculus
+   for rigid clusters; a "line-sum" test for infinitesimal rigidity on the lattice.
+4. **Exactly solvable families as theorems**, giving certified exponential lower bounds.
+
+The plan ends with questions for the user (which count to target, whether `native_decide` and
+compiled Lean may be used for large certificates, OEIS submission, naming).
