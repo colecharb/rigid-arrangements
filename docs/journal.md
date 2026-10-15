@@ -354,3 +354,40 @@ is known for polyiamonds or polyhexes. The realistic targets, in order of priori
 
 The plan ends with questions for the user (which count to target, whether `native_decide` and
 compiled Lean may be used for large certificates, OEIS submission, naming).
+
+---
+
+## 2026-10-15: What off-lattice arrangements look like
+
+Prompted by the user's picture, "non-lattice arrangements are lattice substructures attached at
+non-lattice angles", an exploration (structure theory, an exact catalogue, an adversarial search,
+Lean prototypes, each independently verified) produced `docs/offlattice.md`. In short:
+
+- **Lattice pieces.** Group the tangent triangles into maximal families linked through shared
+  edges. Each family (a *body*) lies on its own rotated copy of the triangular lattice: it is the
+  corner set of a polyiamond. *[proved; kernel-checked prototype]*
+- **When an arrangement is off the lattice.** Exactly when its contacts point in at least two
+  directions modulo 60°. *[kernel-checked prototype in `explore/offlattice/proto/`]*
+- **The user's picture is right below 30 circles.** Every off-lattice arrangement found (169 of
+  them with at most 14 circles: 1, 5, 29, 134 for n = 11, …, 14) consists of two or three lattice
+  bodies sharing *hinge* circles, locked by one extra contact (a *bar*), by a third body closing a
+  ring, or by a second shared circle. *[exact computation, relative to the completeness of the
+  searches]*
+- **The angles are forced.** For a hinge plus a bar, cos θ = (p + q − 1)/(2√(pq)), where 2√p and
+  2√q are the distances from the hinge to the bar's ends. O11 has p = q = 3, angle arccos(5/6). The
+  rotations that occur are algebraic, of two kinds: ones that bring in a new square root (√11 for
+  O11, √5 for the 13-circle core Q13) and "coincidence" rotations such as arccos(13/14), under which
+  the two lattices share a sublattice and no new square root appears.
+- **The strong form fails at 30 circles.** Two 30-circle arrangements, H30 and E30, have every
+  triangle in a single lattice piece and still leave the lattice, through circles that lie in no
+  triangle: a braced rhombus (H30) and a taut straight chain (E30). So the precise statement is: an
+  arrangement is off the lattice iff two bodies lie in differently rotated lattices, or some
+  triangle-free circles lie off the lattice of the bodies. Only the first happens below 30 circles
+  in everything found.
+- **Candidate counts of all rigid arrangements** (conjectural): a(11) = 70, a(12) = 160,
+  a(13) = 357, a(14) = 874.
+
+Kernel-checked prototypes of the frame criterion, the body lemma, a reduction of "on the lattice up
+to 10 circles" to a statement about cores, and three more certified off-lattice examples (13, 15
+and 17 circles) are in `explore/offlattice/proto/OffLatticeProto.lean`, ready to be moved into the
+library. The figure now has a gallery of off-lattice examples, colored by direction class.

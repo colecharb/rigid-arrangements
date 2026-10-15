@@ -19,6 +19,7 @@
   --ok-bg: #e2efe8;
   --pending: #8a6a12;
   --pending-bg: #f5ecd2;
+  --f0: #b5562b; --f1: #2f6f9e; --f2: #4f8a35; --f3: #8a4fa0; --f4: #a07d1c;
   --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
   --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -28,6 +29,7 @@
     --paper: #12161c; --ink: #e4e8ee; --muted: #98a3b3; --rule: #2a313c;
     --accent: #e98a5b; --cell: rgba(233, 138, 91, 0.14); --disk: #1a2029; --disk-edge: #cfd6e0;
     --ok: #8fd1ad; --ok-bg: #1d3328; --pending: #e3c46d; --pending-bg: #352c12;
+    --f0: #e98a5b; --f1: #6fb3e3; --f2: #8fcf6f; --f3: #c79be0; --f4: #e0c25e;
     color-scheme: dark;
   }
 }
@@ -35,6 +37,7 @@
   --paper: #12161c; --ink: #e4e8ee; --muted: #98a3b3; --rule: #2a313c;
   --accent: #e98a5b; --cell: rgba(233, 138, 91, 0.14); --disk: #1a2029; --disk-edge: #cfd6e0;
   --ok: #8fd1ad; --ok-bg: #1d3328; --pending: #e3c46d; --pending-bg: #352c12;
+  --f0: #e98a5b; --f1: #6fb3e3; --f2: #8fcf6f; --f3: #c79be0; --f4: #e0c25e;
   color-scheme: dark;
 }
 
@@ -147,7 +150,19 @@ svg .cell { fill: var(--cell); stroke: none; }
 svg .disk { fill: var(--disk); stroke: var(--disk-edge); stroke-width: 0.045; }
 svg .bar { stroke: var(--accent); stroke-width: 0.07; stroke-linecap: round; }
 svg .dot { fill: var(--accent); }
-svg .disk.hinge { stroke: var(--accent); stroke-width: 0.11; }
+svg .disk.hinge { stroke: var(--ink); stroke-width: 0.13; }
+svg .disk.free { stroke-dasharray: 0.22 0.14; }
+svg .bar.c0 { stroke: var(--f0); } svg .bar.c1 { stroke: var(--f1); } svg .bar.c2 { stroke: var(--f2); }
+svg .bar.c3 { stroke: var(--f3); } svg .bar.c4 { stroke: var(--f4); }
+svg .cell.c0 { fill: var(--f0); fill-opacity: 0.13; } svg .cell.c1 { fill: var(--f1); fill-opacity: 0.13; }
+svg .cell.c2 { fill: var(--f2); fill-opacity: 0.13; } svg .cell.c3 { fill: var(--f3); fill-opacity: 0.13; }
+svg .cell.c4 { fill: var(--f4); fill-opacity: 0.13; }
+svg .dot.classes { fill: var(--ink); }
+.examples h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 10px 0 0; }
+.examples .gallery { display: flex; flex-wrap: wrap; gap: 26px 34px; align-items: flex-start; }
+.examples .gallery figure { max-width: 340px; }
+.examples .gallery figcaption .desc { display: block; margin-top: 4px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.swatch { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 2px; }
 svg .guide { fill: none; stroke: var(--muted); stroke-width: 0.045; stroke-dasharray: 0.16 0.12; }
 svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.34px; paint-order: stroke; stroke: var(--paper); stroke-width: 0.08px; }
 .examples { display: grid; gap: 14px; padding-top: 12px; border-top: 1px solid var(--ink); }
@@ -184,7 +199,11 @@ svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.
   <section class="examples" aria-labelledby="ex-h">
     <h2 id="ex-h">Off the lattice</h2>
     <p class="lede">Every arrangement above sits on the triangular lattice, and for up to eight circles that is a
-      theorem. From eleven circles on it is no longer true.</p>
+      theorem. From eleven circles on it is no longer true. Each group of triangles linked through shared edges
+      lies on its own copy of the lattice, and an arrangement is off the lattice exactly when its contacts point in
+      more than one direction modulo 60°. Below, contacts and triangles are colored by that direction class,
+      shared circles (hinges) have a heavy outline, and circles in no triangle are dashed. Details are in
+      <code>docs/offlattice.md</code>.</p>
     <div id="examples"></div>
   </section>
 
@@ -252,26 +271,43 @@ function drawPoints(mathPts, opts = {}) {
   const minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
   const w = maxX - minX, h = maxY - minY;
   const adj = (i, j) => Math.abs(Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]) - 2) < 1e-9;
+  // Direction class of a contact: its direction modulo 60°. Contacts of one lattice piece share a
+  // class; an arrangement is on a single lattice exactly when it has one class.
+  const classKeys = [];
+  const classOf = (i, j) => {
+    let a = Math.atan2(pts[j][1] - pts[i][1], pts[j][0] - pts[i][0]) * 180 / Math.PI;
+    a = ((a % 60) + 60) % 60;
+    if (a > 60 - 1e-6) a = 0;
+    let k = classKeys.findIndex(c => Math.abs(c - a) < 1e-6);
+    if (k < 0) { classKeys.push(a); k = classKeys.length - 1; }
+    return k;
+  };
+  const hinges = new Set(opts.hinges || (opts.hinge !== undefined ? [opts.hinge] : []));
+  const inTriangle = new Set();
   let cells = "", bars = "", disks = "", dots = "";
   let edges = 0, tris = 0;
   for (let i = 0; i < pts.length; i++)
     for (let j = i + 1; j < pts.length; j++) {
       if (!adj(i, j)) continue;
       edges++;
-      bars += `<line class="bar" x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`;
+      const cls = opts.classes ? ` c${classOf(i, j) % 5}` : "";
+      bars += `<line class="bar${cls}" x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`;
       for (let k = j + 1; k < pts.length; k++)
-        if (adj(i, k) && adj(j, k) && ++tris)
-          cells += `<polygon class="cell" points="${[i, j, k].map(t => pts[t].join(",")).join(" ")}"/>`;
+        if (adj(i, k) && adj(j, k) && ++tris) {
+          [i, j, k].forEach(t => inTriangle.add(t));
+          cells += `<polygon class="cell${cls}" points="${[i, j, k].map(t => pts[t].join(",")).join(" ")}"/>`;
+        }
     }
   pts.forEach((p, i) => {
-    disks += `<circle class="disk${opts.hinge === i ? " hinge" : ""}" cx="${p[0]}" cy="${p[1]}" r="1"/>`;
-    dots += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="0.09"/>`;
+    const free = opts.classes && !inTriangle.has(i) ? " free" : "";
+    disks += `<circle class="disk${hinges.has(i) ? " hinge" : ""}${free}" cx="${p[0]}" cy="${p[1]}" r="1"/>`;
+    dots += `<circle class="dot${opts.classes ? " classes" : ""}" cx="${p[0]}" cy="${p[1]}" r="0.09"/>`;
   });
   const extra = opts.overlay ? opts.overlay(pts) : "";
   const u = opts.unit || UNIT;
   const svg = `<svg viewBox="${minX} ${minY} ${w} ${h}" width="${Math.round(w * u)}" height="${Math.round(h * u)}" role="img">` +
     `${disks}${cells}${bars}${extra}${dots}</svg>`;
-  return { svg, edges, tris };
+  return { svg, edges, tris, classes: classKeys.length };
 }
 const draw = (sites) => drawPoints(sites.map(([a, b]) => [2 * a + b, SQ3 * b]));
 
@@ -330,7 +366,7 @@ const overlay = (pts) => {
     `<path class="guide" d="M ${a1[0]} ${a1[1]} A ${r} ${r} 0 0 0 ${a2[0]} ${a2[1]}"/>` +
     `<text class="anglabel" x="${h[0]}" y="${h[1] + 2.02}" text-anchor="middle">33.6°</text>`;
 };
-const off = drawPoints(o11, { hinge: 5, overlay, unit: 36 });
+const off = drawPoints(o11, { hinge: 5, overlay, unit: 36, classes: true });
 document.getElementById("examples").insertAdjacentHTML("beforeend",
   `<section class="band" id="n11" aria-label="11 circles, off the lattice">
      <div class="side">
@@ -340,8 +376,8 @@ document.getElementById("examples").insertAdjacentHTML("beforeend",
      </div>
      <div class="shapes">
        <figure>${off.svg}<figcaption><b>two hinged chevrons</b>
-         <span class="meta">${plural(off.edges, "contact", "contacts")} · <code>o11</code></span></figcaption></figure>
-       <p class="note">Two copies of the 6-circle chevron share one circle, the hinge (outlined), and their far
+         <span class="meta">${plural(off.edges, "contact", "contacts")} · ${plural(off.classes, "direction class", "direction classes")} · <code>o11</code></span></figcaption></figure>
+       <p class="note">Two copies of the 6-circle chevron share one circle, the hinge (heavy outline), and their far
          ends touch. The hinge sees those ends at an angle of arccos(5/6) ≈ 33.6°, which is not a multiple
          of 60°, so no triangular lattice contains this arrangement. It is still rigid: each chevron is rigid,
          and one contact between them, away from the hinge, locks the hinge. No circle can be peeled off, so
@@ -349,5 +385,54 @@ document.getElementById("examples").insertAdjacentHTML("beforeend",
          the at least 70 rigid arrangements of 11 circles.</p>
      </div>
    </section>`);
+
+// Further off-lattice examples from the exploration in docs/offlattice.md (coordinates checked:
+// tangent pairs are 2 apart to 1e-9, no overlaps). status: "scratch Lean" = rigid and off-lattice
+// proved in explore/offlattice/proto/OffLatticeProto.lean; "computed" = exploratory computation.
+const OFF_EXAMPLES = [
+  { title: "O11 plus a triangle on the bar", n: 12, status: "computed", group: "picture", unit: 22,
+    hinges: [4, 5, 10], angle: "arccos(5/6) \u2248 33.557\u00b0 (inherited from O11)",
+    desc: "One more circle beyond O11's bar turns the bar into a third lattice piece, a triangle in a third direction. Three pieces now meet pairwise at hinges. It is not a core: the new circle can be peeled off.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.45742710775634, 1.94698752977251], [6.58152088217934, -0.04915894159412], [4.66666666666667, 2.83759240435401], [4.79076044108967, 0.84144593298738], [4.91485421551268, -1.15470053837925], [4.45742710775634, -3.10168806815176]] },
+  { title: "Q13: trapezoid and a 9-circle piece", n: 13, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [0], angle: "arccos(7/8) \u2248 28.955\u00b0",
+    desc: "One hinge and one bar. Both bar ends are 4 from the hinge, which forces a rotation of arccos(7/8) \u2248 29.0\u00b0. The only new off-lattice core at 13 circles in the exact search.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-3.46352549156242, 0.06317570179499], [-3.42705098312484, 2.06284307669368], [-3.39057647468726, 4.06251045159238], [-1.75000000000000, -0.96824583655185], [-1.71352549156242, 1.03142153834684], [-1.67705098312484, 3.03108891324554], [-1.64057647468726, 5.03075628814423], [0.07294901687516, 3.99933474979739]] },
+  { title: "T14: a ring of three pieces", n: 14, status: "computed", group: "picture", unit: 22,
+    hinges: [4, 5, 6], angle: "frames at 0\u00b0, 24.736\u00b0, 49.471\u00b0 (mod 60\u00b0)",
+    desc: "A chevron, a trapezoid and a chevron, each pair sharing a hinge, with no bar. The three hinges form a triangle with squared sides 12, 16, 12, which forces rotations of 24.7\u00b0 and 49.5\u00b0. The smallest off-lattice ring found.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.26598632371090, -0.57735026918963], [4.63299316185545, 0.57735026918963], [6.44948974278318, 1.41421356237310], [4.81649658092773, 2.56891410075235], [5.63299316185545, -3.98312766312544], [3.66666666666667, -3.61766889073300], [6.93265299037757, -2.46296835235375], [4.96632649518879, -2.09750957996132]] },
+  { title: "ex15: a coincidence rotation", n: 15, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [0], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0 (hinge angle 19.107\u00b0)",
+    desc: "A trapezoid and an 11-circle piece, hinge plus bar. Every coordinate stays in \u211a(\u221a3), yet the second piece is turned by arccos(13/14) \u2248 21.8\u00b0. Under this rotation the two lattices share a sublattice of index 7. What matters is the rotation between the lattices, not a new square root.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-4.00000000000000, 3.46410161513775], [-3.71428571428571, 1.48461497791618], [-3.42857142857143, -0.49487165930539], [-2.42857142857143, 4.70128076340124], [-2.14285714285714, 2.72179412617966], [-1.85714285714286, 0.74230748895809], [-1.57142857142857, -1.23717914826348], [-0.85714285714286, 5.93845991166472], [-0.57142857142857, 3.95897327444315], [1.00000000000000, 5.19615242270663]] },
+  { title: "DH17: two shared circles, no bar", n: 17, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [6, 7], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0",
+    desc: "Two pieces share two circles and do not otherwise touch. Two shared circles lock the pieces together. This works only because the shared circles, 2\u221a7 apart, lie on the common sublattice of a coincidence rotation.",
+    points: [[-4.00000000000000, -3.46410161513775], [-3.00000000000000, -1.73205080756888], [-2.00000000000000, 0.00000000000000], [-3.00000000000000, -5.19615242270663], [-2.00000000000000, -3.46410161513775], [-1.00000000000000, -1.73205080756888], [0.00000000000000, 0.00000000000000], [-1.00000000000000, -5.19615242270663], [4.00000000000000, -3.46410161513775], [3.71428571428571, -1.48461497791618], [3.42857142857143, 0.49487165930539], [2.42857142857143, -4.70128076340124], [2.14285714285714, -2.72179412617966], [1.85714285714286, -0.74230748895809], [1.57142857142857, 1.23717914826348], [0.85714285714286, -5.93845991166472], [0.57142857142857, -3.95897327444315]] },
+  { title: "H30: a braced rhombus", n: 30, status: "computed", group: "beyond", unit: 17,
+    hinges: [], angle: "one body, no relative angle; rhombus angle \u2248 70.522\u00b0",
+    desc: "Every triangle lies in one 26-circle lattice piece, yet the arrangement is off the lattice. Four circles in no triangle (dashed) form a braced rhombus in a bay of the piece, at an angle of about 70.5\u00b0. Infinitesimally rigid; certified by interval arithmetic in exploratory Lean.",
+    points: [[-3.00000000000000, 1.73205080756888], [-2.00000000000000, 3.46410161513775], [-1.00000000000000, 5.19615242270663], [-3.00000000000000, -1.73205080756888], [-2.00000000000000, 0.00000000000000], [-1.00000000000000, 1.73205080756888], [0.00000000000000, 3.46410161513775], [1.00000000000000, 5.19615242270663], [-2.00000000000000, -3.46410161513775], [-1.00000000000000, -1.73205080756888], [0.00000000000000, 0.00000000000000], [2.00000000000000, 3.46410161513775], [3.00000000000000, 5.19615242270663], [-1.00000000000000, -5.19615242270663], [0.00000000000000, -3.46410161513775], [4.00000000000000, 3.46410161513775], [5.00000000000000, 5.19615242270663], [1.00000000000000, -5.19615242270663], [2.00000000000000, -3.46410161513775], [6.00000000000000, 3.46410161513775], [7.00000000000000, 5.19615242270663], [6.00000000000000, 0.00000000000000], [7.00000000000000, 1.73205080756888], [8.00000000000000, 3.46410161513775], [8.00000000000000, 0.00000000000000], [9.00000000000000, 1.73205080756888], [1.94447276491105, 0.46800178046580], [3.66191773128094, 1.49288362121172], [4.05552723508895, -0.46800178046580], [2.33808226871906, -1.49288362121172]] },
+  { title: "E30: a taut chain", n: 30, status: "computed", group: "beyond", unit: 17,
+    hinges: [], angle: "chain direction arccos(11/14) \u2248 38.213\u00b0 (\u2261 \u221221.787\u00b0, the \u03a37 angle)",
+    desc: "A 24-circle lattice piece holds two of its circles exactly 14 apart along a non-lattice direction. The chain of six circles between them (dashed, in no triangle) is forced straight. Rigid only to second order, with fewer than 2n \u2212 3 contacts.",
+    points: [[0.00000000000000, 0.00000000000000], [-2.00000000000000, 0.00000000000000], [-1.00000000000000, 1.73205080756888], [-3.00000000000000, 1.73205080756888], [-2.00000000000000, 3.46410161513775], [0.00000000000000, 3.46410161513775], [-1.00000000000000, 5.19615242270663], [1.00000000000000, 5.19615242270663], [0.00000000000000, 6.92820323027551], [2.00000000000000, 6.92820323027551], [3.00000000000000, 5.19615242270663], [4.00000000000000, 6.92820323027551], [3.00000000000000, 8.66025403784439], [5.00000000000000, 8.66025403784439], [4.00000000000000, 10.3923048454132], [6.00000000000000, 10.3923048454132], [7.00000000000000, 8.66025403784439], [8.00000000000000, 10.3923048454132], [7.00000000000000, 12.1243556529821], [9.00000000000000, 12.1243556529821], [10.0000000000000, 10.3923048454132], [11.0000000000000, 12.1243556529821], [12.0000000000000, 10.3923048454132], [11.0000000000000, 8.66025403784439], [1.57142857142857, 1.23717914826348], [3.14285714285714, 2.47435829652697], [4.71428571428571, 3.71153744479045], [6.28571428571429, 4.94871659305394], [7.85714285714286, 6.18589574131742], [9.42857142857143, 7.42307488958090]] }
+];
+const galleryFig = (e) => {
+  const d = drawPoints(e.points, { hinges: e.hinges, classes: true, unit: e.unit });
+  return `<figure>${d.svg}<figcaption><b>${e.title}</b>
+    <span class="meta">${e.n} circles · ${plural(d.edges, "contact", "contacts")} · ${plural(d.classes, "direction class", "direction classes")} · ${e.status}</span>
+    <span class="meta">${e.angle}</span>
+    <span class="desc">${e.desc}</span></figcaption></figure>`;
+};
+document.getElementById("examples").insertAdjacentHTML("beforeend",
+  `<h3>More lattice pieces at forced angles</h3>
+   <div class="gallery">${OFF_EXAMPLES.filter(e => e.group === "picture").map(galleryFig).join("")}</div>
+   <h3>Beyond the picture: circles in no triangle</h3>
+   <p class="note">In these two, every triangle lies in a single lattice piece. The arrangement leaves the lattice
+     through circles that belong to no triangle (dashed), so "lattice pieces at non-lattice angles" is not the
+     whole story. Both have 30 circles; nothing like them is known below 30.</p>
+   <div class="gallery">${OFF_EXAMPLES.filter(e => e.group === "beyond").map(galleryFig).join("")}</div>`);
 })();
 </script>
