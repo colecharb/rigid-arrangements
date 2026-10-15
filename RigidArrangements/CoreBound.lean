@@ -115,7 +115,7 @@ theorem LexPos.arg_mem {z : ℂ} (h : LexPos z) :
     · exact Or.inl h.ge
 
 /-- Law of cosines for two vectors of length `2`. -/
-private theorem norm_sub_sq_of_norm_eq_two {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2) :
+theorem norm_sub_sq_of_norm_eq_two {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2) :
     ‖z - w‖ ^ 2 = 8 - 8 * Real.cos (arg z - arg w) := by
   have h1 := norm_mul_cos_arg z
   have h2 := norm_mul_sin_arg z
@@ -129,7 +129,7 @@ private theorem norm_sub_sq_of_norm_eq_two {z w : ℂ} (hz : ‖z‖ = 2) (hw : 
 
 /-- Two vectors of length `2` whose ends are at least `2` apart make an angle of at least
 `60°`. -/
-private theorem pi_div_three_le_abs_arg_sub {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2)
+theorem pi_div_three_le_abs_arg_sub {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2)
     (hzw : 2 ≤ ‖z - w‖) : Real.pi / 3 ≤ |arg z - arg w| := by
   by_contra hlt
   push Not at hlt
@@ -141,7 +141,7 @@ private theorem pi_div_three_le_abs_arg_sub {z w : ℂ} (hz : ‖z‖ = 2) (hw :
 
 /-- Two vectors of length `2` making an angle of less than `180°` have ends less than `4`
 apart. -/
-private theorem norm_sub_lt_four_of_abs_arg_sub_lt {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2)
+theorem norm_sub_lt_four_of_abs_arg_sub_lt {z w : ℂ} (hz : ‖z‖ = 2) (hw : ‖w‖ = 2)
     (h : |arg z - arg w| < Real.pi) : ‖z - w‖ < 4 := by
   have hc : -1 < Real.cos (arg z - arg w) := by
     rw [← Real.cos_abs, ← Real.cos_pi]
@@ -153,7 +153,7 @@ private theorem norm_sub_lt_four_of_abs_arg_sub_lt {z w : ℂ} (hz : ‖z‖ = 2
 then the angle `arg z - δ` points into the lexicographically positive half-plane: its cosine
 is positive, or zero with positive sine. (The rotated vector is `2` times the unit vector of
 angle `arg z - δ`.) -/
-private theorem lexPos_mul_exp {z : ℂ} (hz : ‖z‖ = 2) (δ : ℝ)
+theorem lexPos_mul_exp {z : ℂ} (hz : ‖z‖ = 2) (δ : ℝ)
     (h : LexPos (z * exp (↑(-δ) * I))) :
     0 < Real.cos (arg z - δ) ∨ (Real.cos (arg z - δ) = 0 ∧ 0 < Real.sin (arg z - δ)) := by
   have e : z * exp (↑(-δ) * I) = (2 : ℝ) * exp (↑(arg z - δ) * I) := by
@@ -225,7 +225,7 @@ theorem sub_eq_sub_of_rhombus {p q r s : ℂ} (h₁ : ‖q - p‖ = 2) (h₂ : �
     · linear_combination h
   · exact absurd (by linear_combination h) hqs
 
-private theorem norm_mul_exp_neg (z : ℂ) (θ : ℝ) : ‖z * exp (↑(-θ) * I)‖ = ‖z‖ := by
+theorem norm_mul_exp_neg (z : ℂ) (θ : ℝ) : ‖z * exp (↑(-θ) * I)‖ = ‖z‖ := by
   rw [norm_mul, norm_exp_ofReal_mul_I, mul_one]
 
 namespace Arrangement
@@ -274,14 +274,14 @@ theorem isExtreme_add_two_pi {θ : ℝ} {i : ι} :
 
 variable {A}
 
-private theorem norm_adj {i j : ι} (h : A.contactGraph.Adj i j) :
+theorem norm_adj {i j : ι} (h : A.contactGraph.Adj i j) :
     ‖A.center i - A.center j‖ = 2 := by
   rw [← dist_eq_norm]; exact h.2
 
 /-- Facts about the vector from a neighbour `j` to an extreme circle `i`, rotated so that the
 direction becomes the positive real axis: it has length `2` and its argument lies in
 `(-π/2, π/2]`. -/
-private theorem IsExtreme.arg_mem {θ : ℝ} {i j : ι} (he : A.IsExtreme θ i)
+theorem IsExtreme.arg_mem {θ : ℝ} {i j : ι} (he : A.IsExtreme θ i)
     (hj : A.contactGraph.Adj i j) :
     ‖(A.center i - A.center j) * exp (↑(-θ) * I)‖ = 2 ∧
       -(Real.pi / 2) < arg ((A.center i - A.center j) * exp (↑(-θ) * I)) ∧
@@ -306,7 +306,7 @@ theorem IsExtreme.dist_lt_four {θ : ℝ} {i j k : ι} (he : A.IsExtreme θ i)
 
 /-- Seen from any circle, two of its neighbours are at least `60°` apart (their centers are at
 distance `2` from it and at least `2` from each other). -/
-private theorem IsExtreme.pi_div_three_le {θ : ℝ} {i j k : ι} (he : A.IsExtreme θ i)
+theorem IsExtreme.pi_div_three_le {θ : ℝ} {i j k : ι} (he : A.IsExtreme θ i)
     (hj : A.contactGraph.Adj i j) (hk : A.contactGraph.Adj i k) (hjk : j ≠ k) :
     Real.pi / 3 ≤ |arg ((A.center i - A.center j) * exp (↑(-θ) * I)) -
       arg ((A.center i - A.center k) * exp (↑(-θ) * I))| :=
@@ -500,7 +500,7 @@ private theorem eq_of_six [Finite ι] (hn : Nat.card ι = 6) {a b c d e f : ι} 
   simp at h1
 
 /-- A circle that touches exactly three others, one of them `a`: the other two. -/
-private theorem TouchesExactlyThree.exists_two {i a : ι} (h : A.TouchesExactlyThree i)
+theorem TouchesExactlyThree.exists_two {i a : ι} (h : A.TouchesExactlyThree i)
     (ha : A.contactGraph.Adj i a) :
     ∃ b c, b ≠ c ∧ b ≠ a ∧ c ≠ a ∧ ∀ k, A.contactGraph.Adj i k ↔ k = a ∨ k = b ∨ k = c := by
   obtain ⟨x, y, z, hxy, hxz, hyz, hk⟩ := h
@@ -510,7 +510,7 @@ private theorem TouchesExactlyThree.exists_two {i a : ι} (h : A.TouchesExactlyT
   · exact ⟨x, y, hxy, hxz, hyz, fun k => by rw [hk]; tauto⟩
 
 /-- A circle that touches exactly three others, two of them `a` and `b`: the third one. -/
-private theorem TouchesExactlyThree.exists_third {i a b : ι} (h : A.TouchesExactlyThree i)
+theorem TouchesExactlyThree.exists_third {i a b : ι} (h : A.TouchesExactlyThree i)
     (ha : A.contactGraph.Adj i a) (hb : A.contactGraph.Adj i b) (hab : a ≠ b) :
     ∃ c, c ≠ a ∧ c ≠ b ∧ ∀ k, A.contactGraph.Adj i k ↔ k = a ∨ k = b ∨ k = c := by
   obtain ⟨x, y, hxy, hxa, hya, hk⟩ := h.exists_two ha
