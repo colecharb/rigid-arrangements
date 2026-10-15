@@ -147,6 +147,15 @@ svg .cell { fill: var(--cell); stroke: none; }
 svg .disk { fill: var(--disk); stroke: var(--disk-edge); stroke-width: 0.045; }
 svg .bar { stroke: var(--accent); stroke-width: 0.07; stroke-linecap: round; }
 svg .dot { fill: var(--accent); }
+svg .disk.hinge { stroke: var(--accent); stroke-width: 0.11; }
+svg .guide { fill: none; stroke: var(--muted); stroke-width: 0.045; stroke-dasharray: 0.16 0.12; }
+svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.34px; paint-order: stroke; stroke: var(--paper); stroke-width: 0.08px; }
+.examples { display: grid; gap: 14px; padding-top: 12px; border-top: 1px solid var(--ink); }
+.examples h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0; }
+.examples .band { border-top: none; padding-top: 4px; }
+.examples .shapes { align-items: center; }
+.examples .shapes .note { flex: 1 1 280px; min-width: 0; }
+.status.example { background: var(--rule); color: var(--ink); }
 
 @media (max-width: 640px) {
   .band { grid-template-columns: minmax(0, 1fr); gap: 12px; }
@@ -171,6 +180,13 @@ svg .dot { fill: var(--accent); }
   </header>
 
   <main id="bands" style="display:grid; gap:28px"></main>
+
+  <section class="examples" aria-labelledby="ex-h">
+    <h2 id="ex-h">Off the lattice</h2>
+    <p class="lede">Every arrangement above sits on the triangular lattice, and for up to six circles that is a
+      theorem. From eleven circles on it is no longer true.</p>
+    <div id="examples"></div>
+  </section>
 
   <p class="note">The drawings are generated from lattice coordinates: a site (<i>a</i>, <i>b</i>) has center
     <i>a</i>·(2, 0) + <i>b</i>·(1, √3), so two circles touch exactly when their sites differ by one of the six unit steps.
@@ -205,37 +221,39 @@ const LOWER_BOUNDS = [ { n: 7, k: 4 }, { n: 8, k: 9 }, { n: 9, k: 16 }, { n: 10,
 
 const SQ3 = Math.sqrt(3);
 const UNIT = 26; // pixels per unit length, shared by every drawing so sizes compare
-const STEPS = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
-const isStep = (d) => STEPS.some(([x, y]) => x === d[0] && y === d[1]);
-const center = ([a, b]) => [2 * a + b, -SQ3 * b]; // SVG y points down
 
-function draw(sites) {
-  const pts = sites.map(center);
+// Draw circles centered at real points (math coordinates, y up). Two circles touch when their
+// centers are 2 apart; three mutually touching circles get a shaded triangle.
+function drawPoints(mathPts, opts = {}) {
+  const pts = mathPts.map(([x, y]) => [x, -y]); // SVG y points down
   const pad = 1.18;
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
   const minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad;
   const minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
   const w = maxX - minX, h = maxY - minY;
-  const adj = (i, j) => isStep([sites[i][0] - sites[j][0], sites[i][1] - sites[j][1]]);
+  const adj = (i, j) => Math.abs(Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]) - 2) < 1e-9;
   let cells = "", bars = "", disks = "", dots = "";
   let edges = 0;
-  for (let i = 0; i < sites.length; i++)
-    for (let j = i + 1; j < sites.length; j++) {
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++) {
       if (!adj(i, j)) continue;
       edges++;
       bars += `<line class="bar" x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`;
-      for (let k = j + 1; k < sites.length; k++)
+      for (let k = j + 1; k < pts.length; k++)
         if (adj(i, k) && adj(j, k))
           cells += `<polygon class="cell" points="${[i, j, k].map(t => pts[t].join(",")).join(" ")}"/>`;
     }
-  for (const p of pts) {
-    disks += `<circle class="disk" cx="${p[0]}" cy="${p[1]}" r="1"/>`;
+  pts.forEach((p, i) => {
+    disks += `<circle class="disk${opts.hinge === i ? " hinge" : ""}" cx="${p[0]}" cy="${p[1]}" r="1"/>`;
     dots += `<circle class="dot" cx="${p[0]}" cy="${p[1]}" r="0.09"/>`;
-  }
-  const svg = `<svg viewBox="${minX} ${minY} ${w} ${h}" width="${Math.round(w * UNIT)}" height="${Math.round(h * UNIT)}" role="img">` +
-    `${disks}${cells}${bars}${dots}</svg>`;
+  });
+  const extra = opts.overlay ? opts.overlay(pts) : "";
+  const u = opts.unit || UNIT;
+  const svg = `<svg viewBox="${minX} ${minY} ${w} ${h}" width="${Math.round(w * u)}" height="${Math.round(h * u)}" role="img">` +
+    `${disks}${cells}${bars}${extra}${dots}</svg>`;
   return { svg, edges };
 }
+const draw = (sites) => drawPoints(sites.map(([a, b]) => [2 * a + b, SQ3 * b]));
 
 const plural = (k, one, many) => `${k} ${k === 1 ? one : many}`;
 
@@ -270,5 +288,46 @@ for (const d of DATA) {
        <div class="shapes">${figs}</div>
      </section>`);
 }
+
+// O11, the off-lattice example (RigidArrangements/OffLattice.lean). The left chevron is the
+// lattice chevron o11Sites placed by z ↦ ω·conj z with ω = (−√33 + i√3)/6; the right chevron is
+// its mirror image z ↦ 2 − conj z. They share the hinge H = 1 + i√11, and their far ends
+// X = 0 and Y = 2 touch.
+const O11_SITES = [[0,0],[1,0],[0,1],[1,1],[0,2],[-1,2]];
+const omega = [-Math.sqrt(33) / 6, SQ3 / 6];
+const place = ([x, y]) => [omega[0] * x + omega[1] * y, omega[1] * x - omega[0] * y]; // ω·conj z
+const left = O11_SITES.map(([a, b]) => place([2 * a + b, SQ3 * b]));
+const right = left.slice(0, 5).map(([x, y]) => [2 - x, y]);
+const o11 = [...left, ...right]; // index 5 is the hinge
+
+const overlay = (pts) => {
+  const [h, x, y] = [pts[5], pts[0], pts[6]];
+  const unit = (p) => { const d = Math.hypot(p[0] - h[0], p[1] - h[1]); return [(p[0] - h[0]) / d, (p[1] - h[1]) / d]; };
+  const r = 1.55, ux = unit(x), uy = unit(y);
+  const a1 = [h[0] + r * ux[0], h[1] + r * ux[1]], a2 = [h[0] + r * uy[0], h[1] + r * uy[1]];
+  return `<line class="guide" x1="${h[0]}" y1="${h[1]}" x2="${x[0]}" y2="${x[1]}"/>` +
+    `<line class="guide" x1="${h[0]}" y1="${h[1]}" x2="${y[0]}" y2="${y[1]}"/>` +
+    `<path class="guide" d="M ${a1[0]} ${a1[1]} A ${r} ${r} 0 0 0 ${a2[0]} ${a2[1]}"/>` +
+    `<text class="anglabel" x="${h[0]}" y="${h[1] + 2.02}" text-anchor="middle">33.6°</text>`;
+};
+const off = drawPoints(o11, { hinge: 5, overlay, unit: 36 });
+document.getElementById("examples").insertAdjacentHTML("beforeend",
+  `<section class="band" id="n11" aria-label="11 circles, off the lattice">
+     <div class="side">
+       <div class="count">11<small>circles</small></div>
+       <span class="status example">example</span>
+       <div class="thm"><code>o11_isRigid</code><br><code>o11_not_isLattice</code><br><code>o11_isCore</code></div>
+     </div>
+     <div class="shapes">
+       <figure>${off.svg}<figcaption><b>two hinged chevrons</b>
+         <span class="meta">${plural(off.edges, "contact", "contacts")} · <code>o11</code></span></figcaption></figure>
+       <p class="note">Two copies of the 6-circle chevron share one circle, the hinge (outlined), and their far
+         ends touch. The hinge sees those ends at an angle of arccos(5/6) ≈ 33.6°, which is not a multiple
+         of 60°, so no triangular lattice contains this arrangement. It is still rigid: each chevron is rigid,
+         and one contact between them, away from the hinge, locks the hinge. No circle can be peeled off, so
+         it is a core. It is the smallest rigid arrangement off the lattice found so far, and it is one of
+         the at least 70 rigid arrangements of 11 circles.</p>
+     </div>
+   </section>`);
 })();
 </script>
