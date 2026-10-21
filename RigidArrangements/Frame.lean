@@ -85,6 +85,13 @@ theorem latticePoint_add (v w : ℤ × ℤ) : latticePoint (v + w) = latticePoin
 theorem latticePoint_zero : latticePoint 0 = 0 := by
   apply Complex.ext <;> simp [latticePoint]
 
+/-- `ρ ^ 4 = -ρ`, from `ρ ^ 3 = -1`. -/
+theorem rho_pow_four : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
+
+/-- `ρ ^ 5 = 1 - ρ`, from `ρ ^ 2 = ρ - 1`. -/
+theorem rho_pow_five : rho ^ 5 = 1 - rho := by
+  rw [pow_succ, rho_pow_four, neg_mul, ← sq, rho_sq]; ring
+
 /-- The lattice vectors of `eNorm` one are the six units. -/
 theorem mem_latticeUnits_of_eNorm_eq_one {v : ℤ × ℤ} (h : eNorm v = 1) : v ∈ latticeUnits := by
   obtain ⟨a, b⟩ := v
@@ -98,8 +105,8 @@ theorem mem_latticeUnits_of_eNorm_eq_one {v : ℤ × ℤ} (h : eNorm v = 1) : v 
 
 /-- A unit lattice vector is `2 ρ^m` for some `m < 6`. -/
 theorem latticePoint_unit {v : ℤ × ℤ} (h : eNorm v = 1) : ∃ m < 6, latticePoint v = 2 * rho ^ m := by
-  have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-  have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+  have h4 := rho_pow_four
+  have h5 := rho_pow_five
   have hm := mem_latticeUnits_of_eNorm_eq_one h
   simp only [latticeUnits, List.mem_cons, List.not_mem_nil, or_false] at hm
   rcases hm with rfl | rfl | rfl | rfl | rfl | rfl
@@ -113,8 +120,8 @@ theorem latticePoint_unit {v : ℤ × ℤ} (h : eNorm v = 1) : ∃ m < 6, lattic
 /-- Conversely `2 ρ^m` is a unit lattice vector. -/
 theorem exists_latticePoint_eq_two_mul_rho_pow (m : ℕ) :
     ∃ v : ℤ × ℤ, eNorm v = 1 ∧ latticePoint v = 2 * rho ^ m := by
-  have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-  have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+  have h4 := rho_pow_four
+  have h5 := rho_pow_five
   rw [← rho_pow_mod_six]
   have : m % 6 < 6 := Nat.mod_lt _ (by norm_num)
   interval_cases (m % 6)
@@ -264,8 +271,8 @@ end Arrangement
 
 /-- The real parts of the sixth roots of unity are `±1` or `±1/2`. -/
 theorem rho_pow_re_sq (m : ℕ) : (rho ^ m).re ^ 2 = 1 ∨ (rho ^ m).re ^ 2 = 1 / 4 := by
-  have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-  have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+  have h4 := rho_pow_four
+  have h5 := rho_pow_five
   rw [← rho_pow_mod_six]
   have : m % 6 < 6 := Nat.mod_lt _ (by norm_num)
   interval_cases (m % 6) <;> simp [rho_sq, rho_pow_three, h4, h5] <;> norm_num
@@ -498,18 +505,9 @@ theorem eNorm_neg (v : ℤ × ℤ) : eNorm (-v) = eNorm v := by
 theorem normTriangle_of_exists {N₁ N₂ : ℕ} {a b : ℤ × ℤ} (ha : eNorm a = N₁) (hb : eNorm b = N₂)
     (hab : eNorm (a - b) = 1) : normTriangle N₁ N₂ = true := by
   have he : eNorm (b - a) = 1 := by rw [← neg_sub, eNorm_neg, hab]
-  have hmem : ∀ e : ℤ × ℤ, eNorm e = 1 → e ∈ latticeUnits := by
-    intro e h
-    obtain ⟨p, q⟩ := e
-    simp only [eNorm] at h
-    have h1 : p ≤ 1 := by nlinarith [sq_nonneg (p + 2 * q)]
-    have h2 : -1 ≤ p := by nlinarith [sq_nonneg (p + 2 * q)]
-    have h3 : q ≤ 1 := by nlinarith [sq_nonneg (2 * p + q)]
-    have h4 : -1 ≤ q := by nlinarith [sq_nonneg (2 * p + q)]
-    revert h
-    interval_cases p <;> interval_cases q <;> decide
   simp only [normTriangle, decide_eq_true_eq]
-  exact ⟨a, mem_vecsOfNorm ha, b - a, hmem _ he, by rw [add_sub_cancel, hb]⟩
+  exact ⟨a, mem_vecsOfNorm ha, b - a, mem_latticeUnits_of_eNorm_eq_one he,
+    by rw [add_sub_cancel, hb]⟩
 
 namespace Arrangement
 
@@ -570,8 +568,8 @@ theorem exists_latticeSymmetry_div : ∀ M₁ ∈ latticeSymmetries, ∀ M₂ �
 /-- Rotations by `ρ^k` act on the lattice by symmetries. -/
 theorem exists_latticeSymmetry_rho_pow (k : ℕ) :
     ∃ M ∈ latticeSymmetries, ∀ v, rho ^ k * latticePoint v = latticePoint (latticeMatApply M v) := by
-  have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-  have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+  have h4 := rho_pow_four
+  have h5 := rho_pow_five
   rw [← rho_pow_mod_six]
   have : k % 6 < 6 := Nat.mod_lt _ (by norm_num)
   interval_cases (k % 6)
@@ -620,17 +618,9 @@ theorem exists_latticeSymmetry_of_linearIsometry (L : ℂ ≃ₗᵢ[ℝ] ℂ) {e
     obtain ⟨M, hM, h⟩ := (⟨(1, 0, 0, 1), by decide, fun _ => rfl⟩ :
       ∃ M ∈ latticeSymmetries, ∀ v : ℤ × ℤ, latticeMatApply M v = latticeMatApply M v)
     clear h hM M
-    have hm : w ∈ latticeUnits := by
-      obtain ⟨p, q⟩ := w
-      simp only [eNorm] at hw
-      have h1 : p ≤ 1 := by nlinarith [sq_nonneg (p + 2 * q)]
-      have h2 : -1 ≤ p := by nlinarith [sq_nonneg (p + 2 * q)]
-      have h3 : q ≤ 1 := by nlinarith [sq_nonneg (2 * p + q)]
-      have h4 : -1 ≤ q := by nlinarith [sq_nonneg (2 * p + q)]
-      revert hw
-      interval_cases p <;> interval_cases q <;> decide
-    have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-    have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+    have hm := mem_latticeUnits_of_eNorm_eq_one hw
+    have h4 := rho_pow_four
+    have h5 := rho_pow_five
     simp only [latticeUnits, List.mem_cons, List.not_mem_nil, or_false] at hm
     rcases hm with rfl | rfl | rfl | rfl | rfl | rfl
     · exact ⟨0, by rw [latticePoint_eq]; simp⟩

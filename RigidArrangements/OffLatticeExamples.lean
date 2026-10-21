@@ -522,8 +522,8 @@ theorem hbAlpha_eq_of_sq {u v : ℤ × ℤ} {σ k : ℤ} (hu : u ≠ 0) (hv : v 
 
 /-- `eis` of a unit is a power of `ρ`, and conversely. -/
 theorem exists_unit_eis_eq_rho_pow (m : ℕ) : ∃ r ∈ latticeUnits, eis r = rho ^ m := by
-  have h4 : rho ^ 4 = -rho := by rw [pow_succ, rho_pow_three]; ring
-  have h5 : rho ^ 5 = 1 - rho := by rw [pow_succ, h4, neg_mul, ← sq, rho_sq]; ring
+  have h4 := rho_pow_four
+  have h5 := rho_pow_five
   rw [← rho_pow_mod_six]
   have : m % 6 < 6 := Nat.mod_lt _ (by norm_num)
   interval_cases (m % 6)
