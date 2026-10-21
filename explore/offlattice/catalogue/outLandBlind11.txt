@@ -1,0 +1,5 @@
+n=11: lattice rigid sets=69, known off-lattice=0
+traces=8326 blocked=4923 fails=4 endpoints: lattice=3392 known-off=6 nonrigid=0 overlap=0 NEW-off=1
+BLIND: discovered 1 off-lattice arrangements; 1 of the 1 catalogue entries rediscovered; 0 not in catalogue
+  NEW: from L11#2 removing #[8, 10], contacts=19, core=true
+    #[(0.000000, -0.000000), (0.500000, 0.866025), (-0.166667, -1.971567), (-0.228714, -0.973494), (1.000000, 0.000000), (1.500000, 0.866025), (0.728714, -2.416869), (0.666667, -1.418796), (1.500000, -0.866025), (2.000000, 0.000000), (1.562047, -1.864099)]

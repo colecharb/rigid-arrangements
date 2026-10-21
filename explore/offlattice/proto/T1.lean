@@ -1,0 +1,13 @@
+import RigidArrangements
+open RigidArrangements
+#check @linear_isometry_complex
+#check @rotation_apply
+#check @Complex.isPrimitiveRoot_exp
+#check @SimpleGraph.Walk.rec
+#check @SimpleGraph.Connected.preconnected
+#check @AffineIsometryEquiv.linearIsometryEquiv
+#check @AffineIsometryEquiv.map_vsub
+#check @Complex.conjLIE_apply
+#check exp_pi_div_three_mul_I
+#check @SimpleGraph.Reachable.elim
+#check @Arrangement.Iso.isLattice_iff
