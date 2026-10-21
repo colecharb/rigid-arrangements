@@ -387,14 +387,14 @@ document.getElementById("examples").insertAdjacentHTML("beforeend",
    </section>`);
 
 // Further off-lattice examples from the exploration in docs/offlattice.md (coordinates checked:
-// tangent pairs are 2 apart to 1e-9, no overlaps). status: "scratch Lean" = rigid and off-lattice
-// proved in explore/offlattice/proto/OffLatticeProto.lean; "computed" = exploratory computation.
+// tangent pairs are 2 apart to 1e-9, no overlaps). status: "Lean" = rigid and off-lattice proved
+// in the library (RigidArrangements/OffLatticeExamples.lean); "computed" = exploratory computation.
 const OFF_EXAMPLES = [
   { title: "O11 plus a triangle on the bar", n: 12, status: "computed", group: "picture", unit: 22,
     hinges: [4, 5, 10], angle: "arccos(5/6) \u2248 33.557\u00b0 (inherited from O11)",
     desc: "One more circle beyond O11's bar turns the bar into a third lattice piece, a triangle in a third direction. Three pieces now meet pairwise at hinges. It is not a core: the new circle can be peeled off.",
     points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.45742710775634, 1.94698752977251], [6.58152088217934, -0.04915894159412], [4.66666666666667, 2.83759240435401], [4.79076044108967, 0.84144593298738], [4.91485421551268, -1.15470053837925], [4.45742710775634, -3.10168806815176]] },
-  { title: "Q13: trapezoid and a 9-circle piece", n: 13, status: "scratch Lean", group: "picture", unit: 22,
+  { title: "Q13: trapezoid and a 9-circle piece", n: 13, status: "Lean", group: "picture", unit: 22,
     hinges: [0], angle: "arccos(7/8) \u2248 28.955\u00b0",
     desc: "One hinge and one bar. Both bar ends are 4 from the hinge, which forces a rotation of arccos(7/8) \u2248 29.0\u00b0. The only new off-lattice core at 13 circles in the exact search.",
     points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-3.46352549156242, 0.06317570179499], [-3.42705098312484, 2.06284307669368], [-3.39057647468726, 4.06251045159238], [-1.75000000000000, -0.96824583655185], [-1.71352549156242, 1.03142153834684], [-1.67705098312484, 3.03108891324554], [-1.64057647468726, 5.03075628814423], [0.07294901687516, 3.99933474979739]] },
@@ -402,11 +402,11 @@ const OFF_EXAMPLES = [
     hinges: [4, 5, 6], angle: "frames at 0\u00b0, 24.736\u00b0, 49.471\u00b0 (mod 60\u00b0)",
     desc: "A chevron, a trapezoid and a chevron, each pair sharing a hinge, with no bar. The three hinges form a triangle with squared sides 12, 16, 12, which forces rotations of 24.7\u00b0 and 49.5\u00b0. The smallest off-lattice ring found.",
     points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.26598632371090, -0.57735026918963], [4.63299316185545, 0.57735026918963], [6.44948974278318, 1.41421356237310], [4.81649658092773, 2.56891410075235], [5.63299316185545, -3.98312766312544], [3.66666666666667, -3.61766889073300], [6.93265299037757, -2.46296835235375], [4.96632649518879, -2.09750957996132]] },
-  { title: "ex15: a coincidence rotation", n: 15, status: "scratch Lean", group: "picture", unit: 22,
+  { title: "ex15: a coincidence rotation", n: 15, status: "Lean", group: "picture", unit: 22,
     hinges: [0], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0 (hinge angle 19.107\u00b0)",
     desc: "A trapezoid and an 11-circle piece, hinge plus bar. Every coordinate stays in \u211a(\u221a3), yet the second piece is turned by arccos(13/14) \u2248 21.8\u00b0. Under this rotation the two lattices share a sublattice of index 7. What matters is the rotation between the lattices, not a new square root.",
     points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-4.00000000000000, 3.46410161513775], [-3.71428571428571, 1.48461497791618], [-3.42857142857143, -0.49487165930539], [-2.42857142857143, 4.70128076340124], [-2.14285714285714, 2.72179412617966], [-1.85714285714286, 0.74230748895809], [-1.57142857142857, -1.23717914826348], [-0.85714285714286, 5.93845991166472], [-0.57142857142857, 3.95897327444315], [1.00000000000000, 5.19615242270663]] },
-  { title: "DH17: two shared circles, no bar", n: 17, status: "scratch Lean", group: "picture", unit: 22,
+  { title: "DH17: two shared circles, no bar", n: 17, status: "Lean", group: "picture", unit: 22,
     hinges: [6, 7], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0",
     desc: "Two pieces share two circles and do not otherwise touch. Two shared circles lock the pieces together. This works only because the shared circles, 2\u221a7 apart, lie on the common sublattice of a coincidence rotation.",
     points: [[-4.00000000000000, -3.46410161513775], [-3.00000000000000, -1.73205080756888], [-2.00000000000000, 0.00000000000000], [-3.00000000000000, -5.19615242270663], [-2.00000000000000, -3.46410161513775], [-1.00000000000000, -1.73205080756888], [0.00000000000000, 0.00000000000000], [-1.00000000000000, -5.19615242270663], [4.00000000000000, -3.46410161513775], [3.71428571428571, -1.48461497791618], [3.42857142857143, 0.49487165930539], [2.42857142857143, -4.70128076340124], [2.14285714285714, -2.72179412617966], [1.85714285714286, -0.74230748895809], [1.57142857142857, 1.23717914826348], [0.85714285714286, -5.93845991166472], [0.57142857142857, -3.95897327444315]] },
