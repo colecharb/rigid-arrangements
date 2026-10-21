@@ -391,3 +391,70 @@ Kernel-checked prototypes of the frame criterion, the body lemma, a reduction of
 to 10 circles" to a statement about cores, and three more certified off-lattice examples (13, 15
 and 17 circles) are in `explore/offlattice/proto/OffLatticeProto.lean`, ready to be moved into the
 library. The figure now has a gallery of off-lattice examples, colored by direction class.
+
+## 2026-10-21: The off-lattice prototypes are now library theorems
+
+The kernel-checked prototypes in `explore/offlattice/proto/` have been cleaned up and moved into
+the library as two new files. Nothing here is new mathematics: these are the statements
+`docs/offlattice.md` has been carrying as *Lean-scratch* since 2026-10-15, now built by `lake
+build` and checked by CI. All eighteen headline theorems depend only on the standard axioms
+(`propext`, `Classical.choice`, `Quot.sound`), and there is no `sorry` and no `native_decide`.
+
+**`RigidArrangements/Frame.lean`** — when an arrangement lies on the triangular lattice.
+
+The *frame invariant* of a contact is the sixth power of the vector joining the two centres. Its
+modulus is always 64, and raising to the sixth power forgets exactly a rotation by a multiple of
+60°, so the invariant records which rotated copy of the triangular lattice the contact points
+along. The theorem is that this is the whole story: a connected arrangement lies on a lattice
+**iff** all its contacts have the same frame invariant. Since rigid arrangements are connected,
+a rigid arrangement is off the lattice exactly when its contacts point in at least two directions
+modulo 60°. That is the criterion the off-lattice exploration had been using informally.
+
+The file also proves the *body lemma*. Say a circle is *grown* from a seed if it can be reached
+by repeatedly adding a circle touching two already-grown circles less than 4 apart. Growth from
+a seed on the lattice stays on the lattice; the seed may be a single contact; and so a
+triangle-connected arrangement lies on a lattice. Conversely, what is grown from one contact is
+rigid, by a chain of Henneberg steps. Together these say that the triangle-connected pieces of
+any arrangement — its *bodies* — are rigid polyiamond corner sets, each sitting in a lattice of
+its own. Finally, two decidable tests turn the criterion into `decide` calls on integer data
+(`normTriangle`, which asks whether a lattice triangle with given side norms exists, and
+`frameCompatible`, which asks whether two bodies' bar vectors can be put in one frame by a
+lattice symmetry), and `isLattice_of_card_le_ten_of_cores` reduces the conjecture "every rigid
+arrangement of at most ten circles is on the lattice" to the same claim about cores only, using
+that adding a removable circle never takes an arrangement off the lattice.
+
+**`RigidArrangements/OffLatticeExamples.lean`** — certified off-lattice arrangements.
+
+`OffLattice.lean` builds one off-lattice arrangement, O11, by hand, with its coordinates written
+out in ℚ(√3, √11). This file replaces the hand work by a constructor. Give two polyiamonds as
+lists of lattice sites, both with their hinge at the origin, and name the two ends of the bar.
+The bar then forces the angle between the two bodies, and a single Boolean check `hbCheck`
+decides whether the result is a genuine arrangement: it verifies the bar closes, and — this is
+the part that needs care — that no two circles of the two bodies overlap. Every squared distance
+across the hinge has the form `A + B√(3D)` with `A` and `B` rational and computable, so
+comparing it with 4 is a decidable sign test on `p + q√M`. When the check passes, the
+arrangement is rigid by the hinge-and-bar lemma.
+
+Two criteria then show the result is off the lattice. The first is the `normTriangle` test: if no
+lattice triangle has the hinge triangle's side norms, the arrangement cannot be on a lattice.
+The second is needed because the first is not enough — in `ex15` the hinge and both bar ends
+*are* lattice points of the first body, and the hinge angle is a lattice angle, yet the second
+body is turned by a "coincidence" rotation under which the two lattices share a sublattice of
+index 7. When the discriminant `D` is three times a square, that turn lies in ℚ(ρ) and the
+question "is the turn a sixth root of unity?" becomes a decidable statement about Eisenstein
+integers.
+
+The instances: O11 rebuilt by the constructor (a check on the machinery), and three new certified
+examples — `ex13`, the 13-circle core Q13; `ex15`, the 15-circle coincidence-rotation example;
+and `ex17`, the 17-circle double hinge DH17, entered as a hinge and a bar. Each is rigid and not
+on the lattice. The catalogue in `docs/offlattice.md` is retagged accordingly.
+
+**What this does not settle.** T14 and the other three-body rings are still only computations:
+the constructor glues two bodies, not three. H30 and E30, the two 30-circle arrangements whose
+off-lattice information is carried by circles in no triangle, are still outside Lean. And the
+completeness claims — that the catalogue of off-lattice cores up to 14 circles is exhaustive —
+remain computations relative to the searches that produced them.
+
+**Next.** The cluster-merging calculus: a relative-rigidity notion and merge rules, so that
+rigidity of a large arrangement can be certified by a short combinatorial certificate rather
+than by a hinge-and-bar construction tailored to each case.

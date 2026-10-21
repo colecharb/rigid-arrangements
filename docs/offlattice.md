@@ -1,6 +1,6 @@
 # Off-lattice rigid arrangements
 
-> **Status (2026-10-15).** This page brings together four exploratory investigations: structure theory, an exact catalogue, an adversarial search, and a Lean prototype. An independent verifier rechecked each one. The Lean library itself contains only `O11` (`OffLattice.lean`) and the general facts it uses. The results marked *Lean-scratch* are kernel-checked, with standard axioms only and no `sorry`, in `explore/offlattice/proto/OffLatticeProto.lean`, but they are not in the repository yet. All exploratory programs are compiled Lean; see §12.
+> **Status (2026-10-21).** This page brings together four exploratory investigations: structure theory, an exact catalogue, an adversarial search, and a Lean prototype. An independent verifier rechecked each one. The prototype has since been promoted into the library: the frame criterion, the body lemma, the peeling and C5 reductions, the two decidable tests and the hinge-and-bar constructor with its certified examples now live in `RigidArrangements/Frame.lean` and `RigidArrangements/OffLatticeExamples.lean`, so the results this page used to mark as kernel-checked-but-not-in-the-repository are now marked **[Lean]**. All exploratory programs are compiled Lean; see §12.
 
 **Units and notation.**
 - Circles have radius 1, so touching centres are exactly 2 apart.
@@ -9,7 +9,6 @@
 
 **Status tags.**
 - **[Lean]**: a theorem in the repository.
-- **[Lean-scratch]**: kernel-checked, but not in the repository.
 - **[proved]**: a complete paper proof, rechecked by a verifier.
 - **[computed-exact]**: exploratory Lean using exact integer, rational or algebraic arithmetic, or rigorous interval arithmetic.
 - **[computed-float]**: floating-point computation.
@@ -21,7 +20,7 @@
 
 1. **Every arrangement is built from lattice pieces.** [proved]
    - Take the tangent triangles of an arrangement and group them into maximal families linked through shared edges. Each such family (a *body*) lies on its own rotated copy of the triangular lattice. It is the corner set of a polyiamond.
-   - A rigid arrangement is off the lattice exactly when its contacts point in at least two directions modulo 60° [Lean-scratch].
+   - A rigid arrangement is off the lattice exactly when its contacts point in at least two directions modulo 60° [Lean].
 2. **Below 30 circles the user's picture holds exactly** [computed-exact, relative to the searches in §6].
    - This covers all 169 known off-lattice arrangements with n ≤ 14, and every off-lattice core found up to n = 17.
    - Each consists of two or three rigid lattice bodies that share *hinge* circles. They are locked by one extra contact (a *bar*), by a third body closing a ring, or by a second shared circle.
@@ -74,7 +73,7 @@ The off-lattice world is the third place where the polyiamond analogy of `docs/p
 
 ## 3. Structure theorems
 
-**Theorem 1 (bodies are lattice pieces).** [proved; Lean-scratch `isLattice_of_triGrown`, `isRigid_of_grown_pair`]
+**Theorem 1 (bodies are lattice pieces).** [proved; Lean `isLattice_of_triGrown`, `isRigid_of_grown_pair`]
 Let {a, b, c} be any triangle of a body B. Then L = a + ℤ(b − a) + ℤ(c − a) is the unique frame containing B. Moreover, B is congruent to the corner set of an edge-connected polyiamond, so it is rigid (Lean `IsPolyiamond.isRigid`) and infinitesimally rigid.
 
 *Proof.*
@@ -82,7 +81,7 @@ Let {a, b, c} be any triangle of a body B. Then L = a + ℤ(b − a) + ℤ(c −
 - A triangle {u, v, w'} glued to {u, v, w} along the edge uv has its new apex at w' = u + v − w. This is the only other point at distance 2 from both u and v, and it lies in L.
 - Uniqueness: two shortest vectors at 60° generate any frame that contains them. ∎
 
-**Theorem 2 (frame criterion).** [proved; Lean-scratch `isLattice_iff_frameInv`, `IsRigid.not_isLattice_iff`]
+**Theorem 2 (frame criterion).** [proved; Lean `isLattice_iff_frameInv`, `IsRigid.not_isLattice_iff`]
 A connected arrangement lies on a lattice iff (p_j − p_i)⁶ takes the same value for every contact ij, that is, iff all contacts point in the same direction modulo 60°. Rigid arrangements are connected (Lean). So a rigid arrangement is off the lattice iff it has contacts in at least two direction classes.
 
 The connected pieces of each direction class are lattice pieces. They can be tiny: O11 has three classes, namely two chevrons and the bar.
@@ -115,7 +114,7 @@ In case (b), each off-L circle touches at most one circle of L. If A is infinite
   - Suppose two bodies' frames differ only by a translation. If the bodies share a circle, or are joined by bars with at least two different bar vectors, they lie in one frame. The reason: two radius-2 circles about distinct lattice points at most 4 apart meet only at lattice points.
   - If all bar vectors are equal, the second body slides (shear flex, Lean `not_isRigid_of_shear`).
   - So for *directly* joined bodies, "different frame" means "non-lattice relative rotation".
-- **Peeling.** [proved; Lean-scratch `isLattice_of_removable`, `isLattice_of_card_le_ten_of_cores`]
+- **Peeling.** [proved; Lean `isLattice_of_removable`, `isLattice_of_card_le_ten_of_cores`]
   - Adding a removable circle never takes a lattice arrangement off the lattice.
   - So every off-lattice rigid arrangement peels (Lean `IsRigid.erase`) to an off-lattice rigid core.
   - Conjecture C5 below 11 therefore reduces to one claim: every rigid core with 9 or 10 circles lies on the lattice.
@@ -147,21 +146,21 @@ In case (b), each off-L circle touches at most one circle of L. If A is infinite
 - a realization exists iff Δ = 4pq − (p + q − 1)² ≥ 0;
 - **ζ = τ_s/(ᾱβ)** with τ_s = ((p + q − 1) + s·i√Δ)/2, where s = ±1 records the side of the line hx on which y lies.
 
-Each choice of bodies and ports has 4 realizations: two sides s times two orientations of B2. Their lattice status can differ. A realization is on a lattice iff ζ⁶ = 1. The off-lattice direction is Lean-scratch: `hbArr_not_isLattice`, `hbArr_not_isLattice_of_turn`.
+Each choice of bodies and ports has 4 realizations: two sides s times two orientations of B2. Their lattice status can differ. A realization is on a lattice iff ζ⁶ = 1. The off-lattice direction is Lean: `hbArr_not_isLattice`, `hbArr_not_isLattice_of_turn`.
 
 ### 4.2 Two kinds of non-lattice rotation [proved]
 
 - **Type I, incommensurate (Δ ≠ 3k²).**
   - Here ζ ∉ ℚ(ω). The two frames share only the hinge, and the coordinates need √Δ.
   - O11: (p, q) = (3, 3), Δ = 11. Q13: (4, 4), Δ = 15.
-  - A lattice triangle with side norms (p, q, 1) exists iff Δ = 3k² [proved both ways; checked for all norms ≤ 150]. This gives the decidable test `not_isLattice_of_normTriangle_eq_false` [Lean-scratch].
+  - A lattice triangle with side norms (p, q, 1) exists iff Δ = 3k² [proved both ways; checked for all norms ≤ 150]. This gives the decidable test `not_isLattice_of_normTriangle_eq_false` [Lean].
 - **Type II, coincidence rotation (Δ = 3k² but ζ⁶ ≠ 1).**
   - Here ζ ∈ ℚ(ω). Writing ζ = μ/ν in lowest terms, the two frames share a sublattice of index Σ = N(μ). All prime factors of Σ are ≡ 1 (mod 3).
   - Σ = 7 gives arccos(13/14) ≈ 21.787°, the Σ7 grain-boundary rotation of hexagonal crystals. Σ = 49 gives arccos(47/49) ≈ 16.426°.
   - All coordinates stay in ℚ(√3). **"Non-lattice" does not mean "irrational".**
   - Type II needs a prime ≡ 1 (mod 3) dividing pq.
   - Two bodies can share two circles (at least 2√7 apart) and lock *without any bar*.
-- **The hinge angle is not the invariant.** [proved; Lean-scratch `ex15_not_isLattice`] In ex15 (§5) the hinge and both bar ends are lattice points of the first body. Its hinge angle arccos(5/(2√7)) ≈ 19.107° is a lattice angle. Yet the second body is turned by the Σ7 rotation.
+- **The hinge angle is not the invariant.** [proved; Lean `ex15_not_isLattice`] In ex15 (§5) the hinge and both bar ends are lattice points of the first body. Its hinge angle arccos(5/(2√7)) ≈ 19.107° is a lattice angle. Yet the second body is turned by the Σ7 rotation.
 
 ### 4.3 Which port norms can give an off-lattice angle [proved; checked exhaustively for norms ≤ 100]
 
@@ -219,10 +218,10 @@ Let p ≤ q be Eisenstein norms with Δ ≥ 0.
   - Only equal bar vectors give a genuine motion (shear).
 - **Collinear rings.** Rigid but not infinitesimally rigid.
 
-### 4.6 Correction to the plan's frame test (formula-plan WS8) [proved; counterexamples computed-exact and Lean-scratch]
+### 4.6 Correction to the plan's frame test (formula-plan WS8) [proved; counterexamples computed-exact and Lean]
 
 WS8 states: "the union is a lattice set iff some lattice symmetry g has eNorm(u − g·v) = 1". Only one direction is true.
-- **True direction.** If no g works, the union is off-lattice (Lean-scratch `not_isLattice_of_frameCompatible_eq_false`).
+- **True direction.** If no g works, the union is off-lattice (Lean `not_isLattice_of_frameCompatible_eq_false`).
 - **False direction.** ex15 and S15 pass the test and are off-lattice. The bar closure has two roots. When one root is a lattice symmetry, the other is its reflection in the line hx, and that reflection is off-lattice unless hx points along a multiple of 30°.
 - **Correct exact test.** ζ⁶ = 1 for the particular realization. Use T1 for type I, and the turn test `hbArr_not_isLattice_of_turn` for type II.
 
@@ -240,20 +239,20 @@ WS8 states: "the union is a lattice set iff some lattice symmetry g has eNorm(u 
 | ≤ 10 | none | | | | | | Lean for n ≤ 8; searched for 9, 10 (§6) |
 | 11 | **O11** | chevron + chevron, hinge + bar | (3,3), Δ = 11 | arccos(5/6) = 33.557°, type I | ℚ(√3, √11) | 19 | Lean: rigid, core, off-lattice. computed-exact: irreducible, infinitesimally rigid, unique at 11 |
 | 12 | none new | | | | | | computed |
-| 13 | **Q13** | trapezoid (5) + 9-circle body, hinge + bar | (4,4), Δ = 15 | arccos(7/8) = 28.955°, type I | ℚ(√3, √5) | 23 | Lean-scratch: rigid, off-lattice. computed-exact: core, irreducible, only new core at 13 |
+| 13 | **Q13** | trapezoid (5) + 9-circle body, hinge + bar | (4,4), Δ = 15 | arccos(7/8) = 28.955°, type I | ℚ(√3, √5) | 23 | Lean: rigid, off-lattice. computed-exact: core, irreducible, only new core at 13 |
 | 14 | **T14** | ring: chevron, trapezoid, chevron | hinges (3,4,3), D = 32 | 24.736° and 49.471° | ℚ(√2, √3) | 25 | computed-exact: core, irreducible |
 | 14 | three flower cores | chevron + 9-circle body = O11 + 3 circles completing a hexagonal flower | (3,3) | as O11 | as O11 | 26 | computed-exact: cores, but reducible (contain O11) |
-| 15 | **ex15** | trapezoid + 11-circle body, hinge + bar | (4,7), Δ = 12 | arccos(13/14) = 21.787° (≡ 38.213°), Σ = 7 | ℚ(√3) | 27 | Lean-scratch: rigid, off-lattice. computed-exact: core |
+| 15 | **ex15** | trapezoid + 11-circle body, hinge + bar | (4,7), Δ = 12 | arccos(13/14) = 21.787° (≡ 38.213°), Σ = 7 | ℚ(√3) | 27 | Lean: rigid, off-lattice. computed-exact: core |
 | 15 | **S15** | two 8-circle bodies, hinge + bar | (7,7), Δ = 27 | arccos(13/14), Σ = 7 | ℚ(√3) | 27 | computed-exact; only 2 direction classes, since the bar lies in B2's frame |
 | 15 | **II15b** | two 8-circle bodies, one mirrored | (7,7), Δ = 27 | arccos(47/49) = 16.426° (≡ 43.574°), Σ = 49 | ℚ(√3) | 27 | computed-exact |
 | 15 | **Ring15** | ring: trapezoid, 5-circle body, 8-circle body | hinges (4,4,7), D = 63 | 22.819°, 30.516° | ℚ(√3, √7) | 27 | computed-exact |
 | 15 | I15 | trapezoid + 11-circle body | (4,4) | as Q13 | ℚ(√3, √5) | 28 | computed-exact; a core, but reducible |
 | 16 | 13 two-body hinge + bar cores; 3 ring cores | | | | | | computed-exact; ring count corrected, §10 |
-| 17 | 27 two-body hinge + bar cores; **DH17** | DH17: 8- and 11-circle bodies sharing two circles 2√7 apart, no bar | N = 7 | arccos(13/14), Σ = 7 | ℚ(√3) | 32 = 2n − 2 | Lean-scratch (as `ex17`): rigid, off-lattice. computed-exact: first double hinge |
+| 17 | 27 two-body hinge + bar cores; **DH17** | DH17: 8- and 11-circle bodies sharing two circles 2√7 apart, no bar | N = 7 | arccos(13/14), Σ = 7 | ℚ(√3) | 32 = 2n − 2 | Lean (as `ex17`): rigid, off-lattice. computed-exact: first double hinge |
 | 30 | **H30**, **E30** | case (b): one body plus free circles | | §8 | | 57 / 52 | computed-exact / proved |
 
 **Aliases.** Across the reports these cores have other names:
-- Q13 = "T13" = Lean-scratch `ex13`.
+- Q13 = "T13" = Lean `ex13`.
 - T14 = "Ring14".
 - The three flower cores = "H14a–c".
 - ex15 = "II15a", and S15 = "II15c". Both identifications were checked by equal distance multisets [computed-float].
@@ -418,7 +417,7 @@ Radius-1 units. Points are written (x, y). Contacts are pairs at distance exactl
 
 **C5 status** (no off-lattice arrangement below 11; O11 unique at 11; 5 at 12).
 - Lean for n ≤ 8.
-- For n = 9 and 10 it reduces, in Lean-scratch, to "every rigid core of 9 or 10 circles lies on the lattice".
+- For n = 9 and 10 it reduces, in Lean, to "every rigid core of 9 or 10 circles lies on the lattice".
 - Strongly supported for n ≤ 12 by the exact families and the blind search.
 - Not proved.
 
@@ -535,17 +534,17 @@ Case (a) is the only one seen below 30 circles.
 
 | statement | status |
 |---|---|
-| Bodies lie in unique frames; triangle-grown sets are rigid and on the lattice | proved; Lean-scratch |
-| Off the lattice ⇔ two contact directions mod 60° (connected / rigid case) | proved; Lean-scratch |
+| Bodies lie in unique frames; triangle-grown sets are rigid and on the lattice | proved; Lean |
+| Off the lattice ⇔ two contact directions mod 60° (connected / rigid case) | proved; Lean |
 | ≤ 2 bodies per circle; hinge fan angles > 60° | proved (paper) |
 | A circle touching two circles of a frame is in it | proved; key step Lean |
 | Off the lattice ⇔ (a) or (b); infinitesimally rigid case (b) needs triangle-free off-frame clusters of ≥ 4 circles with a cycle | proved (paper) |
 | Translation lemma for directly joined bodies | proved (paper + exact check) |
-| Peeling preserves lattice-ness; C5 reduces to cores of 9 and 10 circles | proved; Lean-scratch |
+| Peeling preserves lattice-ness; C5 reduces to cores of 9 and 10 circles | proved; Lean |
 | ≥ 2n − 3 contacts ⇒ a triangle exists | proved (paper; Euler) |
 | Hinge + bar closing formula; types I and II; port-pair classification | proved (paper); classification checked to norm 100 |
-| Hinge + bar constructor, rigid and off-lattice; O11, Q13, ex15, DH17 certified | Lean-scratch |
-| T1 (normTriangle) and T2 (frameCompatible) off-lattice tests | Lean-scratch |
+| Hinge + bar constructor, rigid and off-lattice; O11, Q13, ex15, DH17 certified | Lean |
+| T1 (normTriangle) and T2 (frameCompatible) off-lattice tests | Lean |
 | WS8 "iff" frame test | **false** (ex15, S15) |
 | Catalogue of cores for n ≤ 14: O11, Q13, T14, three reducible flower cores | computed-exact (relative to the searches) |
 | No off-lattice core for n ≤ 10; O11 unique at 11 | Lean for n ≤ 8; otherwise computed (exact families + float searches) |
@@ -597,14 +596,20 @@ These were refuted, or corrected, by the verifiers.
 
 ## 12. Lean targets and files
 
-The Lean targets are listed separately. The cheapest wins already exist in scratch form:
-- the frame theorem;
-- the body lemma;
-- the peeling and C5 reduction;
-- the hinge + bar constructor with the Q13, ex15 and DH17 instances.
+**In the library** (promoted 2026-10-21; no `sorry`, no `native_decide`, standard axioms only):
+- `RigidArrangements/Frame.lean`: the frame theorem (Theorem 2), the body lemma (Theorem 1), the
+  peeling and C5 reductions, and the two decidable tests T1 (`normTriangle`) and T2
+  (`frameCompatible`);
+- `RigidArrangements/OffLatticeExamples.lean`: the hinge-and-bar constructor (`hbCheck`, `hbArr`,
+  `hbArr_isRigid`), the two off-lattice criteria (`hbArr_not_isLattice`,
+  `hbArr_not_isLattice_of_turn`), and the instances `o11'`, `ex13` (Q13), `ex15`, `ex17` (DH17).
+
+Still to do in Lean: T14 and the rings (a three-body generalization of `hbCheck`), the case-(b)
+examples H30 and E30, and the completeness statements of §11.
 
 **Exploratory files** (kept in `explore/offlattice/`; plain Lean, not part of the library):
-- `explore/offlattice/proto/OffLatticeProto.lean`: the Lean-scratch theorems.
+- `explore/offlattice/proto/OffLatticeProto.lean`: the original prototypes, now superseded by the
+  two library files above; kept for the record.
 - `explore/offlattice/catalogue/`: exact catalogue, closure, verification, and the bond-breaking search.
 - `explore/offlattice/structure/TwoBody.lean`, `Rings.lean`, `Fan.lean`: structure-theory enumerators.
 - `explore/offlattice/adversary/H30CertI.lean`, `ChainExact.lean`: H30 and E30.
