@@ -1,6 +1,6 @@
 # Off-lattice rigid arrangements
 
-> **Status (2026-10-21).** This page brings together four exploratory investigations: structure theory, an exact catalogue, an adversarial search, and a Lean prototype. An independent verifier rechecked each one. The prototype has since been promoted into the library: the frame criterion, the body lemma, the peeling and C5 reductions, the two decidable tests and the hinge-and-bar constructor with its certified examples now live in `RigidArrangements/Frame.lean` and `RigidArrangements/OffLatticeExamples.lean`, so the results this page used to mark as kernel-checked-but-not-in-the-repository are now marked **[Lean]**. All exploratory programs are compiled Lean; see §12.
+> **Status (2026-10-21).** This page brings together four exploratory investigations: structure theory, an exact catalogue, an adversarial search, and a Lean prototype. An independent verifier rechecked each one. The prototype has since been promoted into the library: the frame criterion, the body lemma, the peeling and C5 reductions, the two decidable tests and the hinge-and-bar constructor with its certified examples now live in `RigidArrangements/Frame.lean` and `RigidArrangements/OffLatticeExamples.lean`, so the results this page used to mark as kernel-checked-but-not-in-the-repository are now marked **[Lean]**. All exploratory programs are compiled Lean; see §12. **Update (2026-10-27).** R14 and the arithmetic of three-body rings are now in the library; case (b) is known to be exactly minimal at n = 30; and H30 and E30 have been classified against the cluster-merging calculus of `docs/emergent.md`, where they fall on opposite sides. Three corrections to this page are folded in below, at T14 in §4.1 and in §12.
 
 **Units and notation.**
 - Circles have radius 1, so touching centres are exactly 2 apart.
@@ -291,7 +291,7 @@ Radius-1 units. Points are written (x, y). Contacts are pairs at distance exactl
   - c11 = (7/8 − 9√5/8, 21√3/8 + √15/8)
   - c12 = (7/4 − 3√5/4, 7√3/4 + √15/4)
 - Body 2's frame is turned by ζ = (7 + i√15)/8.
-- Lattice twin: the same 9-circle body with arms (3, 4) instead of (4, 4) gives Δ = 12, a 30° angle, and the lattice core R14.
+- Lattice twin: the same 9-circle body with arms (3, 4) instead of (4, 4) gives Δ = 12, a 30° angle, and the lattice core R14 [Lean, `RigidArrangements/Ring.lean`]. R14 shares body 2 and the bar end with Q13 exactly; only body 1 changes, from the five-circle trapezoid with arm norm 4 to a six-circle chevron with arm norm 3. The discriminant drops 15 → 12, and 12 = 3·2² is three times a square, which is what turns a type-I off-lattice angle into a lattice one.
 
 **T14.** Ring with hinges c4, c5 and c6.
 - B1 = c0 to c5, the same chevron as in O11.
@@ -306,6 +306,8 @@ Radius-1 units. Points are written (x, y). Contacts are pairs at distance exactl
   - c12 = (11/3 + 4√6/3, −√3/3 − 4√2/3)
   - c13 = (10/3 + 2√6/3, −2√3/3 − 2√2/3)
 - The hinge triangle has squared sides 12, 16, 12. Its angles are arccos(1/√3) ≈ 54.736° (twice) and arccos(1/3) ≈ 70.529°.
+- **All 91 squared distances lie in ℚ(√6)**, not merely in ℚ(√2, √3), and all are ≥ 4 [computed-exact, re-verified 2026-10-27 in exact ℚ⟨1, √2, √3, √6⟩ arithmetic]. The √2 and √3 components all vanish. This is an instance of the general fact proved for rings in `RigidArrangements/Ring.lean`: the discriminant D of the hinge triangle is symmetric in the three hinge norms, so the relative turn of any two bodies is a turn of the same kind with the norms cyclically shifted, and the *same* √D serves everywhere. Hence a single `nonnegSqrt _ _ (3D)` decides every separation, exactly as `hbCheck` does for two bodies — the two radicals of the coordinate field never multiply, because a squared distance pairs the turn against its own conjugate.
+- **T14 has five pairs of circles at distance exactly 4**, not one: (c1, c5), (c2, c4), (c4, c6), (c5, c12), (c6, c11) [computed-exact]. So each of the three bodies contains an internal taut pair, a separation test for T14 must be weak rather than strict, and T14 is a candidate for being rigid without being infinitesimally rigid in several places at once.
 
 **ex15.** Hinge c0, bar c2–c14.
 - Body 1 = the trapezoid c0 to c4 of Q13.
@@ -604,8 +606,34 @@ These were refuted, or corrected, by the verifiers.
   `hbArr_isRigid`), the two off-lattice criteria (`hbArr_not_isLattice`,
   `hbArr_not_isLattice_of_turn`), and the instances `o11'`, `ex13` (Q13), `ex15`, `ex17` (DH17).
 
-Still to do in Lean: T14 and the rings (a three-body generalization of `hbCheck`), the case-(b)
+- `RigidArrangements/Ring.lean` (2026-10-27): the lattice core **R14** of §4.1, with its rigidity
+  certified twice — by the hinge-and-bar lemma and by the merge rule R2 — and with its contact count,
+  degree sequence, triangle count and two-body split all kernel-checked; and the arithmetic of
+  three-body rings (`ringD`, `ringTau`, `ringApex`, `conj_ringApex_mul`, `ringTau_mul_eis_re`), which
+  establishes that one radical suffices for a ring, as recorded in the T14 entry of §4.1.
+
+Still to do in Lean: the ring *constructor* and T14 itself (a three-body generalization of
+`hbCheck`, for which `Ring.lean` settles the arithmetic and leaves the assembly), the case-(b)
 examples H30 and E30, and the completeness statements of §11.
+
+**Case (b) is now known to be exactly minimal at n = 30** [computed-exact, 2026-10-27,
+`explore/caseb/`]. Over all 237 anchor 4-cycle classes and all 8 sign branches there is exactly one
+geometrically legal, off-lattice, infinitesimally rigid closure — H30's rhombus — and its minimum
+lattice part is exactly 26 sites, so H30's 30 circles cannot be beaten by that mechanism. For the
+taut-chain mechanism, k = 6 is forced, the anchor displacement (3, 5) is forced up to symmetry, and
+an exhaustive search over bodies of 11 to 23 sites rediscovers E30's 24-site body exactly as a set;
+larger k is excluded by a span bound. Not covered: clusters of five or more free circles, where the
+cluster shape is no longer forced, and singular case (b) outside the E30 chain family. The search is
+driven by the run identity e(S) = 3|S| − R₁ − R₂ − R₃ [proved], which bounds |S| below by the number
+of maximal straight runs and, unlike a connectivity bound, says something about *excluded* sites.
+
+**H30 and E30 fall on opposite sides of the cluster calculus** [computed-exact]. E30's taut chain is
+precisely R3's hypothesis — its anchors are 14 = 2·7 apart and joined by a chain of 7 contacts — so
+E30 is *constructible*. H30 is **emergent**: no rule fires on the body together with the atoms at its
+free circles, and R4 fails for a counting reason (each free circle has exactly one contact into the
+body, so no two clusters have three cross bars), which makes H30's emergence independent of the
+delicate 70.522° / arccos(1/3) near-miss. So the smallest off-lattice arrangement and the smallest
+arrangement the calculus cannot build are different questions; see `docs/emergent.md` §6.
 
 **Exploratory files** (kept in `explore/offlattice/`; plain Lean, not part of the library):
 - `explore/offlattice/proto/OffLatticeProto.lean`: the original prototypes, now superseded by the
