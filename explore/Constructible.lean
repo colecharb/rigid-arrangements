@@ -1735,7 +1735,9 @@ def drive (use3 use4 : Bool) (C : CCfg) (cl0 : Array UInt64) : Array UInt64 := I
     if !ch then return cl
     cl := satR1 cl'
     if cl.any (· == full) then return cl
-  return cl
+  -- Unreachable by the bound argued above. Loud rather than silent: a guard exhaustion would
+  -- otherwise return a stalled collection that reads as a genuine emergent verdict.
+  return panic! s!"drive: guard exhausted (n={C.n}, |E|={C.es.size}, clusters={cl.size}) -- the sweep bound is wrong"
 
 /-! ### An unpruned closure, for independently confirming an emergent verdict
 
