@@ -20,3 +20,4 @@ import RigidArrangements.Frame
 import RigidArrangements.OffLatticeExamples
 import RigidArrangements.Cluster
 import RigidArrangements.MergeCert
+import RigidArrangements.Ring
