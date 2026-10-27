@@ -645,3 +645,97 @@ integer is the whole reason the smallest emergent arrangement has twenty circles
 arithmetic rather than by `decide`; and the question of whether a fifth rule (four or more bars,
 or a genuinely second-order merge) is needed for the emergent classes at n = 21 and 22, where the
 R1–R4 counts are 12 and 99.
+
+## 2026-10-27: What the calculus can build, and why cores are enough
+
+The rules are proved; the question they were built to answer is which rigid arrangements they
+assemble. Call an arrangement **constructible** when, starting from its own contacts as two-circle
+pieces and applying the rules until nothing more fires, one ends with a single piece containing every
+circle; **emergent** when it is rigid but not constructible.
+
+The definition has a trap in it, and it is worth stating because the obvious phrasing is vacuous.
+Among the tools proved alongside the rules is one saying that a rigid sub-arrangement is a cluster.
+Applied to the whole arrangement it says that every rigid arrangement is a cluster — so if arbitrary
+rigid pieces could be fed in as starting material, everything would be constructible in one step and
+there would be nothing to study. The starting pieces must be the *contacts*, and nothing else. The
+Lean definition is an inductive predicate with one constructor per rule and one for a tangent pair,
+which makes that restriction structural rather than a matter of discipline.
+
+**Cores are enough.** The main theorem is a reduction. Adding a circle that touches two distinct
+circles of a cluster enlarges the cluster — one application of the three-piece rule, with the two new
+tangencies as the second and third pieces. So if a rigid arrangement has a circle that can be peeled
+off, it is constructible as soon as its peeling is. Hence: if every rigid *core* with between two and
+N circles is constructible, so is every rigid arrangement with between two and N circles. That is
+what turns a census of cores into a complete answer rather than a sample, and it is why the
+enumeration below can say "nothing emergent under twenty circles" and mean all rigid arrangements
+rather than the ones a search happened to visit.
+
+An earlier draft of the argument went through a *canonical* core, which presupposes that peeling
+always arrives at the same place however one does it — a claim nobody here has proved. It is not
+needed. Take an emergent arrangement with as few circles as possible; if it is not a core, peel one
+circle; what is left is rigid, smaller, hence constructible, hence the original is constructible too,
+a contradiction. One peel, one application of the rule, no confluence.
+
+Three details formalising it brought out. Adding a circle needs *no* hypothesis on how far apart its
+two neighbours are — the familiar restriction belongs to the reverse direction, since peeling a
+straight extension can destroy rigidity while adding one never does. A removable circle forces at
+least three circles to exist, so everything with two or fewer is a core. And the restriction to at
+least two circles is load-bearing rather than tidy: every derivation produces at least two circles,
+so with one circle or none nothing is constructible at all and every such arrangement would count as
+emergent, making an unrestricted "smallest emergent arrangement" the empty one and the theorem empty
+with it. At two circles constructibility is a theorem — a rigid pair is a tangent pair; below that it
+is a convention.
+
+One gap worth naming, since it decides what may be cited next to the enumeration. The theorem as
+stated quantifies over all arrangements, off-lattice ones included, while the enumeration covers
+lattice ones. Pointing one at the other needs the peeling of a lattice arrangement to stay on the
+lattice, which it does, so there are lattice-relative versions of all three statements. Those are the
+ones that match the computation; the unrestricted ones claim more than anything computed so far
+covers.
+
+**Next.** The predicate currently carries the first three rules. R4 is a one-constructor addition —
+nothing downstream of the definition mentions a rule by name — and after that, the certificate
+checker and this predicate should be connected, so that a certificate is literally a derivation.
+
+## 2026-10-27: T14, by a constructor rather than by coordinates
+
+T14 is three rigid lattice bodies in a ring, each pair sharing a circle, fourteen circles in all. It
+has been in the catalogue for a while as a table of fourteen coordinates involving √2, √3 and √6, and
+it was the last headline example not in Lean. It is now built by a general constructor for rings,
+which takes the three bodies as lists of lattice sites, works out the two relative turns from the
+arithmetic, and certifies the result rigid and off the lattice by one decidable check.
+
+Rigidity is the easy half: the three bodies pairwise share three distinct circles, which is exactly
+the three-piece rule, so the ring is rigid in one step for the same reason the hinge-and-bar examples
+are.
+
+The hard half was the no-overlap condition, and the shape of the solution is nicer than expected.
+The previous entry established that one square root suffices for a ring. Rather than write a
+cross-distance formula for each of the three pairs of bodies — three formulas, the worst of them with
+three cross terms — the construction is realized inside a small exact number system: the rationals
+extended by three square roots, closed under multiplication, containing every centre of a ring.
+Conjugation in that system fixes one of the three radicals and negates the other two, so *every*
+squared distance comes out as a rational plus a rational multiple of that one fixed radical,
+automatically and uniformly, whether the two circles lie in one body or in different ones. One sign
+test then decides all ninety-one separations at once. Nothing has to be known about whether the three
+radicals are independent — they are not, when the discriminant is three times a square — because the
+argument only ever maps the number system into the plane, never the other way.
+
+Off-latticeness needed a genuinely new test. Neither existing one applies: the triangle test wants a
+contact for one side of the triangle it examines, and a ring has no spare contact — T14's triangle of
+shared circles has squared sides 12, 16, 12, none of them 4 — while the Eisenstein test wants a
+discriminant that is three times a square, and T14's is 32. What works is to compute the frame
+invariant of the turn exactly inside the same number system: its sixth power turns out to have
+vanishing component along the one surviving radical, so its *rational part* alone decides whether it
+is 1, and here it is −23/27. No irrationality argument at all. That also lifts the restriction under
+which the older test operated, so it is a better test in general and not only for this example.
+
+The reconstruction was checked against the catalogue the only way that means anything: the multiset
+of all ninety-one squared distances of the Lean construction agrees exactly with the multiset
+computed independently from the published coordinates. Of the eight combinations of the two bodies'
+handedness and the sign of the turn, exactly one is overlap-free; the other seven are rejected by the
+same check, which is a reassuring sign that the check has teeth. The kernel verifies the whole
+ninety-one-pair certificate in about a third of a second.
+
+**Next.** Ring15, which lives over √21 and should need nothing new; and then the completeness
+question of §11 of the off-lattice notes, which is still a computation.
