@@ -458,3 +458,112 @@ remain computations relative to the searches that produced them.
 **Next.** The cluster-merging calculus: a relative-rigidity notion and merge rules, so that
 rigidity of a large arrangement can be certified by a short combinatorial certificate rather
 than by a hinge-and-bar construction tailored to each case.
+
+## 2026-10-27: The cluster-merging calculus
+
+The off-lattice constructor of the previous entry has an awkward feature: every example needs its
+own glueing argument. Two bodies and a bar is one lemma, two bodies and a hinge is another, three
+bodies in a ring is a third, and each is proved from the pinning argument from scratch. What the
+subject wants instead is a *calculus*: a handful of rules for combining rigid pieces into larger
+rigid pieces, applied blindly until the whole arrangement is one piece, with the sequence of rule
+applications serving as the certificate.
+
+The right notion to carry the pieces is **relative rigidity**. Say a set `S` of circles is a
+*cluster* of an arrangement `A` when, in every nearby placement that keeps all the contacts of `A`,
+the circles of `S` keep all their mutual distances. The circles of a cluster need not be adjacent
+and need not be rigid as a sub-arrangement in their own right: the surrounding contacts are allowed
+to do the work. The whole arrangement is rigid exactly when the set of all its circles is a
+cluster, so this one notion both expresses the goal and provides the intermediate objects.
+
+Three rules are proved, and they are what one would guess.
+
+**R1.** Two clusters sharing two distinct circles merge. Two shared circles fix the relative
+position of the two pieces up to a reflection in the line through them, and nearness excludes the
+reflection.
+
+**R2.** Three clusters that pairwise share circles, three distinct ones in all, merge. This is the
+rule that does nearly all the work in practice. It subsumes a Henneberg step — adding one circle
+tangent to two existing ones, with the two tangencies as the second and third clusters — and it
+subsumes the hinge-and-bar construction, with the bar as the third cluster.
+
+**R3.** If two circles of one cluster are at distance exactly `2k` and are joined by a chain of `k`
+contacts, the chain is forced straight and merges into the cluster. A chain of `k` contacts spans at
+most `2k`, so attaining `2k` makes every triangle inequality along the chain an equality.
+
+Two things about R2 are worth recording because both the project's own notes and my brief for the
+work expected otherwise. First, **there is no degenerate case to handle.** The warning one expects
+is the classical one: three pins that happen to be collinear do not determine a rigid body, because
+the configuration is infinitesimally flexible. But relative rigidity is a statement about
+*distances*, and the three clusters pairwise contain the three pairs of representative circles, so
+all three pairwise distances among the representatives are already fixed; a degenerate triangle with
+all three side lengths fixed cannot deform. The flex that the collinear case admits is a
+first-order flex that does not integrate. Second, and for the same reason, **this calculus is not an
+infinitesimal-rigidity certificate.** R2 and R3 both merge configurations that are infinitesimally
+flexible, and the census below contains arrangements built by R3 whose rigidity matrix has rank
+`2n - 4`. The rules certify local rigidity, which is the project's definition, and must not be
+reused for anything stronger.
+
+The companion file turns a derivation into a **certificate**. A certificate is a list of the
+contacts it uses together with a list of merge steps, each naming the clusters it consumes by their
+position in the list of clusters built so far. Replaying it is a decidable computation on finite
+lists, and the soundness theorem says that if the replay ends with a cluster containing every
+circle, the arrangement is rigid. The soundness theorem is stated with a *naming map* that is
+injective but need not be onto, which is what lets a certificate for a lattice arrangement name
+circles by their lattice sites while the arrangement itself is indexed by `Fin n`; without that, a
+shared *name* could not be turned into a shared *circle* and the whole development would collapse to
+requiring a bijection. On the lattice both of the caller's obligations — that the listed contacts
+really are contacts, and that R3's chains really are taut — become integer arithmetic, so a lattice
+example is certified by `decide` with no geometric input at all.
+
+O11, which the previous entry certified by an explicit hinge-and-bar construction, is now certified
+twice more: once directly from the rules (two chevron bodies and the bar, pairwise sharing three
+circles, in a single R2 step) and once by a certificate that knows nothing about bodies and builds
+each chevron from its contacts.
+
+**Next.** R4 — two clusters joined by three contacts — and then the question the calculus was built
+to answer: which rigid arrangements can be built this way, and which cannot.
+
+## 2026-10-27: R14, and why a ring of three bodies needs only one square root
+
+Two things, one example and one piece of arithmetic.
+
+**R14.** Fourteen circles, twenty-five contacts, two rigid lattice bodies — a six-circle chevron and
+the nine-circle body already used for the off-lattice example Q13 — sharing one circle and pinned by
+one extra contact. The two "arms" running from the shared circle to the two ends of the extra
+contact have squared lengths 12 and 16, so the angle the extra contact forces is 30°, which happens
+to be an angle the triangular lattice tolerates. Unlike O11 and Q13, therefore, R14 sits on the
+lattice. It is still not built the easy way: an arrangement of `n` circles assembled one circle at a
+time realizes at least `2n - 3` contacts and its last circle touches only two others, and R14 has
+exactly `2n - 3` contacts with every circle touching at least three. So R14 cannot be grown from a
+triangle; it has to be glued. It is glued twice over in Lean, once by the hinge-and-bar lemma and
+once by R2.
+
+A detail sharper than the catalogue records: R14's second body is the *same* nine-circle body as
+Q13's, with the *same* bar end. Only the first body changes, from a five-circle trapezoid with arm
+norm 4 to a six-circle chevron with arm norm 3. The discriminant drops from 15 to 12, and 12 is
+three times a square — which is exactly the condition that turns an off-lattice angle into a lattice
+one.
+
+**Rings of three bodies.** The worry was that three bodies in a ring can need two unrelated square
+roots. T14's corner coordinates visibly involve both √2 and √3, and the single exact sign test that
+certifies the two-body examples — one `nonnegSqrt` call deciding every pairwise separation at once —
+looked as though it could not survive that.
+
+It survives, and the reason is a small identity. Write the turn of one body relative to another in
+terms of the three shared-circle norms `a, b, c`; the discriminant `D = 2ab + 2bc + 2ca - a² - b² -
+c²` is *symmetric* in the three, and the relative turn of the second and third bodies is again a
+turn of the same kind with the three norms cyclically shifted. So the same `√D` appears everywhere.
+Every squared distance in a ring, within a body or between any two bodies, is a rational number plus
+a rational multiple of one fixed square root — `√6` for T14, `√21` for Ring15 — and one test decides
+them all. The cancellation behind it is that a squared distance pairs the turn against its own
+conjugate, and `conj τ · (τ - a) = ab - a·conj τ`, so the two radicals of the coordinate field never
+multiply.
+
+Checked against T14's published coordinates in exact arithmetic: all ninety-one squared distances
+lie in ℚ(√6), all are at least 4, and the catalogue's contact count (25) and hinge triangle (squared
+sides 12, 16, 12) are right. One correction to the catalogue: T14 has **five** pairs of circles at
+distance exactly 4, not the single pair recorded, so a separation test for it must be weak and not
+strict, and T14 is a candidate for being rigid without being infinitesimally rigid in several places
+at once.
+
+**Next.** The ring constructor itself, and T14 in the library rather than in a table.
