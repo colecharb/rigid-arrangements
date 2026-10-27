@@ -1,0 +1,338 @@
+n=3 coreCandidates=0 (fixed 0, search nodes 2) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=4 coreCandidates=0 (fixed 0, search nodes 4) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=5 coreCandidates=0 (fixed 0, search nodes 6) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=0 classify=1
+n=6 coreCandidates=0 (fixed 0, search nodes 15) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=0 classify=1
+n=7 coreCandidates=1 (fixed 1, search nodes 40) rigidCandidates=1 [infRigid=1]
+   constructible= R12:1 R124:1 R1234:1  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=0 classify=0
+n=8 coreCandidates=0 (fixed 0, search nodes 109) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=9 coreCandidates=0 (fixed 0, search nodes 301) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=10 coreCandidates=1 (fixed 3, search nodes 840) rigidCandidates=1 [infRigid=1]
+   constructible= R12:1 R124:1 R1234:1  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=11 coreCandidates=0 (fixed 0, search nodes 2270) rigidCandidates=0 []
+   constructible= R12:0 R124:0 R1234:0  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=12 coreCandidates=3 (fixed 8, search nodes 6031) rigidCandidates=2 [flexCutShear=1 infRigid=2]
+   constructible= R12:2 R124:2 R1234:2  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=13 coreCandidates=2 (fixed 9, search nodes 16185) rigidCandidates=2 [infRigid=2]
+   constructible= R12:2 R124:2 R1234:2  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=1 classify=0
+n=14 coreCandidates=5 (fixed 27, search nodes 44107) rigidCandidates=3 [flexCutShear=2 infRigid=3]
+   constructible= R12:3 R124:3 R1234:3  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=2 classify=0
+n=15 coreCandidates=11 (fixed 76, search nodes 121281) rigidCandidates=5 [flexAsimowRoth=1 flexCutShear=5 infRigid=5]
+   constructible= R12:5 R124:5 R1234:5  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=5 classify=0
+n=16 coreCandidates=24 (fixed 176, search nodes 335029) rigidCandidates=10 [flexAsimowRoth=4 flexCutShear=10 infRigid=10]
+   constructible= R12:10 R124:10 R1234:10  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=13 classify=0
+n=17 coreCandidates=49 (fixed 462, search nodes 929818) rigidCandidates=19 [flexAsimowRoth=5 flexCutShear=25 infRigid=19]
+   constructible= R12:19 R124:19 R1234:19  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=34 classify=1
+n=18 coreCandidates=118 (fixed 1128, search nodes 2590934) rigidCandidates=32 [flexAsimowRoth=19 flexCutShear=67 infRigid=31 singularHenneberg=1]
+   constructible= R12:32 R124:32 R1234:32  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=93 classify=3
+n=19 coreCandidates=269 (fixed 2920, search nodes 7238156) rigidCandidates=58 [flexAsimowRoth=52 flexCutShear=159 infRigid=58]
+   constructible= R12:58 R124:58 R1234:58  emergent= R12:0 R124:0 R1234:0
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=262 classify=7
+n=20 coreCandidates=687 (fixed 7524, search nodes 20248686) rigidCandidates=128 [flexAsimowRoth=120 flexCutShear=439 infRigid=124 singular2ndOrder=1 singularHenneberg=3]
+   constructible= R12:125 R124:127 R1234:127  emergent= R12:3 R124:1 R1234:1
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=737 classify=250
+  emergent R1-R4 n=20 contacts=37 rank=36 generic=37 2n-3=37 core=true irreducible=true unprunedConstructible=false (unprunedClusters=145 inconclusive=false) clusterSizes=[16, 2, 2, 4, 2] [(4,3), (4,2), (4,1), (3,4), (3,3), (3,2), (3,1), (3,0), (2,4), (2,2), (2,1), (2,0), (1,4), (1,3), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     higher order: k(nontrivial motions)=1 stresses=1: SECOND-ORDER RIGID (=> rigid) values=[12]
+     stalled at 5 cluster(s), sizes [16, 2, 2, 4, 2], contacts=37
+     cluster 0 (16) = [(4,3), (4,2), (4,1), (3,4), (3,3), (3,2), (3,1), (3,0), (2,4), (2,2), (2,1), (2,0), (1,1), (1,0), (0,2), (0,1)]
+     cluster 1 (2) = [(2,4), (1,4)]
+     cluster 2 (2) = [(2,2), (1,3)]
+     cluster 3 (4) = [(1,4), (1,3), (0,4), (0,3)]
+     cluster 4 (2) = [(0,3), (0,2)]
+     pair (16,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (16,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (16,4): shared=0 (R1 needs 2) crossBars=3 lineRank=2 (R4 needs 3 bars, rank 3) (2,4)-(1,4)/L=[0, -1, 4] (2,2)-(1,3)/L=[-1, -1, 4] (0,3)-(0,2)/L=[1, 0, 0]
+     pair (16,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,4)-(1,3)/L=[1, 0, -1]
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,3)-(0,3)/L=[0, -1, 3]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 27 taut pair(s) in the set, 18 inside a single cluster (none adds a circle)
+n=21 coreCandidates=1684 (fixed 19324, search nodes 56705864) rigidCandidates=236 [flexAsimowRoth=319 flexCutShear=1129 infRigid=229 singular2ndOrder=3 singularHenneberg=4]
+   constructible= R12:228 R124:229 R1234:230  emergent= R12:8 R124:7 R1234:6
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=2105 classify=867
+  emergent R1-R4 n=21 contacts=39 rank=39 generic=39 2n-3=39 core=true irreducible=true unprunedConstructible=false (unprunedClusters=106 inconclusive=false) clusterSizes=[9, 10, 2, 4, 2] [(4,3), (4,2), (3,4), (3,3), (3,2), (3,1), (3,0), (2,5), (2,4), (2,2), (2,1), (2,0), (1,5), (1,4), (1,3), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     stalled at 5 cluster(s), sizes [9, 10, 2, 4, 2], contacts=39
+     cluster 0 (9) = [(4,3), (4,2), (3,4), (3,3), (3,2), (2,5), (2,4), (1,5), (1,4)]
+     cluster 1 (10) = [(3,2), (3,1), (3,0), (2,2), (2,1), (2,0), (1,1), (1,0), (0,2), (0,1)]
+     cluster 2 (2) = [(2,2), (1,3)]
+     cluster 3 (4) = [(1,4), (1,3), (0,4), (0,3)]
+     cluster 4 (2) = [(0,3), (0,2)]
+     pair (9,10): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (9,2): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (3,2)-(2,2)/L=[0, -1, 2] (1,4)-(1,3)/L=[1, 0, -1]
+     pair (9,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,4): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,2)-(1,3)/L=[-1, -1, 4] (0,3)-(0,2)/L=[1, 0, 0]
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,3)-(0,3)/L=[0, -1, 3]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 27 taut pair(s) in the set, 13 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=21 contacts=40 rank=38 generic=39 2n-3=39 core=true irreducible=false unprunedConstructible=false (unprunedClusters=283 inconclusive=false) clusterSizes=[17, 2, 4, 2, 2] [(4,3), (4,2), (4,1), (4,0), (3,4), (3,3), (3,1), (3,0), (2,4), (2,3), (2,2), (2,0), (1,4), (1,3), (1,2), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     higher order: k(nontrivial motions)=1 stresses=2: SECOND-ORDER RIGID (=> rigid) values=[0, 3]
+     stalled at 5 cluster(s), sizes [17, 2, 4, 2, 2], contacts=40
+     cluster 0 (17) = [(4,3), (4,2), (3,4), (3,3), (2,4), (2,3), (2,2), (2,0), (1,4), (1,3), (1,2), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     cluster 1 (2) = [(4,2), (4,1)]
+     cluster 2 (4) = [(4,1), (4,0), (3,1), (3,0)]
+     cluster 3 (2) = [(3,1), (2,2)]
+     cluster 4 (2) = [(3,0), (2,0)]
+     pair (17,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (17,4): shared=0 (R1 needs 2) crossBars=3 lineRank=2 (R4 needs 3 bars, rank 3) (4,2)-(4,1)/L=[1, 0, -4] (3,1)-(2,2)/L=[-1, -1, 4] (3,0)-(2,0)/L=[0, -1, 0]
+     pair (17,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (17,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (4,1)-(3,1)/L=[0, -1, 1]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,1)-(3,0)/L=[1, 0, -3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 34 taut pair(s) in the set, 23 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=21 contacts=39 rank=38 generic=39 2n-3=39 core=true irreducible=true unprunedConstructible=false (unprunedClusters=97 inconclusive=false) clusterSizes=[9, 7, 7, 2, 2] [(5,2), (5,1), (5,0), (4,3), (4,2), (4,1), (4,0), (3,3), (3,1), (2,4), (2,3), (2,2), (2,1), (1,5), (1,4), (1,2), (1,1), (0,5), (0,4), (0,3), (0,2)]
+     higher order: k(nontrivial motions)=1 stresses=1: SECOND-ORDER RIGID (=> rigid) values=[-6]
+     stalled at 5 cluster(s), sizes [9, 7, 7, 2, 2], contacts=39
+     cluster 0 (9) = [(5,2), (5,1), (5,0), (4,3), (4,2), (4,1), (4,0), (3,3), (3,1)]
+     cluster 1 (7) = [(3,3), (2,4), (2,3), (1,5), (1,4), (0,5), (0,4)]
+     cluster 2 (7) = [(3,1), (2,2), (2,1), (1,2), (1,1), (0,3), (0,2)]
+     cluster 3 (2) = [(2,3), (2,2)]
+     cluster 4 (2) = [(0,4), (0,3)]
+     pair (9,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (9,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (9,2): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (3,3)-(2,3)/L=[0, -1, 3] (3,1)-(2,2)/L=[-1, -1, 4]
+     pair (7,7): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,3)-(2,2)/L=[1, 0, -2] (0,4)-(0,3)/L=[1, 0, 0]
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 28 taut pair(s) in the set, 12 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=21 contacts=39 rank=39 generic=39 2n-3=39 core=true irreducible=true unprunedConstructible=false (unprunedClusters=100 inconclusive=false) clusterSizes=[6, 10, 7, 2, 2] [(4,3), (4,2), (3,4), (3,3), (3,2), (3,1), (3,0), (2,4), (2,2), (2,1), (2,0), (1,5), (1,4), (1,3), (1,1), (1,0), (0,5), (0,4), (0,3), (0,2), (0,1)]
+     stalled at 5 cluster(s), sizes [6, 10, 7, 2, 2], contacts=39
+     cluster 0 (6) = [(4,3), (4,2), (3,4), (3,3), (3,2), (2,4)]
+     cluster 1 (10) = [(3,2), (3,1), (3,0), (2,2), (2,1), (2,0), (1,1), (1,0), (0,2), (0,1)]
+     cluster 2 (7) = [(2,4), (1,5), (1,4), (1,3), (0,5), (0,4), (0,3)]
+     cluster 3 (2) = [(2,2), (1,3)]
+     cluster 4 (2) = [(0,3), (0,2)]
+     pair (6,10): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(2,2)/L=[0, -1, 2]
+     pair (10,7): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,2)-(1,3)/L=[-1, -1, 4] (0,3)-(0,2)/L=[1, 0, 0]
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,3)-(0,3)/L=[0, -1, 3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 29 taut pair(s) in the set, 12 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=21 contacts=39 rank=39 generic=39 2n-3=39 core=true irreducible=true unprunedConstructible=false (unprunedClusters=100 inconclusive=false) clusterSizes=[6, 10, 7, 2, 2] [(5,2), (5,1), (4,3), (4,2), (4,1), (4,0), (3,3), (3,1), (3,0), (2,4), (2,3), (2,2), (2,1), (1,5), (1,4), (1,2), (1,1), (0,5), (0,4), (0,3), (0,2)]
+     stalled at 5 cluster(s), sizes [6, 10, 7, 2, 2], contacts=39
+     cluster 0 (6) = [(5,2), (5,1), (4,3), (4,2), (4,1), (3,3)]
+     cluster 1 (10) = [(4,1), (4,0), (3,1), (3,0), (2,2), (2,1), (1,2), (1,1), (0,3), (0,2)]
+     cluster 2 (7) = [(3,3), (2,4), (2,3), (1,5), (1,4), (0,5), (0,4)]
+     cluster 3 (2) = [(2,3), (2,2)]
+     cluster 4 (2) = [(0,4), (0,3)]
+     pair (6,10): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,3)-(2,3)/L=[0, -1, 3]
+     pair (10,7): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,3)-(2,2)/L=[1, 0, -2] (0,4)-(0,3)/L=[1, 0, 0]
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 29 taut pair(s) in the set, 13 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=21 contacts=39 rank=39 generic=39 2n-3=39 core=true irreducible=true unprunedConstructible=false (unprunedClusters=118 inconclusive=false) clusterSizes=[13, 6, 2, 4, 2] [(4,2), (4,1), (3,4), (3,3), (3,2), (3,1), (3,0), (2,5), (2,4), (2,2), (2,1), (2,0), (1,5), (1,4), (1,3), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     stalled at 5 cluster(s), sizes [13, 6, 2, 4, 2], contacts=39
+     cluster 0 (13) = [(4,2), (4,1), (3,3), (3,2), (3,1), (3,0), (2,2), (2,1), (2,0), (1,1), (1,0), (0,2), (0,1)]
+     cluster 1 (6) = [(3,4), (3,3), (2,5), (2,4), (1,5), (1,4)]
+     cluster 2 (2) = [(2,2), (1,3)]
+     cluster 3 (4) = [(1,4), (1,3), (0,4), (0,3)]
+     cluster 4 (2) = [(0,3), (0,2)]
+     pair (13,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (13,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (13,4): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,2)-(1,3)/L=[-1, -1, 4] (0,3)-(0,2)/L=[1, 0, 0]
+     pair (13,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,4)-(1,3)/L=[1, 0, -1]
+     pair (6,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,3)-(0,3)/L=[0, -1, 3]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 29 taut pair(s) in the set, 15 inside a single cluster (none adds a circle)
+n=22 coreCandidates=4297 (fixed 49699, search nodes 158975899) rigidCandidates=501 [flexAsimowRoth=792 flexCutShear=3004 infRigid=487 singular2ndOrder=3 singularHenneberg=11]
+   constructible= R12:490 R124:494 R1234:494  emergent= R12:11 R124:7 R1234:7
+   soundnessViolations(flex certificate but merged)=0
+   time ms: coreSearch=6238 classify=711
+  emergent R1-R4 n=22 contacts=41 rank=41 generic=41 2n-3=41 core=true irreducible=true unprunedConstructible=false (unprunedClusters=91 inconclusive=false) clusterSizes=[6, 7, 7, 2, 6] [(5,3), (5,2), (4,4), (4,3), (4,2), (4,1), (4,0), (3,4), (3,2), (3,1), (3,0), (2,5), (2,4), (2,3), (2,1), (1,5), (1,4), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     stalled at 5 cluster(s), sizes [6, 7, 7, 2, 6], contacts=41
+     cluster 0 (6) = [(5,3), (5,2), (4,4), (4,3), (4,2), (3,4)]
+     cluster 1 (7) = [(4,2), (4,1), (4,0), (3,2), (3,1), (3,0), (2,1)]
+     cluster 2 (7) = [(3,4), (2,5), (2,4), (2,3), (1,5), (1,4), (1,3)]
+     cluster 3 (2) = [(3,2), (2,3)]
+     cluster 4 (6) = [(2,1), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (4,2)-(3,2)/L=[0, -1, 2]
+     pair (7,7): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(2,3)/L=[-1, -1, 5]
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,6): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (2,3)-(1,3)/L=[0, -1, 3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 31 taut pair(s) in the set, 10 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=41 rank=40 generic=41 2n-3=41 core=true irreducible=true unprunedConstructible=false (unprunedClusters=103 inconclusive=false) clusterSizes=[9, 4, 2, 9, 4] [(5,3), (5,2), (4,4), (4,3), (4,2), (4,1), (3,5), (3,4), (3,2), (3,1), (3,0), (2,5), (2,4), (2,3), (2,1), (2,0), (1,4), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     higher order: k(nontrivial motions)=1 stresses=1: SECOND-ORDER RIGID (=> rigid) values=[24]
+     stalled at 5 cluster(s), sizes [9, 4, 2, 9, 4], contacts=41
+     cluster 0 (9) = [(5,3), (5,2), (4,4), (4,3), (4,2), (3,5), (3,4), (2,5), (2,4)]
+     cluster 1 (4) = [(4,2), (4,1), (3,2), (3,1)]
+     cluster 2 (2) = [(3,2), (2,3)]
+     cluster 3 (9) = [(3,1), (3,0), (2,1), (2,0), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     cluster 4 (4) = [(2,4), (2,3), (1,4), (1,3)]
+     pair (9,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (9,2): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (4,2)-(3,2)/L=[0, -1, 2] (2,4)-(2,3)/L=[1, 0, -2]
+     pair (9,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,9): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,4): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(2,3)/L=[-1, -1, 5]
+     pair (2,9): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (3,2)-(3,1)/L=[1, 0, -3] (2,3)-(1,3)/L=[0, -1, 3]
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (9,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 27 taut pair(s) in the set, 12 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=42 rank=41 generic=41 2n-3=41 core=true irreducible=false unprunedConstructible=false (unprunedClusters=154 inconclusive=false) clusterSizes=[6, 11, 7, 2, 2] [(5,2), (5,1), (4,3), (4,2), (4,1), (4,0), (3,3), (3,1), (3,0), (2,4), (2,3), (2,2), (2,1), (2,0), (1,5), (1,4), (1,2), (1,1), (0,5), (0,4), (0,3), (0,2)]
+     stalled at 5 cluster(s), sizes [6, 11, 7, 2, 2], contacts=42
+     cluster 0 (6) = [(5,2), (5,1), (4,3), (4,2), (4,1), (3,3)]
+     cluster 1 (11) = [(4,1), (4,0), (3,1), (3,0), (2,2), (2,1), (2,0), (1,2), (1,1), (0,3), (0,2)]
+     cluster 2 (7) = [(3,3), (2,4), (2,3), (1,5), (1,4), (0,5), (0,4)]
+     cluster 3 (2) = [(2,3), (2,2)]
+     cluster 4 (2) = [(0,4), (0,3)]
+     pair (6,11): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,3)-(2,3)/L=[0, -1, 3]
+     pair (11,7): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,3)-(2,2)/L=[1, 0, -2] (0,4)-(0,3)/L=[1, 0, 0]
+     pair (11,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (11,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 34 taut pair(s) in the set, 16 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=42 rank=41 generic=41 2n-3=41 core=true irreducible=false unprunedConstructible=false (unprunedClusters=205 inconclusive=false) clusterSizes=[14, 6, 2, 4, 2] [(4,2), (4,1), (4,0), (3,4), (3,3), (3,2), (3,1), (3,0), (2,5), (2,4), (2,2), (2,1), (2,0), (1,5), (1,4), (1,3), (1,1), (1,0), (0,4), (0,3), (0,2), (0,1)]
+     stalled at 5 cluster(s), sizes [14, 6, 2, 4, 2], contacts=42
+     cluster 0 (14) = [(4,2), (4,1), (4,0), (3,3), (3,2), (3,1), (3,0), (2,2), (2,1), (2,0), (1,1), (1,0), (0,2), (0,1)]
+     cluster 1 (6) = [(3,4), (3,3), (2,5), (2,4), (1,5), (1,4)]
+     cluster 2 (2) = [(2,2), (1,3)]
+     cluster 3 (4) = [(1,4), (1,3), (0,4), (0,3)]
+     cluster 4 (2) = [(0,3), (0,2)]
+     pair (14,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (14,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (14,4): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (2,2)-(1,3)/L=[-1, -1, 4] (0,3)-(0,2)/L=[1, 0, 0]
+     pair (14,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,4)-(1,3)/L=[1, 0, -1]
+     pair (6,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (1,3)-(0,3)/L=[0, -1, 3]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 35 taut pair(s) in the set, 19 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=41 rank=41 generic=41 2n-3=41 core=true irreducible=true unprunedConstructible=false (unprunedClusters=97 inconclusive=false) clusterSizes=[6, 4, 7, 2, 9] [(5,3), (5,2), (4,4), (4,3), (4,2), (4,1), (3,4), (3,2), (3,1), (3,0), (2,5), (2,4), (2,3), (2,1), (2,0), (1,5), (1,4), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     stalled at 5 cluster(s), sizes [6, 4, 7, 2, 9], contacts=41
+     cluster 0 (6) = [(5,3), (5,2), (4,4), (4,3), (4,2), (3,4)]
+     cluster 1 (4) = [(4,2), (4,1), (3,2), (3,1)]
+     cluster 2 (7) = [(3,4), (2,5), (2,4), (2,3), (1,5), (1,4), (1,3)]
+     cluster 3 (2) = [(3,2), (2,3)]
+     cluster 4 (9) = [(3,1), (3,0), (2,1), (2,0), (1,3), (1,2), (1,1), (0,3), (0,2)]
+     pair (6,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,7): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (4,2)-(3,2)/L=[0, -1, 2]
+     pair (4,7): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(2,3)/L=[-1, -1, 5]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,9): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (7,9): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,9): shared=0 (R1 needs 2) crossBars=2 lineRank=2 (R4 needs 3 bars, rank 3) (3,2)-(3,1)/L=[1, 0, -3] (2,3)-(1,3)/L=[0, -1, 3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 29 taut pair(s) in the set, 11 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=41 rank=40 generic=41 2n-3=41 core=true irreducible=true unprunedConstructible=false (unprunedClusters=100 inconclusive=false) clusterSizes=[6, 4, 10, 2, 6] [(5,3), (5,2), (4,4), (4,3), (4,2), (4,1), (3,4), (3,2), (3,1), (3,0), (2,5), (2,4), (2,3), (2,1), (2,0), (1,5), (1,4), (1,3), (1,2), (1,1), (0,4), (0,3)]
+     higher order: k(nontrivial motions)=1 stresses=1: SECOND-ORDER RIGID (=> rigid) values=[-18]
+     stalled at 5 cluster(s), sizes [6, 4, 10, 2, 6], contacts=41
+     cluster 0 (6) = [(5,3), (5,2), (4,4), (4,3), (4,2), (3,4)]
+     cluster 1 (4) = [(4,2), (4,1), (3,2), (3,1)]
+     cluster 2 (10) = [(3,4), (2,5), (2,4), (2,3), (1,5), (1,4), (1,3), (1,2), (0,4), (0,3)]
+     cluster 3 (2) = [(3,2), (2,3)]
+     cluster 4 (6) = [(3,1), (3,0), (2,1), (2,0), (1,2), (1,1)]
+     pair (6,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,10): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (6,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (4,2)-(3,2)/L=[0, -1, 2]
+     pair (4,10): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(2,3)/L=[-1, -1, 5]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (10,6): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,6): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,2)-(3,1)/L=[1, 0, -3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 31 taut pair(s) in the set, 12 inside a single cluster (none adds a circle)
+  emergent R1-R4 n=22 contacts=42 rank=40 generic=41 2n-3=41 core=true irreducible=false unprunedConstructible=false (unprunedClusters=311 inconclusive=false) clusterSizes=[18, 2, 4, 2, 2] [(4,3), (4,2), (4,1), (4,0), (3,4), (3,3), (3,1), (3,0), (2,5), (2,4), (2,3), (2,2), (2,0), (1,5), (1,4), (1,3), (1,2), (1,1), (1,0), (0,3), (0,2), (0,1)]
+     higher order: k(nontrivial motions)=1 stresses=2: SECOND-ORDER RIGID (=> rigid) values=[0, 3]
+     stalled at 5 cluster(s), sizes [18, 2, 4, 2, 2], contacts=42
+     cluster 0 (18) = [(4,3), (4,2), (3,4), (3,3), (2,5), (2,4), (2,3), (2,2), (2,0), (1,5), (1,4), (1,3), (1,2), (1,1), (1,0), (0,3), (0,2), (0,1)]
+     cluster 1 (2) = [(4,2), (4,1)]
+     cluster 2 (4) = [(4,1), (4,0), (3,1), (3,0)]
+     cluster 3 (2) = [(3,1), (2,2)]
+     cluster 4 (2) = [(3,0), (2,0)]
+     pair (18,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (18,4): shared=0 (R1 needs 2) crossBars=3 lineRank=2 (R4 needs 3 bars, rank 3) (4,2)-(4,1)/L=[1, 0, -4] (3,1)-(2,2)/L=[-1, -1, 4] (3,0)-(2,0)/L=[0, -1, 0]
+     pair (18,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (18,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,4): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (4,1)-(3,1)/L=[0, -1, 1]
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (4,2): shared=1 (R1 needs 2) crossBars=0 lineRank=0 (R4 needs 3 bars, rank 3) 
+     pair (2,2): shared=0 (R1 needs 2) crossBars=1 lineRank=1 (R4 needs 3 bars, rank 3) (3,1)-(3,0)/L=[1, 0, -3]
+     R2: 0 triple(s) of clusters meet pairwise, 0 with 3 distinct representatives
+     R3: 36 taut pair(s) in the set, 27 inside a single cluster (none adds a circle)
+rigid core candidates n=3..22: #[0, 0, 0, 0, 1, 0, 0, 1, 0, 2, 2, 3, 5, 10, 19, 32, 58, 128, 236, 501]
+emergent rigid cores R12 n=3..22: #[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 8, 11]
+emergent rigid cores R1-R4 n=3..22: #[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 7]
