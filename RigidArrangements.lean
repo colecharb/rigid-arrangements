@@ -21,4 +21,5 @@ import RigidArrangements.OffLatticeExamples
 import RigidArrangements.Cluster
 import RigidArrangements.Bar
 import RigidArrangements.MergeCert
+import RigidArrangements.Constructible
 import RigidArrangements.Ring
