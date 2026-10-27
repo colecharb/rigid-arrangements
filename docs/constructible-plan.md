@@ -284,14 +284,16 @@ The ordering is by dependency, and each item is small enough to be one file or o
 
 1. **A `Constructible` predicate** — an inductive over the contact atoms with one constructor per
    rule, plus soundness `Constructible S → RigidIn S` by cases. Without it, "S20 is emergent" is a
-   statement about a program, not about the calculus. *In progress.*
+   statement about a program, not about the calculus. **Done** (all four rules).
 2. **The replay principle** — a derivation inside a sub-arrangement is a derivation in the ambient
    arrangement. Mechanical (atoms transfer because tangency depends only on centres; the rules are
-   statements about the ambient arrangement), but every item below needs it. *In progress.*
+   statements about the ambient arrangement), but every item below needs it. **Done.**
 3. **Inheritance and "the smallest emergent arrangement is a core"**, in the minimal-counterexample
-   form of §3 — no confluence needed. The inheritance step itself is already Lean. *In progress.*
+   form of §3 — no confluence needed. **Done**, and in the stronger cores-reduction form, with
+   lattice-relativized variants to match the census.
 4. **R4's constructor in the certificate checker**, so that a lattice certificate using R4 closes by
-   `decide` with the `barDetZ ≠ 0` side condition discharged by integer arithmetic. *In progress.*
+   `decide` with the `barDetZ ≠ 0` side condition discharged by integer arithmetic. **Done**, with
+   W20 as the first certified arrangement that needs R4.
 5. **Build order ⇒ constructible.** One induction on the build order using (3). This is the key that
    unlocks item 6 and converts the project's existing rigidity catalogues into constructibility
    catalogues at no extra cost.
@@ -307,9 +309,10 @@ The ordering is by dependency, and each item is small enough to be one file or o
    argument H30's emergence rests on). Hardest item here; do it last, and only if the emergent census
    is to be published as theorems rather than computations.
 
-Items 1–4 are this round's work. Items 5–7 are the highest value per line of Lean in the whole project
-right now: they turn an existing `decide` into a certified growth bound. Item 8 is free. Item 9 is a
-research task.
+Items 1–4 are done. Items 5–7 are now the highest value per line of Lean in the whole project: they
+turn an existing `decide` into a certified growth bound. Item 8 is free. Item 9 is a research task,
+and note what it is *not* — a positive constructibility verdict is already a checkable certificate;
+what needs the fixpoint inside Lean is a *negative* verdict, the assertion that no derivation exists.
 
 ---
 

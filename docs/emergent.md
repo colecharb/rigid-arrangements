@@ -366,9 +366,9 @@ Two precisions from formalising it, both of which change what one may say:
 
 Also worth recording: a removable circle forces at least three circles (itself and its two distinct
 neighbours), so every arrangement of at most two circles is a core — which is why the base case of the
-induction is where it is. And the Lean predicate currently means the R1+R2+R3 closure; R4 is a
-one-constructor addition in exactly three places (the constructor, its case in soundness, its case in
-replay), and no statement downstream mentions a rule, so nothing else changes when it is wired in.
+induction is where it is. The predicate carries all four rules, so the Lean statements are about the
+same calculus the census runs; adding R4 to the first three cost one constructor and three proof
+cases, and changed nothing downstream, because no statement after the definition mentions a rule.
 
 ---
 
@@ -413,6 +413,7 @@ candidates at n = 17 as flexible. [computed-exact]
 | A certificate's replay keeps every cluster relatively rigid | [Lean] |
 | A derivation in a sub-arrangement replays in the ambient arrangement | [Lean] |
 | If every rigid core with 2 ≤ m ≤ N circles is constructible, so is every rigid arrangement | [Lean] |
+| The `Constructible` predicate carries all four rules, with soundness | [Lean] |
 | The smallest emergent arrangement is a core | [proved], inheritance step [Lean] |
 | Emergent counts 0 (n ≤ 19), 1, 12, 99 under R1–R4 | [computed-exact] |
 | S20 is the unique smallest emergent arrangement | [computed-exact] |
@@ -441,10 +442,7 @@ candidates at n = 17 as flexible. [computed-exact]
 **Known gaps.**
 
 - H30's emergence depends on a hand argument about R4's non-monotonicity under cluster pruning.
-- The Lean `Constructible` predicate carries R1, R2 and R3; R4 is still to be wired in, which is one
-  constructor plus its case in soundness and in replay, with nothing downstream affected. Until then
-  the Lean statements are about R1–R3-emergence.
-- Even with R4 wired in, "S20 is emergent" would remain a computation rather than a theorem: a
+- "S20 is emergent" is a computation rather than a theorem: a
   *positive* verdict is a certificate and is checkable, but a negative one asserts that **no**
   derivation exists, which needs the fixpoint computation and its pruning argument inside Lean. The
   replay principle, the piece the reduction needed, is now proved; this is the piece that is not.

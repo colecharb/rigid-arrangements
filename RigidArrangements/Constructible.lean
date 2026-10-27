@@ -1,3 +1,4 @@
+import RigidArrangements.Bar
 import RigidArrangements.Cluster
 import RigidArrangements.Small
 
@@ -97,15 +98,18 @@ above says what that convention is worth: at `n = 2` it is a theorem, and at `n 
 genuine convention with no content behind it. Either way the counts the census reports for
 `n ≥ 2` are the counts of this file's predicate.
 
-## Adding R4
+## The rules, and adding a fifth
 
-R4 — two clusters joined by three contacts whose lines are neither all concurrent nor all
-parallel — is not part of the calculus yet. When it arrives it is a one-constructor change in
-three places and nowhere else: a constructor `r4` on `Arrangement.Constructible`, a case in
-`Arrangement.Constructible.rigidIn` discharged by the new library lemma, and a case in
-`Arrangement.Constructible.image_comap` transferring its three bars along `f`. Every result
-after those three — the Henneberg step, the peel, and the theorem on the smallest emergent
-arrangement — is stated in terms of `Constructible` alone and does not mention the rules.
+`Constructible` carries all four rules R1–R4. Adding R4 to the first three cost one constructor
+and three proof cases — soundness, the bound on how few circles a derivation can produce, and
+replay, where the three bars transfer along `f` definitionally — and changed nothing else,
+because every result after the definition (the Henneberg step, the peel, the cores reduction and
+the theorem on the smallest emergent arrangement) is stated in terms of `Constructible` alone and
+never mentions a rule. A fifth rule would cost the same three cases.
+
+Note that R4 is the only rule with a geometric side condition. R1–R3 merge clusters that *share
+circles*, which is a statement about distances that a degenerate configuration satisfies as
+readily as a generic one; R4 merges clusters that share nothing, and then the shape matters.
 
 ## Main results
 
@@ -233,6 +237,15 @@ inductive Constructible (A : Arrangement ι) : Set ι → Prop where
       (hstep : ∀ i < k, Tangent A.center (w i) (w (i + 1)))
       (hlen : dist (A.center (w 0)) (A.center (w k)) = 2 * k) :
       Constructible A (S ∪ w '' Set.Iic k)
+  /-- **R4.** Two derived clusters joined by three contacts whose bar lines are neither
+  concurrent nor all parallel merge. Unlike R1–R3 this rule carries a geometric side condition,
+  and unlike them it needs no circle to be shared and no cluster to be nontrivial: three bars
+  sharing an endpoint have concurrent lines, so `hdet` excludes that case by itself. -/
+  | r4 {S T : Set ι} (hS : Constructible A S) (hT : Constructible A T) (x y : Fin 3 → ι)
+      (hx : ∀ i, x i ∈ S) (hy : ∀ i, y i ∈ T)
+      (hbar : ∀ i, Tangent A.center (x i) (y i))
+      (hdet : barDet (A.center ∘ x) (A.center ∘ y) ≠ 0) :
+      Constructible A (S ∪ T)
 
 /-- **Soundness of the calculus.** A derived set really is a cluster. One case per rule, each
 discharged by the matching lemma of `RigidArrangements.Cluster`. -/
@@ -244,6 +257,8 @@ theorem Constructible.rigidIn [Finite ι] {A : Arrangement ι} {S : Set ι}
   | r2 _ _ _ h12 h23 h13 h₁₂ h₁₃ h₂₃ ih₁ ih₂ ih₃ =>
       exact ih₁.union_of_ring ih₂ ih₃ h12 h23 h13 h₁₂ h₁₃ h₂₃
   | r3 _ hk w h0 hkS hstep hlen ih => exact ih.union_chain hk w h0 hkS hstep hlen
+  | r4 _ _ x y hx hy hbar hdet ih₁ ih₂ =>
+      exact ih₁.union_of_three_bars ih₂ x y hx hy hbar hdet
 
 /-- A derived cluster has at least two circles: the atoms do, and every rule only grows a
 cluster it is given. So the closure of the atoms is empty in an arrangement of fewer than two
@@ -260,6 +275,9 @@ theorem Constructible.exists_ne {A : Arrangement ι} {S : Set ι} (h : A.Constru
       exact ⟨x, Or.inl (Or.inl hx), y, Or.inl (Or.inl hy), hxy⟩
   | r3 _ _ _ _ _ _ _ ih =>
       obtain ⟨x, hx, y, hy, hxy⟩ := ih
+      exact ⟨x, Or.inl hx, y, Or.inl hy, hxy⟩
+  | r4 _ _ _ _ _ _ _ _ ih₁ _ =>
+      obtain ⟨x, hx, y, hy, hxy⟩ := ih₁
       exact ⟨x, Or.inl hx, y, Or.inl hy, hxy⟩
 
 /-- **Nothing is constructible in an arrangement of at most one circle**: there is no contact,
@@ -298,6 +316,10 @@ theorem Constructible.image_comap {A : Arrangement ι} {f : κ → ι}
   | r3 _ hk w h0 hkS hstep hlen ih =>
       rw [Set.image_union, ← Set.image_comp]
       exact ih.r3 hk (f ∘ w) ⟨_, h0, rfl⟩ ⟨_, hkS, rfl⟩ hstep hlen
+  | r4 _ _ x y hx hy hbar hdet ih₁ ih₂ =>
+      rw [Set.image_union]
+      exact ih₁.r4 ih₂ (f ∘ x) (f ∘ y) (fun i => ⟨x i, hx i, rfl⟩) (fun i => ⟨y i, hy i, rfl⟩)
+        hbar hdet
 
 /-- **Replay, for a full derivation.** If the sub-arrangement on the circles `f k` derives all
 of its circles, then the set of those circles is derived in the ambient arrangement. -/
