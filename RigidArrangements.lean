@@ -19,5 +19,6 @@ import RigidArrangements.Cores78
 import RigidArrangements.Frame
 import RigidArrangements.OffLatticeExamples
 import RigidArrangements.Cluster
+import RigidArrangements.Bar
 import RigidArrangements.MergeCert
 import RigidArrangements.Ring
