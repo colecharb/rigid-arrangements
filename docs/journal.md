@@ -567,3 +567,81 @@ strict, and T14 is a candidate for being rigid without being infinitesimally rig
 at once.
 
 **Next.** The ring constructor itself, and T14 in the library rather than in a table.
+
+## 2026-10-27: R4, the first merging rule with a non-degeneracy condition
+
+The merging calculus now has a fourth rule, in `RigidArrangements/Bar.lean`. **R4:** two clusters
+joined by *three* contacts merge into one, provided the three bars are in general position. It is
+the first rule whose statement carries a geometric side condition, and the side condition is the
+whole interest of it.
+
+**Why three, and why a condition.** Two rigid pieces of the plane can move relative to one another
+in three ways: one rotation and two translations. Each contact between them imposes one equation,
+so three contacts generically pin the relative motion, and that is R4. But three equations can be
+dependent, and the first-order content of the equation "this bar keeps its length" is a *line* —
+the line through the two circle centers. Three lines in the plane fail to be independent exactly
+when they pass through a common point, or are all parallel (which is the same thing at infinity).
+So the side condition is the non-vanishing of a 3×3 determinant whose rows are the homogeneous
+line coordinates of the three bars, and the file proves that this really is what it means
+(`barDet_eq_zero_iff`, both directions). The honest form matters: a reading through "the three
+pairwise intersection points are distinct" would be wrong, because two *coincident* bar lines also
+make the matrix singular while having no pairwise intersection point to speak of.
+
+**Why this is not R1, R2 or R3 in disguise.** Those three rules have no non-degeneracy condition at
+all, and that is not an oversight: they merge clusters that *share circles*, and sharing circles is
+a statement about distances, which a flat triangle satisfies exactly as a fat one does. R4 merges
+clusters that share nothing and are only tied together by bars, and then the shape genuinely
+matters.
+
+**Three corrections to what we expected.**
+
+1. *The lattice constant is 12, not ±6.* Reading the line coordinates of a lattice bar in lattice
+   coordinates and converting to Euclidean ones scales the three columns by `√3`, by `2` (after a
+   shear) and by `2√3`, so the determinant picks up `√3 · 2 · 2√3 = 12`. This makes R4's side
+   condition decidable integer arithmetic on the lattice (`barDetZ`), which is what lets lattice
+   certificates stay free of geometric hypotheses.
+2. *The velocity row and the line row have the same determinant.* Differentiating the bar length in
+   Euclidean coordinates produces the row `(dₓ, d_y, dₓQ_y - d_yQₓ)`, which is the line row with
+   two columns swapped and one negated — a signed column permutation. An earlier guess that the two
+   differ, and that the velocity form would not survive the change to lattice coordinates, is
+   false; both facts are now machine-checked. The real reason to prefer the line form is that its
+   transformation law is visible: concurrency and parallelism are affine notions, and an affine
+   change of coordinates acts on line coordinates by the contragredient matrix.
+3. *R4 needs no nontriviality hypothesis.* One expects to have to assume that each of the two
+   clusters contains at least two circles, since the rigid-motion normal form has to be normalised
+   against two of them. It is free: if all three bars started at the same circle their three lines
+   would meet there, and the determinant would vanish. The side condition does that work too.
+
+**The analytic step.** The one hard statement is that the identity is *isolated* among rigid motions
+keeping the three bar lengths — not merely that no nonzero infinitesimal motion exists. No inverse
+function theorem is needed, and no exponential: parametrising the rotation by the unit complex
+number `ρ` itself works, because `|ρ| = 1` with `ρ.re > 0` already gives
+`0 ≤ 1 - ρ.re = ρ.im²/(1 + ρ.re) ≤ ρ.im²`, so the real part of `ρ` only ever contributes to the
+quadratic remainder. The argument is then an exact second-order identity for one bar, a bound
+`|row · v| ≤ 4B²‖v‖²` for each, and a reverse bound `‖v‖ ≤ K‖Mv‖` from invertibility of the matrix;
+either `v = 0` or `‖v‖` is bounded below, and nearness excludes the second. Orientation-reversing
+motions need no separate treatment: a reflection, once normalised, is the identity map, and the
+pinning lemma then forces it to agree with the original placement.
+
+**W20: an arrangement that needs R4.** The certificate checker has gained the fourth rule, and with
+it the first certified arrangement that no earlier rule assembles. `W20` is the 4×6 lattice block
+minus the four cells (0,0), (1,2), (2,3), (3,5): twenty circles, thirty-seven contacts, every
+circle touching at least three others. Its triangles fall into two edge-connected families spanning
+ten circles each, and **exactly three** contacts cross between the two bodies. Three is one too few
+for R1, which needs two shared circles, and the wrong shape for R2, which needs clusters sharing
+circles rather than clusters joined by bars; the exploratory census records `W20` as emergent for
+R1+R2, with fixpoint `{10, 10, 2, 2, 2}` — the two bodies and the three cross contacts, stuck. The
+three cross bars lie on the lattice lines `a = 0`, `a + b = 4` and `a = 3`: two parallel, the third
+crossing. Determinant 3, and R4 fires.
+
+**And the contrast that explains the headline number.** `S20` — the 5×5 block minus five cells, the
+unique smallest *emergent* arrangement — has the same shape of join: two bodies (sixteen circles and
+a four-circle rhombus) and exactly three cross contacts. Its three cross lines are `b = 4`,
+`a + b = 4` and `a = 0`, and those three meet at `(0,4)`, which is itself one of its circles. The
+determinant is 0, R4 cannot fire, and no rule in the calculus assembles `S20`. One vanishing
+integer is the whole reason the smallest emergent arrangement has twenty circles and not thirty.
+
+**Next.** R4 in the off-lattice setting, where the determinant has to be certified by exact
+arithmetic rather than by `decide`; and the question of whether a fifth rule (four or more bars,
+or a genuinely second-order merge) is needed for the emergent classes at n = 21 and 22, where the
+R1–R4 counts are 12 and 99.
