@@ -16,6 +16,9 @@ Everything in this folder is **exploratory**: plain Lean programs (no theorems, 
 | `constructible-cores22.txt` | Output of `Constructible cores 22`: the same calculus run on core candidates only, deciding rigidity from scratch (cheap flex certificates, then exact rank, Asimow–Roth, the parallel flex, "some deletion is rigid", second order) instead of from the previous census level. This is the mode that carries the **soundness cross-check**: a candidate with a flex certificate that the calculus nevertheless merges would print `SOUNDNESS VIOLATION` and be counted in `soundnessViolations`. That count is **0 at every n = 3..22**. Its rigid-core counts (128, 236, 501 at n = 20, 21, 22) agree with `rigidCores=` in `constructible22.txt`, and its emergent cores are 0 for n ≤ 19, then 1, 6, 7 — the n = 20 one being S20 again. |
 | `NonSaturated26.lean` | The 26-circle polyiamond corner set whose spanned triangles are not edge-connected. |
 | `Glue.lean` | Prototype of the gluing (concatenation) argument behind the growth-constant plan (WS1). |
+| `caseb/` | The case-(b) minimality search: is there an off-lattice arrangement smaller than H30 whose off-lattice information is carried by circles lying in no triangle? There is not, and both known mechanisms are exactly minimal at n = 30. Has its own `README.md` and `build.sh`. |
+| `gf/` | Strips of bounded width: brute force, line-sum transfer matrices, generating functions and growth constants for widths 3 to 6, and the width at which emergence begins. Has its own `README.md`. |
+| `offlattice/` | The off-lattice investigations; self-documenting, see `offlattice/README.md`. |
 
 ## Running
 
