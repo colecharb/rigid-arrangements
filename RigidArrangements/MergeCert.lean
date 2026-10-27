@@ -1,12 +1,13 @@
-import RigidArrangements.Cluster
+import RigidArrangements.Bar
 import RigidArrangements.Cores78
 
 /-!
 # Merge certificates: a decidable checker for the cluster calculus
 
 `RigidArrangements.Cluster` turns "these circles do not move relative to one another" into the
-predicate `Arrangement.RigidIn` and proves the three merging rules R1, R2, R3. This file makes
-the bookkeeping of a *chain of merges* into data that the Lean kernel can check.
+predicate `Arrangement.RigidIn` and proves the merging rules R1, R2, R3;
+`RigidArrangements.Bar` adds R4. This file makes the bookkeeping of a *chain of merges* into
+data that the Lean kernel can check.
 
 ## The idea
 
@@ -24,17 +25,23 @@ The checker `checkMerge` replays the script and returns a `Bool`.
 
 ## What the checker cannot see
 
-The checker never looks at a center, so the caller must supply the geometry. Exactly two kinds of
-fact are needed, and no others:
+The checker never looks at a center, so the caller must supply the geometry. Exactly three kinds
+of fact are needed, and no others:
 
 * **every listed contact really is a contact**, `∀ e ∈ cert.edges, Tangent A.center e.1 e.2`.
   This list need only be *sound*, not complete: a certificate may use fewer contacts than the
   arrangement has, and extra contacts of the arrangement are simply never mentioned.
 * **for each R3 step, one distance**, `dist (A.center u) (A.center v) = 2 * k`, where `u` and `v`
   are the ends of the chain and `k` its number of contacts. `mergeAnchors` collects these
-  demands from the step list, so there is one hypothesis covering all of them. R1 and R2 steps
-  demand nothing: as the docstrings of `Arrangement.RigidIn.union_of_two` and
-  `Arrangement.RigidIn.union_of_ring` explain, those rules have no non-degeneracy condition.
+  demands from the step list, so there is one hypothesis covering all of them.
+* **for each R4 step, one determinant**, `barDet ≠ 0` for its three cross bars: the bars must be
+  neither concurrent nor all parallel. `mergeBars` collects these demands and
+  `Arrangement.BarsOK` is the hypothesis covering all of them.
+
+R1 and R2 steps demand nothing: as the docstrings of `Arrangement.RigidIn.union_of_two` and
+`Arrangement.RigidIn.union_of_ring` explain, those rules have no non-degeneracy condition. R4
+is the one rule that does, and it cannot be dispensed with — see
+`RigidArrangements.barDetZ_s20_cross_bars`.
 
 ## Circles and their names
 
@@ -55,11 +62,11 @@ name of a circle, and the circles so named form a cluster of `A`*.
 
 On the triangular lattice every side condition becomes integer arithmetic, so no geometry has to
 be supplied at all: a contact between lattice points `v`, `w` is `eNorm (v - w) = 1`
-(`tangent_latticePoint_iff`) and an R3 anchor distance `2 * k` is `eNorm (v - w) = k ^ 2`
-(`dist_latticePoint_sq`, and `dist_latticePoint_eq_two_mul` below). So `checkMergeL` folds the
-two caller obligations into arithmetic checks, and
-`Arrangement.isRigid_ofLattice_of_checkMergeL` has no geometric hypothesis: every instance closes
-by `decide +kernel`.
+(`tangent_latticePoint_iff`), an R3 anchor distance `2 * k` is `eNorm (v - w) = k ^ 2`
+(`dist_latticePoint_sq`, and `dist_latticePoint_eq_two_mul` below), and an R4 determinant is
+`barDetZ ≠ 0` (`barDet_ne_zero_of_barDetZ_ne_zero`). So `checkMergeL` folds all three caller
+obligations into arithmetic checks, and `Arrangement.isRigid_ofLattice_of_checkMergeL` has no
+geometric hypothesis: every instance closes by `decide +kernel`.
 
 ## Instances
 
@@ -72,13 +79,15 @@ by `decide +kernel`.
   `Arrangement.flower_isRigid_of_mergeCert_chain`: the flower (`Arrangement.flower`), by a
   lattice certificate, twice. The second certificate is the first with one R3 step added; see its
   docstring for why the step is redundant and included anyway.
-
-## Adding R4
-
-R4 is not part of the calculus yet. When it arrives it is a one-constructor change: add a
-constructor to `MergeStep`, a branch to `MergeStep.run` (its combinatorial side conditions) and to
-`MergeStep.anchors` (the geometric facts it needs of the caller, if any), and a case to
-`Arrangement.isClusterList_run`. Nothing else in this file mentions the individual rules.
+* `Arrangement.w20_isRigid_of_mergeCert`: the twenty-circle lattice arrangement `W20`, the one
+  instance here whose certificate genuinely *needs* R4. `W20` is the `4 × 6` block minus four
+  cells; its contact graph is two triangle-connected bodies of ten circles each, joined by
+  exactly three contacts, and the exploratory census confirms that R1, R2 and R3 cannot assemble
+  it — the R1+R2 fixpoint is five clusters of sizes `{10, 10, 2, 2, 2}`. The three cross bars lie
+  on the lattice lines `a = 0`, `a + b = 4` and `a = 3`: two of them parallel, the third
+  crossing, so `barDetZ = 3` and R4 fires. Contrast
+  `RigidArrangements.barDetZ_s20_cross_bars`, where the three cross bars are concurrent and no
+  rule applies.
 
 ## Main results
 
@@ -86,11 +95,13 @@ constructor to `MergeStep`, a branch to `MergeStep.run` (its combinatorial side 
   checker.
 * `Arrangement.IsClusterList`, `Arrangement.isClusterList_mergeClusters`: the invariant and its
   propagation.
+* `mergeAnchors`, `mergeBars`, `Arrangement.BarsOK`: the caller's obligations, gathered.
 * `Arrangement.isRigid_of_checkMerge`, `Arrangement.isRigid_of_checkMerge_self`: soundness.
 * `checkMergeL`, `Arrangement.isRigid_ofLattice_of_checkMergeL`: the lattice layer.
 * `o11MergeCert`, `Arrangement.o11_isRigid_of_mergeCert`, `flowerMergeCert`,
   `Arrangement.flower_isRigid_of_mergeCert`, `flowerChainMergeCert`,
-  `Arrangement.flower_isRigid_of_mergeCert_chain`.
+  `Arrangement.flower_isRigid_of_mergeCert_chain`, `w20MergeCert`,
+  `Arrangement.w20_isRigid_of_mergeCert`.
 -/
 
 namespace RigidArrangements
@@ -111,6 +122,11 @@ inductive MergeStep (κ : Type*) where
   /-- **R3**: merge into the cluster at position `s` the taut chain `u :: rest`, whose ends `u`
   and `rest.getLastD u` lie in that cluster and whose consecutive pairs are listed contacts. -/
   | r3 (s : ℕ) (u : κ) (rest : List κ) : MergeStep κ
+  /-- **R4**: merge the clusters at positions `s` and `t`, joined by the three listed contacts
+  `xᵢ yᵢ` with `xᵢ` in the first cluster and `yᵢ` in the second. This is the one step with a
+  geometric side condition: the three bars must have nonzero bar determinant, which
+  `MergeStep.bars` records as a demand on the caller. -/
+  | r4 (s t : ℕ) (x₁ y₁ x₂ y₂ x₃ y₃ : κ) : MergeStep κ
   deriving Repr
 
 /-- A **merge certificate**: the contacts to start from, and the merging steps to apply in
@@ -127,20 +143,35 @@ namespace MergeStep
 
 variable {κ : Type*}
 
-/-- The geometric demands of a step: a list of triples `(u, v, k)`, each asking that the circles
-named `u` and `v` be at distance exactly `2 * k`. R1 and R2 demand nothing; an R3 step demands the
-one distance that makes its chain taut. -/
+/-- The distance demands of a step: a list of triples `(u, v, k)`, each asking that the circles
+named `u` and `v` be at distance exactly `2 * k`. R1, R2 and R4 demand no distance; an R3 step
+demands the one distance that makes its chain taut. -/
 def anchors : MergeStep κ → List (κ × κ × ℕ)
   | r1 _ _ _ _ => []
   | r2 _ _ _ _ _ _ => []
   | r3 _ u rest => [(u, rest.getLastD u, rest.length)]
+  | r4 _ _ _ _ _ _ _ _ => []
+
+/-- The bar demands of a step: the three cross bars of an R4 step, as the triple of pairs
+`((x₁, y₁), (x₂, y₂), (x₃, y₃))`, asking that they have nonzero bar determinant. R1, R2 and R3
+demand no bars. -/
+def bars : MergeStep κ → List ((κ × κ) × (κ × κ) × (κ × κ))
+  | r1 _ _ _ _ => []
+  | r2 _ _ _ _ _ _ => []
+  | r3 _ _ _ => []
+  | r4 _ _ x₁ y₁ x₂ y₂ x₃ y₃ => [((x₁, y₁), (x₂, y₂), (x₃, y₃))]
 
 end MergeStep
 
-/-- The geometric demands of a whole step list, gathered in one place so that a single hypothesis
+/-- The distance demands of a whole step list, gathered in one place so that a single hypothesis
 covers them all. -/
 def mergeAnchors {κ : Type*} (steps : List (MergeStep κ)) : List (κ × κ × ℕ) :=
   steps.flatMap MergeStep.anchors
+
+/-- The bar demands of a whole step list, gathered in one place so that a single hypothesis
+covers them all. -/
+def mergeBars {κ : Type*} (steps : List (MergeStep κ)) : List ((κ × κ) × (κ × κ) × (κ × κ)) :=
+  steps.flatMap MergeStep.bars
 
 /-- The clusters a certificate starts from: one two-circle cluster per listed contact, in the
 order the contacts are listed. -/
@@ -177,6 +208,12 @@ def MergeStep.run (E : List (κ × κ)) (cs : List (List κ)) : MergeStep κ →
       if rest ≠ [] ∧ u ∈ cs.getD s [] ∧ rest.getLastD u ∈ cs.getD s [] ∧
           chainEdges E u rest = true then
         some (cs.getD s [] ++ u :: rest)
+      else none
+  | .r4 s t x₁ y₁ x₂ y₂ x₃ y₃ =>
+      if x₁ ∈ cs.getD s [] ∧ x₂ ∈ cs.getD s [] ∧ x₃ ∈ cs.getD s [] ∧
+          y₁ ∈ cs.getD t [] ∧ y₂ ∈ cs.getD t [] ∧ y₃ ∈ cs.getD t [] ∧
+          isEdge E x₁ y₁ = true ∧ isEdge E x₂ y₂ = true ∧ isEdge E x₃ y₃ = true then
+        some (cs.getD s [] ++ cs.getD t [])
       else none
 
 /-- Replay a list of steps against a list of clusters, appending each new cluster at the end. -/
@@ -296,6 +333,28 @@ theorem isClusterList_pair (hinj : Function.Injective name) {x y : κ} {i j : ι
     rw [h]
     exact rigidIn_pair ht
 
+/-! ## The caller's bar obligation -/
+
+/-- **The geometric facts R4 steps demand of the caller.** For each listed triple of cross bars,
+and for any three pairs of circles carrying the six names, the bar determinant is nonzero: the
+three bars are neither concurrent nor all parallel (`RigidArrangements.barDet_eq_zero_iff`).
+
+The quantification over *all* circles with the given names, rather than over some choice of
+them, is the same device as in the anchor obligation: it lets the obligation be stated without
+knowing which circle a name refers to, which is what makes `name` need not be surjective. When
+`name` is injective — and it always is here — there is at most one such triple, so nothing is
+actually being asked twice. -/
+def BarsOK (A : Arrangement ι) (name : ι → κ)
+    (bs : List ((κ × κ) × (κ × κ) × (κ × κ))) : Prop :=
+  ∀ b ∈ bs, ∀ x y : Fin 3 → ι,
+    name (x 0) = b.1.1 → name (y 0) = b.1.2 → name (x 1) = b.2.1.1 →
+    name (y 1) = b.2.1.2 → name (x 2) = b.2.2.1 → name (y 2) = b.2.2.2 →
+    barDet (A.center ∘ x) (A.center ∘ y) ≠ 0
+
+/-- Fewer bars to certify is a weaker obligation. -/
+theorem BarsOK.mono {bs bs' : List ((κ × κ) × (κ × κ) × (κ × κ))} (h : A.BarsOK name bs)
+    (hsub : bs' ⊆ bs) : A.BarsOK name bs' := fun b hb => h b (hsub hb)
+
 /-! ## Reading the contact list -/
 
 /-- A listed contact gives circles with the two names, tangent to each other. -/
@@ -340,14 +399,15 @@ demands of this step, a step that succeeds against clusters satisfying the invar
 cluster satisfying the invariant.
 
 This is the only declaration in the file that mentions the individual rules: it applies
-`Arrangement.RigidIn.union_of_two` for R1, `Arrangement.RigidIn.union_of_ring` for R2 and
-`Arrangement.RigidIn.union_chain` for R3. -/
+`Arrangement.RigidIn.union_of_two` for R1, `Arrangement.RigidIn.union_of_ring` for R2,
+`Arrangement.RigidIn.union_chain` for R3 and `Arrangement.RigidIn.union_of_three_bars` for R4. -/
 theorem isClusterList_run [Finite ι] [DecidableEq κ] (hinj : Function.Injective name)
     {E : List (κ × κ)}
     (hE : ∀ e ∈ E, ∃ i j, name i = e.1 ∧ name j = e.2 ∧ Tangent A.center i j)
     {cs : List (List κ)} (hcs : ∀ c ∈ cs, IsClusterList A name c) {s : MergeStep κ} {c : List κ}
     (hanch : ∀ t ∈ s.anchors, ∀ i j, name i = t.1 → name j = t.2.1 →
       dist (A.center i) (A.center j) = 2 * t.2.2)
+    (hbars : A.BarsOK name s.bars)
     (h : s.run E cs = some c) : IsClusterList A name c := by
   -- the invariant also holds of the empty cluster an out-of-range position reads as
   have hcs' : ∀ n : ℕ, IsClusterList A name (cs.getD n []) := by
@@ -456,6 +516,36 @@ theorem isClusterList_run [Finite ι] [DecidableEq κ] (hinj : Function.Injectiv
           exact image_getD_Iic iu qs
         rw [← himg]
         exact hres
+  | r4 sidx tidx x₁ y₁ x₂ y₂ x₃ y₃ =>
+      simp only [MergeStep.run] at h
+      split_ifs at h with hc
+      obtain ⟨hx1, hx2, hx3, hy1, hy2, hy3, he1, he2, he3⟩ := hc
+      rw [Option.some.injEq] at h
+      subst h
+      -- the three listed cross bars give three pairs of tangent circles with the right names
+      obtain ⟨i₁, j₁, hi₁, hj₁, ht₁⟩ := exists_tangent_of_isEdge hE he1
+      obtain ⟨i₂, j₂, hi₂, hj₂, ht₂⟩ := exists_tangent_of_isEdge hE he2
+      obtain ⟨i₃, j₃, hi₃, hj₃, ht₃⟩ := exists_tangent_of_isEdge hE he3
+      have e₁ : i₁ ∈ namedSet name (cs.getD sidx []) := mem_namedSet (by rw [hi₁]; exact hx1)
+      have e₂ : i₂ ∈ namedSet name (cs.getD sidx []) := mem_namedSet (by rw [hi₂]; exact hx2)
+      have e₃ : i₃ ∈ namedSet name (cs.getD sidx []) := mem_namedSet (by rw [hi₃]; exact hx3)
+      have f₁ : j₁ ∈ namedSet name (cs.getD tidx []) := mem_namedSet (by rw [hj₁]; exact hy1)
+      have f₂ : j₂ ∈ namedSet name (cs.getD tidx []) := mem_namedSet (by rw [hj₂]; exact hy2)
+      have f₃ : j₃ ∈ namedSet name (cs.getD tidx []) := mem_namedSet (by rw [hj₃]; exact hy3)
+      have hbt : ((x₁, y₁), (x₂, y₂), (x₃, y₃)) ∈
+          (MergeStep.r4 sidx tidx x₁ y₁ x₂ y₂ x₃ y₃ : MergeStep κ).bars := by
+        simp [MergeStep.bars]
+      refine ⟨fun w hw => ?_, ?_⟩
+      · rcases List.mem_append.mp hw with hw | hw
+        · exact (hcs' sidx).1 w hw
+        · exact (hcs' tidx).1 w hw
+      · rw [namedSet_append]
+        refine (hcs' sidx).2.union_of_three_bars (hcs' tidx).2 ![i₁, i₂, i₃] ![j₁, j₂, j₃]
+          (fun k => by fin_cases k; exacts [e₁, e₂, e₃])
+          (fun k => by fin_cases k; exacts [f₁, f₂, f₃])
+          (fun k => by fin_cases k; exacts [ht₁, ht₂, ht₃])
+          (hbars _ hbt ![i₁, i₂, i₃] ![j₁, j₂, j₃] (by simpa using hi₁) (by simpa using hj₁)
+            (by simpa using hi₂) (by simpa using hj₂) (by simpa using hi₃) (by simpa using hj₃))
 
 /-! ## Soundness of the replay -/
 
@@ -467,22 +557,25 @@ theorem isClusterList_mergeFrom [Finite ι] [DecidableEq κ] (hinj : Function.In
       (∀ c ∈ cs, IsClusterList A name c) →
       (∀ t ∈ mergeAnchors steps, ∀ i j, name i = t.1 → name j = t.2.1 →
         dist (A.center i) (A.center j) = 2 * t.2.2) →
+      A.BarsOK name (mergeBars steps) →
       mergeFrom E cs steps = some cs' → ∀ c ∈ cs', IsClusterList A name c := by
   intro steps
   induction steps with
   | nil =>
-      intro cs cs' hcs _ h
+      intro cs cs' hcs _ _ h
       rw [mergeFrom, Option.some.injEq] at h
       exact h ▸ hcs
   | cons s rest ih =>
-      intro cs cs' hcs hanch h
+      intro cs cs' hcs hanch hbars h
       rw [mergeFrom, Option.bind_eq_some_iff] at h
       obtain ⟨c, hr, h⟩ := h
       have hsa : ∀ t ∈ s.anchors, ∀ i j, name i = t.1 → name j = t.2.1 →
           dist (A.center i) (A.center j) = 2 * t.2.2 := fun t ht =>
         hanch t (by rw [mergeAnchors, List.mem_flatMap]; exact ⟨s, List.mem_cons_self .., ht⟩)
-      have hc : IsClusterList A name c := isClusterList_run hinj hE hcs hsa hr
-      refine ih (cs ++ [c]) cs' (fun d hd => ?_) (fun t ht => ?_) h
+      have hsb : A.BarsOK name s.bars := hbars.mono (fun b hb => by
+        rw [mergeBars, List.mem_flatMap]; exact ⟨s, List.mem_cons_self .., hb⟩)
+      have hc : IsClusterList A name c := isClusterList_run hinj hE hcs hsa hsb hr
+      refine ih (cs ++ [c]) cs' (fun d hd => ?_) (fun t ht => ?_) (hbars.mono fun b hb => ?_) h
       · rcases List.mem_append.mp hd with hd | hd
         · exact hcs d hd
         · rw [List.mem_singleton] at hd
@@ -491,6 +584,9 @@ theorem isClusterList_mergeFrom [Finite ι] [DecidableEq κ] (hinj : Function.In
           rw [mergeAnchors, List.mem_flatMap] at ht ⊢
           obtain ⟨s', hs', ht'⟩ := ht
           exact ⟨s', List.mem_cons_of_mem _ hs', ht'⟩)
+      · rw [mergeBars, List.mem_flatMap] at hb ⊢
+        obtain ⟨s', hs', hb'⟩ := hb
+        exact ⟨s', List.mem_cons_of_mem _ hs', hb'⟩
 
 /-- **Every cluster a certificate builds is a cluster.** -/
 theorem isClusterList_mergeClusters [Finite ι] [DecidableEq κ] (hinj : Function.Injective name)
@@ -498,8 +594,9 @@ theorem isClusterList_mergeClusters [Finite ι] [DecidableEq κ] (hinj : Functio
     (hE : ∀ e ∈ cert.edges, ∃ i j, name i = e.1 ∧ name j = e.2 ∧ Tangent A.center i j)
     (hanch : ∀ t ∈ mergeAnchors cert.steps, ∀ i j, name i = t.1 → name j = t.2.1 →
       dist (A.center i) (A.center j) = 2 * t.2.2)
+    (hbars : A.BarsOK name (mergeBars cert.steps))
     (h : mergeClusters cert = some cs) : ∀ c ∈ cs, IsClusterList A name c := by
-  refine isClusterList_mergeFrom hinj hE cert.steps _ cs (fun c hc => ?_) hanch h
+  refine isClusterList_mergeFrom hinj hE cert.steps _ cs (fun c hc => ?_) hanch hbars h
   rw [mergeAtoms, List.mem_map] at hc
   obtain ⟨e, he, rfl⟩ := hc
   obtain ⟨i, j, hi, hj, ht⟩ := hE e he
@@ -507,14 +604,16 @@ theorem isClusterList_mergeClusters [Finite ι] [DecidableEq κ] (hinj : Functio
 
 /-! ## Soundness of the checker -/
 
-/-- **A merge certificate proves rigidity.** The caller supplies two kinds of geometric fact —
-that every listed contact is a contact, and one distance for each R3 step — and a list `all` of
-names covering every circle. Everything else is combinatorics, checked by `checkMerge`. -/
+/-- **A merge certificate proves rigidity.** The caller supplies three kinds of geometric fact —
+that every listed contact is a contact, one distance for each R3 step, and one nonvanishing bar
+determinant for each R4 step — and a list `all` of names covering every circle. Everything else
+is combinatorics, checked by `checkMerge`. -/
 theorem isRigid_of_checkMerge [Finite ι] [DecidableEq κ] (hinj : Function.Injective name)
     {cert : MergeCert κ} {all : List κ} (hall : ∀ i : ι, name i ∈ all)
     (hE : ∀ e ∈ cert.edges, ∃ i j, name i = e.1 ∧ name j = e.2 ∧ Tangent A.center i j)
     (hanch : ∀ t ∈ mergeAnchors cert.steps, ∀ i j, name i = t.1 → name j = t.2.1 →
       dist (A.center i) (A.center j) = 2 * t.2.2)
+    (hbars : A.BarsOK name (mergeBars cert.steps))
     (h : checkMerge cert all = true) : A.IsRigid := by
   rw [← rigidIn_univ_iff]
   rcases hm : mergeClusters cert with _ | cs
@@ -525,7 +624,7 @@ theorem isRigid_of_checkMerge [Finite ι] [DecidableEq κ] (hinj : Function.Inje
     exact absurd h (by simp)
   simp only [checkMerge, hm, hl, List.all_eq_true] at h
   have hcl : IsClusterList A name cl :=
-    isClusterList_mergeClusters hinj hE hanch hm cl (List.mem_of_getLast? hl)
+    isClusterList_mergeClusters hinj hE hanch hbars hm cl (List.mem_of_getLast? hl)
   have huniv : namedSet name cl = (Set.univ : Set ι) := by
     ext i
     simp only [namedSet, Set.mem_ofPred_eq, Set.mem_univ, iff_true]
@@ -540,6 +639,9 @@ theorem isRigid_of_checkMerge_self [Finite ι] [DecidableEq ι] {A : Arrangement
     (hE : ∀ e ∈ cert.edges, Tangent A.center e.1 e.2)
     (hanch : ∀ t ∈ mergeAnchors cert.steps,
       dist (A.center t.1) (A.center t.2.1) = 2 * t.2.2)
+    (hbars : ∀ b ∈ mergeBars cert.steps,
+      barDet ![A.center b.1.1, A.center b.2.1.1, A.center b.2.2.1]
+        ![A.center b.1.2, A.center b.2.1.2, A.center b.2.2.2] ≠ 0)
     (h : checkMerge cert all = true) : A.IsRigid :=
   isRigid_of_checkMerge (name := id) Function.injective_id hall
     (fun e he => ⟨e.1, e.2, rfl, rfl, hE e he⟩)
@@ -547,7 +649,22 @@ theorem isRigid_of_checkMerge_self [Finite ι] [DecidableEq ι] {A : Arrangement
       simp only [id] at hi hj
       subst hi
       subst hj
-      exact hanch t ht) h
+      exact hanch t ht)
+    (fun b hb x y h1 h2 h3 h4 h5 h6 => by
+      have hcx : A.center ∘ x = ![A.center b.1.1, A.center b.2.1.1, A.center b.2.2.1] := by
+        funext k
+        fin_cases k
+        · simpa using congrArg A.center h1
+        · simpa using congrArg A.center h3
+        · simpa using congrArg A.center h5
+      have hcy : A.center ∘ y = ![A.center b.1.2, A.center b.2.1.2, A.center b.2.2.2] := by
+        funext k
+        fin_cases k
+        · simpa using congrArg A.center h2
+        · simpa using congrArg A.center h4
+        · simpa using congrArg A.center h6
+      rw [hcx, hcy]
+      exact hbars b hb) h
 
 end Arrangement
 
@@ -572,27 +689,32 @@ theorem dist_latticePoint_eq_two_mul {v w : ℤ × ℤ} {k : ℕ} (h : eNorm (v 
 
 /-- **The lattice checker.** `checkMergeL l cert` asks that every contact the certificate lists
 join two points of `l` at `eNorm` one, that the anchor distance of every R3 step is a perfect
-square of the right size, and that the certificate merges to a cluster containing every point of
-`l`. Nothing geometric is left for the caller, so
-`Arrangement.isRigid_ofLattice_of_checkMergeL` closes by `decide`. -/
+square of the right size, that the three cross bars of every R4 step have nonzero integer bar
+determinant, and that the certificate merges to a cluster containing every point of `l`. Nothing
+geometric is left for the caller, so `Arrangement.isRigid_ofLattice_of_checkMergeL` closes by
+`decide`. -/
 def checkMergeL (l : List (ℤ × ℤ)) (cert : MergeCert (ℤ × ℤ)) : Bool :=
   cert.edges.all (fun e =>
       decide (e.1 ∈ l) && decide (e.2 ∈ l) && decide (eNorm (e.1 - e.2) = 1)) &&
     (mergeAnchors cert.steps).all (fun t => decide (eNorm (t.1 - t.2.1) = (t.2.2 : ℤ) ^ 2)) &&
+    (mergeBars cert.steps).all (fun b =>
+      decide (barDetZ ![b.1.1, b.2.1.1, b.2.2.1] ![b.1.2, b.2.1.2, b.2.2.2] ≠ 0)) &&
     checkMerge cert l
 
 namespace Arrangement
 
 /-- **A lattice merge certificate proves rigidity**, with no geometric hypothesis: the circles are
-named by their lattice points, and both of the obligations of
+named by their lattice points, and all three obligations of
 `Arrangement.isRigid_of_checkMerge` are discharged by integer arithmetic. -/
 theorem isRigid_ofLattice_of_checkMergeL {l : List (ℤ × ℤ)} (hl : l.Nodup)
     {cert : MergeCert (ℤ × ℤ)} (h : checkMergeL l cert = true) :
     (ofLattice l hl).IsRigid := by
-  rw [checkMergeL, Bool.and_eq_true, Bool.and_eq_true, List.all_eq_true, List.all_eq_true] at h
-  obtain ⟨⟨hed, han⟩, hchk⟩ := h
+  rw [checkMergeL, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true, List.all_eq_true,
+    List.all_eq_true, List.all_eq_true] at h
+  obtain ⟨⟨⟨hed, han⟩, hbd⟩, hchk⟩ := h
   refine isRigid_of_checkMerge (name := fun i => l.get i) (fun i j hij => hl.get_inj_iff.mp hij)
-    (fun i => List.get_mem l i) (fun e he => ?_) (fun t ht i j hi hj => ?_) hchk
+    (fun i => List.get_mem l i) (fun e he => ?_) (fun t ht i j hi hj => ?_)
+    (fun b hb x y h1 h2 h3 h4 h5 h6 => ?_) hchk
   · have hb := hed e he
     rw [Bool.and_eq_true, Bool.and_eq_true] at hb
     obtain ⟨⟨h1, h2⟩, h3⟩ := hb
@@ -604,6 +726,22 @@ theorem isRigid_ofLattice_of_checkMergeL {l : List (ℤ × ℤ)} (hl : l.Nodup)
   · have h3 := of_decide_eq_true (han t ht)
     rw [← hi, ← hj] at h3
     exact dist_latticePoint_eq_two_mul h3
+  · -- R4's side condition, from the integer determinant
+    refine barDet_center_ne_zero_of_barDetZ (f := fun i => l.get i) (fun i => rfl) ?_
+    have hcx : (fun i => l.get i) ∘ x = ![b.1.1, b.2.1.1, b.2.2.1] := by
+      funext k
+      fin_cases k
+      · simpa using h1
+      · simpa using h3
+      · simpa using h5
+    have hcy : (fun i => l.get i) ∘ y = ![b.1.2, b.2.1.2, b.2.2.2] := by
+      funext k
+      fin_cases k
+      · simpa using h2
+      · simpa using h4
+      · simpa using h6
+    rw [hcx, hcy]
+    exact of_decide_eq_true (hbd b hb)
 
 end Arrangement
 
@@ -649,9 +787,11 @@ theorem o11_isRigid_of_mergeCert : o11.IsRigid := by
   have hcontact : o11MergeEdges.all (fun e => decide (o11Contact e.1 e.2)) = true := by
     decide +kernel
   refine isRigid_of_checkMerge_self (cert := o11MergeCert) (all := List.finRange 11)
-    (fun i => List.mem_finRange i) (fun e he => ?_) (fun t ht => ?_) (by decide +kernel)
+    (fun i => List.mem_finRange i) (fun e he => ?_) (fun t ht => ?_) (fun b hb => ?_)
+    (by decide +kernel)
   · exact (o11_tangent_iff _ _).2 (of_decide_eq_true (List.all_eq_true.mp hcontact e he))
   · simp [mergeAnchors, o11MergeCert, MergeStep.anchors] at ht
+  · simp [mergeBars, o11MergeCert, MergeStep.bars] at hb
 
 end Arrangement
 
@@ -695,6 +835,131 @@ def flowerChainMergeCert : MergeCert (ℤ × ℤ) where
   edges := flowerMergeEdges
   steps := flowerMergeSteps ++ [.r3 17 (1, 0) [(0, 0), (-1, 0)]]
 
+/-! ## `W20`: an arrangement that needs R4 -/
+
+/-- The twenty circles of **`W20`**: the `4 × 6` lattice block `{0, 1, 2, 3} × {0, …, 5}` minus
+the four cells `(0, 0)`, `(1, 2)`, `(2, 3)` and `(3, 5)`.
+
+`W20` has `37 = 2 · 20 - 3` contacts and is rigid, and it is the instance in this file whose
+certificate genuinely needs R4. Its circles split into two triangle-connected bodies of ten
+(`w20Lower` and `w20Upper`, which cover it by `w20_bodies_cover`), and **exactly three contacts
+cross between the two bodies** (`w20_cross_contacts`). Three contacts are one too few for R1,
+which needs two shared circles, and the wrong shape for R2, which merges clusters that share
+circles rather than clusters joined by bars. `W20` is moreover a core — every circle has at
+least three contacts (`w20_three_le_degree`) — so no circle can be peeled off by a reverse
+Henneberg step either.
+
+The exploratory census confirms the conclusion: `W20` is one of the three rigid lattice
+arrangements of twenty circles that are *emergent for R1+R2*, its R1+R2 fixpoint being five
+clusters of sizes `{10, 10, 2, 2, 2}` — the two bodies and the three cross contacts, stuck. (At
+`n = 20` the census's R3 column adds nothing at all: `R124` and `R1234` constructibility counts
+agree.) R4 is exactly the rule for three bars, and it fires here because the three cross bars
+are not concurrent (`barDetZ_w20_cross_bars`). -/
+def w20Sites : List (ℤ × ℤ) :=
+  [(3, 4), (3, 3), (3, 2), (3, 1), (3, 0), (2, 5), (2, 4), (2, 2), (2, 1), (2, 0),
+    (1, 5), (1, 4), (1, 3), (1, 1), (1, 0), (0, 5), (0, 4), (0, 3), (0, 2), (0, 1)]
+
+/-- The twenty sites of `W20` are distinct. -/
+theorem w20Sites_nodup : w20Sites.Nodup := by decide
+
+/-- The lower body of `W20`: the ten circles spanned by one of the two edge-connected families
+of lattice triangles, in the order `w20MergeCert` builds them. -/
+def w20Lower : List (ℤ × ℤ) :=
+  [(1, 0), (0, 1), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1), (2, 2), (3, 2), (0, 2)]
+
+/-- The upper body of `W20`: the other ten circles, in the order `w20MergeCert` builds them. -/
+def w20Upper : List (ℤ × ℤ) :=
+  [(0, 3), (1, 3), (0, 4), (1, 4), (0, 5), (1, 5), (2, 4), (2, 5), (3, 4), (3, 3)]
+
+/-- The two bodies of `W20` cover its twenty circles, and nothing else. -/
+theorem w20_bodies_cover : (∀ v ∈ w20Sites, v ∈ w20Lower ∨ v ∈ w20Upper) ∧
+    (∀ v ∈ w20Lower ++ w20Upper, v ∈ w20Sites) := by decide
+
+/-- **Exactly three contacts cross between the two bodies of `W20`**, namely the three bars the
+R4 step of `w20MergeCert` uses. This is what makes `W20` the right test of R4: with two shared
+circles R1 would do, with a ring of three clusters R2 would do, and with four or more cross bars
+there would be slack to spare. -/
+theorem w20_cross_contacts :
+    (w20Lower.flatMap fun v => w20Upper.filterMap fun w =>
+        if eNorm (v - w) = 1 then some (v, w) else none)
+      = [((2, 2), (1, 3)), ((3, 2), (3, 3)), ((0, 2), (0, 3))] := by decide
+
+/-- **`W20` is a core.** Every circle has at least three contacts, so no circle is removable and
+no reverse Henneberg step applies. -/
+theorem w20_three_le_degree :
+    ∀ v ∈ w20Sites, 3 ≤ w20Sites.countP (fun w => decide (eNorm (v - w) = 1)) := by decide
+
+/-- The thirty-seven contacts of `W20`, grouped by the role they play in `w20MergeCert`: the
+seventeen that build the lower body (a seed triangle and seven pairs, one pair per Henneberg
+step), the seventeen that build the upper body the same way, and the three cross bars. -/
+def w20MergeEdges : List ((ℤ × ℤ) × (ℤ × ℤ)) :=
+  [-- the lower body: seed triangle, then (2,0), (2,1), (3,0), (3,1), (2,2), (3,2), (0,2)
+    ((1, 0), (0, 1)), ((1, 0), (1, 1)), ((0, 1), (1, 1)),
+    ((2, 0), (1, 0)), ((2, 0), (1, 1)),
+    ((2, 1), (2, 0)), ((2, 1), (1, 1)),
+    ((3, 0), (2, 0)), ((3, 0), (2, 1)),
+    ((3, 1), (3, 0)), ((3, 1), (2, 1)),
+    ((2, 2), (2, 1)), ((2, 2), (3, 1)),
+    ((3, 2), (3, 1)), ((3, 2), (2, 2)),
+    ((0, 2), (0, 1)), ((0, 2), (1, 1)),
+    -- the upper body: seed triangle, then (1,4), (0,5), (1,5), (2,4), (2,5), (3,4), (3,3)
+    ((0, 3), (1, 3)), ((0, 3), (0, 4)), ((1, 3), (0, 4)),
+    ((1, 4), (1, 3)), ((1, 4), (0, 4)),
+    ((0, 5), (0, 4)), ((0, 5), (1, 4)),
+    ((1, 5), (1, 4)), ((1, 5), (0, 5)),
+    ((2, 4), (1, 4)), ((2, 4), (1, 5)),
+    ((2, 5), (2, 4)), ((2, 5), (1, 5)),
+    ((3, 4), (2, 4)), ((3, 4), (2, 5)),
+    ((3, 3), (3, 4)), ((3, 3), (2, 4)),
+    -- the three cross bars
+    ((0, 2), (0, 3)), ((2, 2), (1, 3)), ((3, 2), (3, 3))]
+
+/-- The list is *complete*: every contact of `W20` appears in it. Since the list has thirty-seven
+entries and `W20` has `37 = 2 · 20 - 3` contacts, each contact appears exactly once. (Completeness
+is not needed for soundness — `Arrangement.isRigid_of_checkMerge` only asks that the listed pairs
+really be contacts — but it is what makes the certificate a faithful description of `W20`.) -/
+theorem w20MergeEdges_complete :
+    w20Sites.all (fun v => w20Sites.all fun w =>
+      !decide (eNorm (v - w) = 1) || isEdge w20MergeEdges v w) = true := by
+  decide +kernel
+
+/-- A merge certificate for `W20`. Positions `0`–`36` are the thirty-seven listed contacts.
+Step `37` builds the lower seed triangle and steps `38`–`44` grow it one circle at a time, each
+an R2 step consuming the body and two contacts (a Henneberg step); steps `45`–`52` do the same
+for the upper body. Position `44` is then the lower ten circles, position `52` the upper ten,
+and the single R4 step `53` merges them across the three cross bars
+`(0,2)-(0,3)`, `(2,2)-(1,3)`, `(3,2)-(3,3)`. Their lattice lines are `a = 0`, `a + b = 4` and
+`a = 3`: the first and third are parallel, the second crosses both, so
+`barDetZ = 3 ≠ 0` and R4 applies. -/
+def w20MergeCert : MergeCert (ℤ × ℤ) where
+  edges := w20MergeEdges
+  steps :=
+    [.r2 0 1 2 (1, 1) (0, 1) (1, 0),
+      .r2 37 3 4 (2, 0) (1, 1) (1, 0),
+      .r2 38 5 6 (2, 1) (1, 1) (2, 0),
+      .r2 39 7 8 (3, 0) (2, 1) (2, 0),
+      .r2 40 9 10 (3, 1) (2, 1) (3, 0),
+      .r2 41 11 12 (2, 2) (3, 1) (2, 1),
+      .r2 42 13 14 (3, 2) (2, 2) (3, 1),
+      .r2 43 15 16 (0, 2) (1, 1) (0, 1),
+      .r2 17 18 19 (0, 4) (1, 3) (0, 3),
+      .r2 45 20 21 (1, 4) (0, 4) (1, 3),
+      .r2 46 22 23 (0, 5) (1, 4) (0, 4),
+      .r2 47 24 25 (1, 5) (0, 5) (1, 4),
+      .r2 48 26 27 (2, 4) (1, 5) (1, 4),
+      .r2 49 28 29 (2, 5) (1, 5) (2, 4),
+      .r2 50 30 31 (3, 4) (2, 5) (2, 4),
+      .r2 51 32 33 (3, 3) (2, 4) (3, 4),
+      .r4 44 52 (0, 2) (0, 3) (2, 2) (1, 3) (3, 2) (3, 3)]
+
+/-- **The determinant that makes `W20` work.** Its three cross bars lie on the lattice lines
+`a = 0`, `a + b = 4` and `a = 3`, which are not concurrent and not all parallel. Contrast
+`RigidArrangements.barDetZ_s20_cross_bars`, where the analogous three lines meet in a point and
+the determinant is `0` — which is why `S20` is emergent and `W20` is not. -/
+theorem barDetZ_w20_cross_bars :
+    barDetZ ![(0, 2), (2, 2), (3, 2)] ![(0, 3), (1, 3), (3, 3)] = 3 := by
+  decide
+
 namespace Arrangement
 
 /-- **The flower is rigid**, by a lattice merge certificate with no geometric hypothesis: the
@@ -708,6 +973,17 @@ theorem flower_isRigid_of_mergeCert : flower.IsRigid :=
 theorem flower_isRigid_of_mergeCert_chain : flower.IsRigid :=
   isRigid_ofLattice_of_checkMergeL flowerSites_nodup (cert := flowerChainMergeCert)
     (by decide +kernel)
+
+/-- **`W20` is rigid**, by a lattice merge certificate whose last step is R4.
+
+This is the instance that shows R4 does work no earlier rule does. `W20` is two ten-circle
+triangle bodies joined by exactly three contacts (`w20_cross_contacts`) and has no removable
+circle (`w20_three_le_degree`); the census records its R1+R2 fixpoint as the five clusters
+`{10, 10, 2, 2, 2}`. The certificate `w20MergeCert` builds the two bodies with sixteen R2 steps
+and then closes with a single R4 step, whose side condition is the integer determinant
+`barDetZ_w20_cross_bars`, discharged inside the same `decide +kernel` as the combinatorics. -/
+theorem w20_isRigid_of_mergeCert : (ofLattice w20Sites w20Sites_nodup).IsRigid :=
+  isRigid_ofLattice_of_checkMergeL w20Sites_nodup (cert := w20MergeCert) (by decide +kernel)
 
 end Arrangement
 
