@@ -23,3 +23,4 @@ import RigidArrangements.Bar
 import RigidArrangements.MergeCert
 import RigidArrangements.Constructible
 import RigidArrangements.Ring
+import RigidArrangements.RingArr
