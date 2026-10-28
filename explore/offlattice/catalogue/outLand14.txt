@@ -1,0 +1,3 @@
+n=14: lattice rigid sets=739, known off-lattice=134
+added lattice start outside closure: A s=(6,9) B1=6#0 B2=9#14 hinge=(4,7) bar=(5,8) p=3 q=4 Delta=12 eps=-1
+traces=146130 blocked=83106 fails=239 endpoints: lattice=61053 known-off=1732 nonrigid=0 overlap=0 NEW-off=0

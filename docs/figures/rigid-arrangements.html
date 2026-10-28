@@ -1,0 +1,438 @@
+<title>Rigid Circle Arrangements</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a catalogue plate. One band per circle count n, each band a row of drawn
+   arrangements on a shared scale, with the proof status beside the count. */
+:root {
+  --paper: #f3f5f7;
+  --ink: #18202c;
+  --muted: #5b6676;
+  --rule: #d5dbe3;
+  --accent: #b5562b;      /* contact bars */
+  --cell: rgba(181, 86, 43, 0.10);  /* triangle cells */
+  --disk: #ffffff;
+  --disk-edge: #18202c;
+  --ok: #2f6b4f;
+  --ok-bg: #e2efe8;
+  --pending: #8a6a12;
+  --pending-bg: #f5ecd2;
+  --f0: #b5562b; --f1: #2f6f9e; --f2: #4f8a35; --f3: #8a4fa0; --f4: #a07d1c;
+  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12161c; --ink: #e4e8ee; --muted: #98a3b3; --rule: #2a313c;
+    --accent: #e98a5b; --cell: rgba(233, 138, 91, 0.14); --disk: #1a2029; --disk-edge: #cfd6e0;
+    --ok: #8fd1ad; --ok-bg: #1d3328; --pending: #e3c46d; --pending-bg: #352c12;
+    --f0: #e98a5b; --f1: #6fb3e3; --f2: #8fcf6f; --f3: #c79be0; --f4: #e0c25e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12161c; --ink: #e4e8ee; --muted: #98a3b3; --rule: #2a313c;
+  --accent: #e98a5b; --cell: rgba(233, 138, 91, 0.14); --disk: #1a2029; --disk-edge: #cfd6e0;
+  --ok: #8fd1ad; --ok-bg: #1d3328; --pending: #e3c46d; --pending-bg: #352c12;
+  --f0: #e98a5b; --f1: #6fb3e3; --f2: #8fcf6f; --f3: #c79be0; --f4: #e0c25e;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 36px;
+}
+header { display: grid; gap: 14px; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 5vw, 44px);
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { margin: 0; max-width: 68ch; color: var(--muted); }
+.lede code, .note code, figcaption code, .status code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+/* the sequence strip */
+.seq {
+  display: grid;
+  grid-template-columns: auto repeat(var(--cols), minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+}
+.seq div { padding: 6px 10px; text-align: center; white-space: nowrap; }
+.seq .lab {
+  text-align: left; color: var(--muted); font-size: 12px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.seq .n { font-family: var(--font-mono); color: var(--muted); border-bottom: 1px solid var(--rule); }
+.seq .c { font-family: var(--font-display); font-size: 22px; }
+.seq .c.lb { color: var(--muted); font-size: 18px; }
+
+/* legend */
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend svg { width: 34px; height: 22px; overflow: visible; }
+
+/* bands */
+.band {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.side { display: grid; gap: 8px; align-content: start; }
+.side .count {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
+}
+.side .count small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.status {
+  justify-self: start;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.status.pending { background: var(--pending-bg); color: var(--pending); }
+.side .thm { font-size: 12px; color: var(--muted); overflow-wrap: break-word; }
+.side .thm code { font-family: var(--font-mono); font-size: 11.5px; }
+
+.shapes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  align-items: flex-end;
+  min-width: 0;
+}
+figure { margin: 0; display: grid; gap: 6px; justify-items: start; }
+figure svg { display: block; max-width: 100%; height: auto; }
+figcaption { font-size: 13px; }
+figcaption b { font-weight: 600; }
+figcaption .meta { display: block; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+.note { font-size: 13px; color: var(--muted); max-width: 72ch; margin: 0; }
+
+svg .cell { fill: var(--cell); stroke: none; }
+svg .disk { fill: var(--disk); stroke: var(--disk-edge); stroke-width: 0.045; }
+svg .bar { stroke: var(--accent); stroke-width: 0.07; stroke-linecap: round; }
+svg .dot { fill: var(--accent); }
+svg .disk.hinge { stroke: var(--ink); stroke-width: 0.13; }
+svg .disk.free { stroke-dasharray: 0.22 0.14; }
+svg .bar.c0 { stroke: var(--f0); } svg .bar.c1 { stroke: var(--f1); } svg .bar.c2 { stroke: var(--f2); }
+svg .bar.c3 { stroke: var(--f3); } svg .bar.c4 { stroke: var(--f4); }
+svg .cell.c0 { fill: var(--f0); fill-opacity: 0.13; } svg .cell.c1 { fill: var(--f1); fill-opacity: 0.13; }
+svg .cell.c2 { fill: var(--f2); fill-opacity: 0.13; } svg .cell.c3 { fill: var(--f3); fill-opacity: 0.13; }
+svg .cell.c4 { fill: var(--f4); fill-opacity: 0.13; }
+svg .dot.classes { fill: var(--ink); }
+.examples h3 { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 10px 0 0; }
+.examples .gallery { display: flex; flex-wrap: wrap; gap: 26px 34px; align-items: flex-start; }
+.examples .gallery figure { max-width: 340px; }
+.examples .gallery figcaption .desc { display: block; margin-top: 4px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.swatch { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 2px; }
+svg .guide { fill: none; stroke: var(--muted); stroke-width: 0.045; stroke-dasharray: 0.16 0.12; }
+svg .anglabel { fill: var(--muted); font-family: var(--font-mono); font-size: 0.34px; paint-order: stroke; stroke: var(--paper); stroke-width: 0.08px; }
+.examples { display: grid; gap: 14px; padding-top: 12px; border-top: 1px solid var(--ink); }
+.examples h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; margin: 0; }
+.examples .band { border-top: none; padding-top: 4px; }
+.examples .shapes { align-items: center; }
+.examples .shapes .note { flex: 1 1 280px; min-width: 0; }
+.status.example { background: var(--rule); color: var(--ink); }
+
+@media (max-width: 640px) {
+  .band { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .side { grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; }
+  .side .thm { grid-column: 1 / -1; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Rigid arrangements of unit circles</h1>
+    <p class="lede">Every rigid arrangement of <i>n</i> unit circles, up to rotation, reflection and relabeling.
+      Rigid means locally rigid in the sense of Asimow–Roth. Hold every tangency fixed as a bar of length 2,
+      and no small motion changes the shape. Each count below marked <b>proved</b> is a theorem in Lean&nbsp;4,
+      covering every arrangement in the plane, not only those on the triangular lattice.</p>
+    <div class="seq" id="seq" aria-label="Number of rigid arrangements by n"></div>
+    <div class="legend" aria-hidden="true">
+      <span><svg viewBox="-1.2 -1.2 2.4 2.4"><circle class="disk" cx="0" cy="0" r="1" style="stroke-width:0.09"/></svg>unit circle</span>
+      <span><svg viewBox="-0.2 -0.6 3.4 1.2"><line class="bar" x1="0" y1="0" x2="3" y2="0" style="stroke-width:0.18"/></svg>tangency (centers 2 apart)</span>
+      <span><svg viewBox="0 -0.1 2.4 2.2"><polygon class="cell" points="0,2 2.3,2 1.15,0"/></svg>triangle of three mutually tangent circles</span>
+    </div>
+  </header>
+
+  <main id="bands" style="display:grid; gap:28px"></main>
+
+  <section class="examples" aria-labelledby="ex-h">
+    <h2 id="ex-h">Off the lattice</h2>
+    <p class="lede">Every arrangement above sits on the triangular lattice, and for up to eight circles that is a
+      theorem. From eleven circles on it is no longer true. Each group of triangles linked through shared edges
+      lies on its own copy of the lattice, and an arrangement is off the lattice exactly when its contacts point in
+      more than one direction modulo 60°. Below, contacts and triangles are colored by that direction class,
+      shared circles (hinges) have a heavy outline, and circles in no triangle are dashed. Details are in
+      <code>docs/offlattice.md</code>.</p>
+    <div id="examples"></div>
+  </section>
+
+  <p class="note">The drawings are generated from lattice coordinates: a site (<i>a</i>, <i>b</i>) has center
+    <i>a</i>·(2, 0) + <i>b</i>·(1, √3), so two circles touch exactly when their sites differ by one of the six unit steps.
+    These are the coordinates used by the Lean definitions <code>triangleSites</code>, <code>rhombusSites</code>, and so on,
+    in <code>RigidArrangements/Small.lean</code>, and by the certified catalogues <code>latticeCatalogue7</code> and
+    <code>latticeCatalogue8</code> in <code>RigidArrangements/LatticeCert.lean</code>. To add a size, append an entry to <code>DATA</code> in this file.</p>
+</div>
+
+<script>
+(() => {
+// One entry per circle count n. status: "proved" (exact count, a Lean theorem) or "pending".
+// sites: lattice coordinates (a, b) -> center a*(2,0) + b*(1,√3).
+const DATA = [
+  { n: 1, status: "proved", theorem: "isRigid_of_subsingleton", note: "trivially rigid",
+    shapes: [ { name: "single circle", lean: null, sites: [[0,0]] } ] },
+  { n: 2, status: "proved", theorem: "isRigid_two_iff", note: "rolling is a rigid motion of the pair",
+    shapes: [ { name: "pair", lean: null, sites: [[0,0],[1,0]] } ] },
+  { n: 3, status: "proved", theorem: "iso_triangle_of_isRigid",
+    shapes: [ { name: "triangle", lean: "triangle", sites: [[0,0],[1,0],[0,1]] } ] },
+  { n: 4, status: "proved", theorem: "isRigid_four_iff",
+    shapes: [ { name: "rhombus", lean: "rhombus", sites: [[0,0],[1,0],[0,1],[1,-1]] } ] },
+  { n: 5, status: "proved", theorem: "isRigid_five_iff",
+    shapes: [ { name: "trapezoid", lean: "trapezoid", sites: [[0,0],[1,0],[0,1],[1,1],[2,0]] } ] },
+  { n: 6, status: "proved", theorem: "isRigid_six_iff",
+    shapes: [
+      { name: "parallelogram", lean: "parallelogram", sites: [[0,0],[1,0],[0,1],[1,1],[2,0],[2,1]] },
+      { name: "chevron", lean: "chevron", sites: [[0,0],[1,0],[0,1],[1,1],[2,0],[2,-1]] },
+      { name: "big triangle", lean: "bigTriangle", sites: [[0,0],[1,0],[0,1],[1,1],[2,0],[0,2]] },
+    ] },
+  { n: 7, status: "proved", theorem: "card_rigidClasses_seven",
+    shapes: [
+      { name: "flower", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[2,-1],[2,0]] },
+      { name: "7b", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,0]] },
+      { name: "7c", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1]] },
+      { name: "7d", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[1,2],[0,3]] },
+    ] },
+  { n: 8, status: "proved", theorem: "card_rigidClasses_eight",
+    shapes: [
+      { name: "8a", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[2,0],[2,-1],[2,1]] },
+      { name: "8b", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1],[2,0]] },
+      { name: "8c", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,0],[2,1]] },
+      { name: "8d", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[2,0]] },
+      { name: "8e", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[2,-1],[2,-2],[1,-2]] },
+      { name: "8f", lean: null, sites: [[0,0],[0,1],[1,0],[1,1],[0,2],[1,2],[0,3],[2,0]] },
+      { name: "8g", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[2,-1]] },
+      { name: "8h", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[2,-1],[2,-2]] },
+      { name: "8i", lean: null, sites: [[0,0],[0,1],[1,0],[1,-1],[1,1],[0,2],[1,2],[0,3]] },
+    ] },
+];
+// Sizes whose exact count is not yet a theorem, shown in the sequence strip only.
+const LOWER_BOUNDS = [ { n: 9, k: 16 }, { n: 10, k: 35 }, { n: 11, k: 70 }, { n: 12, k: 155 } ];
+
+const SQ3 = Math.sqrt(3);
+const UNIT = 26; // pixels per unit length, shared by every drawing so sizes compare
+
+// Draw circles centered at real points (math coordinates, y up). Two circles touch when their
+// centers are 2 apart; three mutually touching circles get a shaded triangle.
+function drawPoints(mathPts, opts = {}) {
+  const pts = mathPts.map(([x, y]) => [x, -y]); // SVG y points down
+  const pad = 1.18;
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad;
+  const minY = Math.min(...ys) - pad, maxY = Math.max(...ys) + pad;
+  const w = maxX - minX, h = maxY - minY;
+  const adj = (i, j) => Math.abs(Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]) - 2) < 1e-9;
+  // Direction class of a contact: its direction modulo 60°. Contacts of one lattice piece share a
+  // class; an arrangement is on a single lattice exactly when it has one class.
+  const classKeys = [];
+  const classOf = (i, j) => {
+    let a = Math.atan2(pts[j][1] - pts[i][1], pts[j][0] - pts[i][0]) * 180 / Math.PI;
+    a = ((a % 60) + 60) % 60;
+    if (a > 60 - 1e-6) a = 0;
+    let k = classKeys.findIndex(c => Math.abs(c - a) < 1e-6);
+    if (k < 0) { classKeys.push(a); k = classKeys.length - 1; }
+    return k;
+  };
+  const hinges = new Set(opts.hinges || (opts.hinge !== undefined ? [opts.hinge] : []));
+  const inTriangle = new Set();
+  let cells = "", bars = "", disks = "", dots = "";
+  let edges = 0, tris = 0;
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++) {
+      if (!adj(i, j)) continue;
+      edges++;
+      const cls = opts.classes ? ` c${classOf(i, j) % 5}` : "";
+      bars += `<line class="bar${cls}" x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`;
+      for (let k = j + 1; k < pts.length; k++)
+        if (adj(i, k) && adj(j, k) && ++tris) {
+          [i, j, k].forEach(t => inTriangle.add(t));
+          cells += `<polygon class="cell${cls}" points="${[i, j, k].map(t => pts[t].join(",")).join(" ")}"/>`;
+        }
+    }
+  pts.forEach((p, i) => {
+    const free = opts.classes && !inTriangle.has(i) ? " free" : "";
+    disks += `<circle class="disk${hinges.has(i) ? " hinge" : ""}${free}" cx="${p[0]}" cy="${p[1]}" r="1"/>`;
+    dots += `<circle class="dot${opts.classes ? " classes" : ""}" cx="${p[0]}" cy="${p[1]}" r="0.09"/>`;
+  });
+  const extra = opts.overlay ? opts.overlay(pts) : "";
+  const u = opts.unit || UNIT;
+  const svg = `<svg viewBox="${minX} ${minY} ${w} ${h}" width="${Math.round(w * u)}" height="${Math.round(h * u)}" role="img">` +
+    `${disks}${cells}${bars}${extra}${dots}</svg>`;
+  return { svg, edges, tris, classes: classKeys.length };
+}
+const draw = (sites) => drawPoints(sites.map(([a, b]) => [2 * a + b, SQ3 * b]));
+
+const plural = (k, one, many) => `${k} ${k === 1 ? one : many}`;
+
+// sequence strip
+const seq = document.getElementById("seq");
+const cols = DATA.length + LOWER_BOUNDS.length;
+seq.style.setProperty("--cols", cols);
+let headRow = `<div class="lab n">n</div>`, countRow = `<div class="lab">count</div>`;
+for (const d of DATA) { headRow += `<div class="n">${d.n}</div>`; countRow += `<div class="c">${d.shapes.length}</div>`; }
+for (const d of LOWER_BOUNDS) { headRow += `<div class="n">${d.n}</div>`; countRow += `<div class="c lb" title="certified lower bound; exact count not yet proved">≥${d.k}</div>`; }
+seq.innerHTML = headRow + countRow;
+
+// bands
+const bands = document.getElementById("bands");
+for (const d of DATA) {
+  const figs = d.shapes.map(s => {
+    const { svg, edges, tris } = draw(s.sites);
+    const lean = s.lean ? ` · <code>${s.lean}</code>` : "";
+    return `<figure>${svg}<figcaption><b>${s.name}</b>` +
+      `<span class="meta">${plural(edges, "contact", "contacts")} · ${plural(tris, "triangle", "triangles")}${lean}</span></figcaption></figure>`;
+  }).join("");
+  const label = d.status === "proved" ? "proved" : "pending";
+  const extra = d.note ? `<div class="thm">${d.note}</div>` : "";
+  bands.insertAdjacentHTML("beforeend",
+    `<section class="band" id="n${d.n}" aria-label="${d.n} circles">
+       <div class="side">
+         <div class="count">${d.shapes.length}<small>${plural(d.n, "circle", "circles")}</small></div>
+         <span class="status ${label === "proved" ? "" : "pending"}">${label}</span>
+         <div class="thm"><code>${d.theorem.replaceAll("_", "_<wbr>")}</code></div>
+         ${extra}
+       </div>
+       <div class="shapes">${figs}</div>
+     </section>`);
+}
+
+// O11, the off-lattice example (RigidArrangements/OffLattice.lean). The left chevron is the
+// lattice chevron o11Sites placed by z ↦ ω·conj z with ω = (−√33 + i√3)/6; the right chevron is
+// its mirror image z ↦ 2 − conj z. They share the hinge H = 1 + i√11, and their far ends
+// X = 0 and Y = 2 touch.
+const O11_SITES = [[0,0],[1,0],[0,1],[1,1],[0,2],[-1,2]];
+const omega = [-Math.sqrt(33) / 6, SQ3 / 6];
+const place = ([x, y]) => [omega[0] * x + omega[1] * y, omega[1] * x - omega[0] * y]; // ω·conj z
+const left = O11_SITES.map(([a, b]) => place([2 * a + b, SQ3 * b]));
+const right = left.slice(0, 5).map(([x, y]) => [2 - x, y]);
+const o11 = [...left, ...right]; // index 5 is the hinge
+
+const overlay = (pts) => {
+  const [h, x, y] = [pts[5], pts[0], pts[6]];
+  const unit = (p) => { const d = Math.hypot(p[0] - h[0], p[1] - h[1]); return [(p[0] - h[0]) / d, (p[1] - h[1]) / d]; };
+  const r = 1.55, ux = unit(x), uy = unit(y);
+  const a1 = [h[0] + r * ux[0], h[1] + r * ux[1]], a2 = [h[0] + r * uy[0], h[1] + r * uy[1]];
+  return `<line class="guide" x1="${h[0]}" y1="${h[1]}" x2="${x[0]}" y2="${x[1]}"/>` +
+    `<line class="guide" x1="${h[0]}" y1="${h[1]}" x2="${y[0]}" y2="${y[1]}"/>` +
+    `<path class="guide" d="M ${a1[0]} ${a1[1]} A ${r} ${r} 0 0 0 ${a2[0]} ${a2[1]}"/>` +
+    `<text class="anglabel" x="${h[0]}" y="${h[1] + 2.02}" text-anchor="middle">33.6°</text>`;
+};
+const off = drawPoints(o11, { hinge: 5, overlay, unit: 36, classes: true });
+document.getElementById("examples").insertAdjacentHTML("beforeend",
+  `<section class="band" id="n11" aria-label="11 circles, off the lattice">
+     <div class="side">
+       <div class="count">11<small>circles</small></div>
+       <span class="status example">example</span>
+       <div class="thm"><code>o11_isRigid</code><br><code>o11_not_isLattice</code><br><code>o11_isCore</code></div>
+     </div>
+     <div class="shapes">
+       <figure>${off.svg}<figcaption><b>two hinged chevrons</b>
+         <span class="meta">${plural(off.edges, "contact", "contacts")} · ${plural(off.classes, "direction class", "direction classes")} · <code>o11</code></span></figcaption></figure>
+       <p class="note">Two copies of the 6-circle chevron share one circle, the hinge (heavy outline), and their far
+         ends touch. The hinge sees those ends at an angle of arccos(5/6) ≈ 33.6°, which is not a multiple
+         of 60°, so no triangular lattice contains this arrangement. It is still rigid: each chevron is rigid,
+         and one contact between them, away from the hinge, locks the hinge. No circle can be peeled off, so
+         it is a core. It is the smallest rigid arrangement off the lattice found so far, and it is one of
+         the at least 70 rigid arrangements of 11 circles.</p>
+     </div>
+   </section>`);
+
+// Further off-lattice examples from the exploration in docs/offlattice.md (coordinates checked:
+// tangent pairs are 2 apart to 1e-9, no overlaps). status: "scratch Lean" = rigid and off-lattice
+// proved in explore/offlattice/proto/OffLatticeProto.lean; "computed" = exploratory computation.
+const OFF_EXAMPLES = [
+  { title: "O11 plus a triangle on the bar", n: 12, status: "computed", group: "picture", unit: 22,
+    hinges: [4, 5, 10], angle: "arccos(5/6) \u2248 33.557\u00b0 (inherited from O11)",
+    desc: "One more circle beyond O11's bar turns the bar into a third lattice piece, a triangle in a third direction. Three pieces now meet pairwise at hinges. It is not a core: the new circle can be peeled off.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.45742710775634, 1.94698752977251], [6.58152088217934, -0.04915894159412], [4.66666666666667, 2.83759240435401], [4.79076044108967, 0.84144593298738], [4.91485421551268, -1.15470053837925], [4.45742710775634, -3.10168806815176]] },
+  { title: "Q13: trapezoid and a 9-circle piece", n: 13, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [0], angle: "arccos(7/8) \u2248 28.955\u00b0",
+    desc: "One hinge and one bar. Both bar ends are 4 from the hinge, which forces a rotation of arccos(7/8) \u2248 29.0\u00b0. The only new off-lattice core at 13 circles in the exact search.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-3.46352549156242, 0.06317570179499], [-3.42705098312484, 2.06284307669368], [-3.39057647468726, 4.06251045159238], [-1.75000000000000, -0.96824583655185], [-1.71352549156242, 1.03142153834684], [-1.67705098312484, 3.03108891324554], [-1.64057647468726, 5.03075628814423], [0.07294901687516, 3.99933474979739]] },
+  { title: "T14: a ring of three pieces", n: 14, status: "computed", group: "picture", unit: 22,
+    hinges: [4, 5, 6], angle: "frames at 0\u00b0, 24.736\u00b0, 49.471\u00b0 (mod 60\u00b0)",
+    desc: "A chevron, a trapezoid and a chevron, each pair sharing a hinge, with no bar. The three hinges form a triangle with squared sides 12, 16, 12, which forces rotations of 24.7\u00b0 and 49.5\u00b0. The smallest off-lattice ring found.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [1.00000000000000, -1.73205080756888], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [3.00000000000000, -1.73205080756888], [6.26598632371090, -0.57735026918963], [4.63299316185545, 0.57735026918963], [6.44948974278318, 1.41421356237310], [4.81649658092773, 2.56891410075235], [5.63299316185545, -3.98312766312544], [3.66666666666667, -3.61766889073300], [6.93265299037757, -2.46296835235375], [4.96632649518879, -2.09750957996132]] },
+  { title: "ex15: a coincidence rotation", n: 15, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [0], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0 (hinge angle 19.107\u00b0)",
+    desc: "A trapezoid and an 11-circle piece, hinge plus bar. Every coordinate stays in \u211a(\u221a3), yet the second piece is turned by arccos(13/14) \u2248 21.8\u00b0. Under this rotation the two lattices share a sublattice of index 7. What matters is the rotation between the lattices, not a new square root.",
+    points: [[0.00000000000000, 0.00000000000000], [1.00000000000000, 1.73205080756888], [2.00000000000000, 3.46410161513775], [2.00000000000000, 0.00000000000000], [3.00000000000000, 1.73205080756888], [-4.00000000000000, 3.46410161513775], [-3.71428571428571, 1.48461497791618], [-3.42857142857143, -0.49487165930539], [-2.42857142857143, 4.70128076340124], [-2.14285714285714, 2.72179412617966], [-1.85714285714286, 0.74230748895809], [-1.57142857142857, -1.23717914826348], [-0.85714285714286, 5.93845991166472], [-0.57142857142857, 3.95897327444315], [1.00000000000000, 5.19615242270663]] },
+  { title: "DH17: two shared circles, no bar", n: 17, status: "scratch Lean", group: "picture", unit: 22,
+    hinges: [6, 7], angle: "\u03a37 rotation arccos(13/14) \u2248 21.787\u00b0",
+    desc: "Two pieces share two circles and do not otherwise touch. Two shared circles lock the pieces together. This works only because the shared circles, 2\u221a7 apart, lie on the common sublattice of a coincidence rotation.",
+    points: [[-4.00000000000000, -3.46410161513775], [-3.00000000000000, -1.73205080756888], [-2.00000000000000, 0.00000000000000], [-3.00000000000000, -5.19615242270663], [-2.00000000000000, -3.46410161513775], [-1.00000000000000, -1.73205080756888], [0.00000000000000, 0.00000000000000], [-1.00000000000000, -5.19615242270663], [4.00000000000000, -3.46410161513775], [3.71428571428571, -1.48461497791618], [3.42857142857143, 0.49487165930539], [2.42857142857143, -4.70128076340124], [2.14285714285714, -2.72179412617966], [1.85714285714286, -0.74230748895809], [1.57142857142857, 1.23717914826348], [0.85714285714286, -5.93845991166472], [0.57142857142857, -3.95897327444315]] },
+  { title: "H30: a braced rhombus", n: 30, status: "computed", group: "beyond", unit: 17,
+    hinges: [], angle: "one body, no relative angle; rhombus angle \u2248 70.522\u00b0",
+    desc: "Every triangle lies in one 26-circle lattice piece, yet the arrangement is off the lattice. Four circles in no triangle (dashed) form a braced rhombus in a bay of the piece, at an angle of about 70.5\u00b0. Infinitesimally rigid; certified by interval arithmetic in exploratory Lean.",
+    points: [[-3.00000000000000, 1.73205080756888], [-2.00000000000000, 3.46410161513775], [-1.00000000000000, 5.19615242270663], [-3.00000000000000, -1.73205080756888], [-2.00000000000000, 0.00000000000000], [-1.00000000000000, 1.73205080756888], [0.00000000000000, 3.46410161513775], [1.00000000000000, 5.19615242270663], [-2.00000000000000, -3.46410161513775], [-1.00000000000000, -1.73205080756888], [0.00000000000000, 0.00000000000000], [2.00000000000000, 3.46410161513775], [3.00000000000000, 5.19615242270663], [-1.00000000000000, -5.19615242270663], [0.00000000000000, -3.46410161513775], [4.00000000000000, 3.46410161513775], [5.00000000000000, 5.19615242270663], [1.00000000000000, -5.19615242270663], [2.00000000000000, -3.46410161513775], [6.00000000000000, 3.46410161513775], [7.00000000000000, 5.19615242270663], [6.00000000000000, 0.00000000000000], [7.00000000000000, 1.73205080756888], [8.00000000000000, 3.46410161513775], [8.00000000000000, 0.00000000000000], [9.00000000000000, 1.73205080756888], [1.94447276491105, 0.46800178046580], [3.66191773128094, 1.49288362121172], [4.05552723508895, -0.46800178046580], [2.33808226871906, -1.49288362121172]] },
+  { title: "E30: a taut chain", n: 30, status: "computed", group: "beyond", unit: 17,
+    hinges: [], angle: "chain direction arccos(11/14) \u2248 38.213\u00b0 (\u2261 \u221221.787\u00b0, the \u03a37 angle)",
+    desc: "A 24-circle lattice piece holds two of its circles exactly 14 apart along a non-lattice direction. The chain of six circles between them (dashed, in no triangle) is forced straight. Rigid only to second order, with fewer than 2n \u2212 3 contacts.",
+    points: [[0.00000000000000, 0.00000000000000], [-2.00000000000000, 0.00000000000000], [-1.00000000000000, 1.73205080756888], [-3.00000000000000, 1.73205080756888], [-2.00000000000000, 3.46410161513775], [0.00000000000000, 3.46410161513775], [-1.00000000000000, 5.19615242270663], [1.00000000000000, 5.19615242270663], [0.00000000000000, 6.92820323027551], [2.00000000000000, 6.92820323027551], [3.00000000000000, 5.19615242270663], [4.00000000000000, 6.92820323027551], [3.00000000000000, 8.66025403784439], [5.00000000000000, 8.66025403784439], [4.00000000000000, 10.3923048454132], [6.00000000000000, 10.3923048454132], [7.00000000000000, 8.66025403784439], [8.00000000000000, 10.3923048454132], [7.00000000000000, 12.1243556529821], [9.00000000000000, 12.1243556529821], [10.0000000000000, 10.3923048454132], [11.0000000000000, 12.1243556529821], [12.0000000000000, 10.3923048454132], [11.0000000000000, 8.66025403784439], [1.57142857142857, 1.23717914826348], [3.14285714285714, 2.47435829652697], [4.71428571428571, 3.71153744479045], [6.28571428571429, 4.94871659305394], [7.85714285714286, 6.18589574131742], [9.42857142857143, 7.42307488958090]] }
+];
+const galleryFig = (e) => {
+  const d = drawPoints(e.points, { hinges: e.hinges, classes: true, unit: e.unit });
+  return `<figure>${d.svg}<figcaption><b>${e.title}</b>
+    <span class="meta">${e.n} circles · ${plural(d.edges, "contact", "contacts")} · ${plural(d.classes, "direction class", "direction classes")} · ${e.status}</span>
+    <span class="meta">${e.angle}</span>
+    <span class="desc">${e.desc}</span></figcaption></figure>`;
+};
+document.getElementById("examples").insertAdjacentHTML("beforeend",
+  `<h3>More lattice pieces at forced angles</h3>
+   <div class="gallery">${OFF_EXAMPLES.filter(e => e.group === "picture").map(galleryFig).join("")}</div>
+   <h3>Beyond the picture: circles in no triangle</h3>
+   <p class="note">In these two, every triangle lies in a single lattice piece. The arrangement leaves the lattice
+     through circles that belong to no triangle (dashed), so "lattice pieces at non-lattice angles" is not the
+     whole story. Both have 30 circles; nothing like them is known below 30.</p>
+   <div class="gallery">${OFF_EXAMPLES.filter(e => e.group === "beyond").map(galleryFig).join("")}</div>`);
+})();
+</script>

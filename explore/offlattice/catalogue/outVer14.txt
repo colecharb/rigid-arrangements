@@ -1,0 +1,4 @@
+n=11: 1 arrangements; fully-exact contact recheck ok=1; exact inf-rigid (rank 2n-3)=1; exact off-lattice=1; pairwise distinct certified 0/0
+n=12: 5 arrangements; fully-exact contact recheck ok=5; exact inf-rigid (rank 2n-3)=5; exact off-lattice=5; pairwise distinct certified 10/10
+n=13: 29 arrangements; fully-exact contact recheck ok=29; exact inf-rigid (rank 2n-3)=29; exact off-lattice=29; pairwise distinct certified 406/406
+n=14: 134 arrangements; fully-exact contact recheck ok=134; exact inf-rigid (rank 2n-3)=134; exact off-lattice=134; pairwise distinct certified 8911/8911
